@@ -19,7 +19,6 @@ export default function WelcomePage() {
           <Link href="/contact" className="login-btn">اتصل بنا</Link>
           <Link href="/guidance" className="login-btn">ارشادات أسرية</Link>
           <Link href="/login" className="login-btn">دخول</Link>
-          <ThemeToggle />
           <button className="join-btn">انضم إلينا</button>
         </div>
       </nav>
