@@ -1,9 +1,0 @@
-{"timestamp":"00:00:10.762","source":"Server","level":"WARN","message":"⚠ Turbopack's filesystem cache has been deleted because we previously detected an internal error in Turbopack. Builds or page loads may be slower as a result."}
-{"timestamp":"00:00:10.799","source":"Server","level":"WARN","message":"⚠ Slow filesystem detected. The benchmark took 514ms. If E:\\Maza Academy\\maza-online\\.next/dev is a network drive, consider moving it to a local folder.\nSee more: https://nextjs.org/docs/app/guides/local-development"}
-{"timestamp":"00:00:17.466","source":"Server","level":"LOG","message":"○ Compiling middleware ..."}
-{"timestamp":"00:00:22.553","source":"Server","level":"WARN","message":"⚠ The \"middleware\" file convention is deprecated. Please use \"proxy\" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy"}
-{"timestamp":"00:00:25.083","source":"Server","level":"LOG","message":""}
-{"timestamp":"00:00:28.624","source":"Server","level":"LOG","message":"○ Compiling /welcome ..."}
-{"timestamp":"00:00:54.426","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
-{"timestamp":"00:00:54.583","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
-{"timestamp":"00:00:54.774","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
