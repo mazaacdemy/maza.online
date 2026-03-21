@@ -2,6 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import prisma from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 export default async function SpecialistAssessmentsPage() {
   const assessments = await prisma.assessment.findMany({
     include: { patient: true },

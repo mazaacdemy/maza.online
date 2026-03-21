@@ -2,6 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import prisma from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ParentDashboard() {
   // In a real app, we get this ID from the session (NextAuth)
   // For this demo, we use the ID of the parent we seeded (parent@maza.com)

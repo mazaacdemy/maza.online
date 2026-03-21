@@ -1,6 +1,8 @@
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Dashboard() {
   // --- Data Fetching from PostgreSQL via Prisma ---
   // In a real scenario, this uses the currently authenticated specialist's ID
