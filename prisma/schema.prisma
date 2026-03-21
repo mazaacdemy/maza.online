@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(PARENT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  patients     Patient[]     @relation("ParentPatients")
+  appointments Appointment[] @relation("ParentAppointments")
+  specialistSessions Appointment[] @relation("SpecialistAppointments")
+  assessments  Assessment[]  @relation("SpecialistAssessments")
+}
+
+enum Role {
+  SPECIALIST
+  PARENT
+  ADMIN
+}
+
+model Patient {
+  id          String   @id @default(uuid())
+  name        String
+  dateOfBirth DateTime
+  diagnosis   String?
+  parentId    String
+  parent      User     @relation("ParentPatients", fields: [parentId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  assessments Assessment[]
+}
+
+model Assessment {
+  id             String   @id @default(uuid())
+  patientId      String
+  patient        Patient  @relation(fields: [patientId], references: [id])
+  specialistId   String
+  specialist     User     @relation("SpecialistAssessments", fields: [specialistId], references: [id])
+  type           String   // e.g., Autism (CARS), ADHD (Conners), IQ (Stanford-Binet)
+  aiSummary      String?  @db.Text
+  aiProposedPlan String?  @db.Text
+  date           DateTime @default(now())
+}
+
+model Appointment {
+  id           String   @id @default(uuid())
+  date         DateTime
+  type         String   // Telehealth or In-person
+  status       String   // Scheduled, Completed, Cancelled
+  specialistId String
+  specialist   User     @relation("SpecialistAppointments", fields: [specialistId], references: [id])
+  parentId     String
+  parent       User     @relation("ParentAppointments", fields: [parentId], references: [id])
+}
