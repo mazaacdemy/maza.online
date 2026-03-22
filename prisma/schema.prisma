@@ -11,21 +11,29 @@ model User {
   id        String   @id @default(uuid())
   name      String
   email     String   @unique
-  password  String
-  role      Role     @default(PARENT)
-  createdAt DateTime @default(now())
+  password          String
+  role              Role      @default(PARENT)
+  emailVerified     DateTime?
+  verificationToken String?
+  createdAt         DateTime  @default(now())
   updatedAt DateTime @updatedAt
 
   patients     Patient[]     @relation("ParentPatients")
   appointments Appointment[] @relation("ParentAppointments")
   specialistSessions Appointment[] @relation("SpecialistAppointments")
   assessments  Assessment[]  @relation("SpecialistAssessments")
+
+  centerId     String?
+  center       User?         @relation("CenterSpecialists", fields: [centerId], references: [id])
+  specialists  User[]        @relation("CenterSpecialists")
+  coupons      Coupon[]      @relation("CenterCoupons")
 }
 
 enum Role {
   SPECIALIST
   PARENT
   ADMIN
+  CENTER
 }
 
 model Patient {
@@ -63,3 +71,14 @@ model Appointment {
   parentId     String
   parent       User     @relation("ParentAppointments", fields: [parentId], references: [id])
 }
+
+model Coupon {
+  id        String   @id @default(uuid())
+  code      String   @unique
+  discount  Float
+  centerId  String
+  center    User     @relation("CenterCoupons", fields: [centerId], references: [id])
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+

@@ -1,0 +1,114 @@
+منصة ماذا هي منصة رقمية متخصصة في دعم أسر ذوي الاحتياجات الخاصة وتهدف إلى تقديم محتوى في مجالات التخاطب وتنمية المهارات وتعديل السلوك مع ربط أولياء الأمور بالمراكز المتخصصة وتعتمد المنصة على نموذج عمل يجمع بين توفير البيانات للمراكز وبيع كوبونات خصم للخدمات والمنتجات التعليمية لتكون مرجعا لتقييم وترشيح المراكز المتخصصة
+
+منصة ماذا
+الرؤية
+أن تصبح المنصة المرجع الأول والأكثر موثوقية في الوطن العربي لتقييم وترشيح المراكز المتخصصة وتقديم الدعم المتكامل لأسر ذوي الاحتياجات الخاصة
+الرسالة
+تمكين أسر ذوي الاحتياجات الخاصة من الوصول إلى أفضل الخدمات العلاجية والتعليمية من خلال محتوى علمي متخصص وربطهم بشبكة من المراكز المعتمدة والخبراء في مجالات التخاطب وتنمية المهارات وتعديل السلوك
+محاور المحتوى والتخصص
+ * مجال التخاطب: تقديم إرشادات وتمارين لدعم النطق واللغة
+ * تنمية المهارات: أدوات وأنشطة لرفع القدرات الإدراكية والحركية
+ * تعديل السلوك: استراتيجيات علمية للتعامل مع التحديات السلوكية للأطفال
+خطة العمل ونموذج الربح
+تعتمد المنصة على استراتيجية الاستحواذ على السوق من خلال الشراكات الذكية وتتضمن الآتي
+ * جمع وتحليل البيانات: توفير قاعدة بيانات دقيقة لأولياء الأمور المهتمين وتوجيهها للمراكز المتخصصة
+ * نظام الكوبونات: بيع كوبونات خصم حصرية لخدمات المراكز (مثل مركز لايف سكيلز) ومنتجات الوسائل التعليمية (مثل إيديو ماركت)
+ * التقييم والترشيح: بناء نظام لتقييم المراكز يساعد أولياء الأمور في اختيار المكان الأنسب بناء على تجارب حقيقية ومعايير جودة
+ * التسويق التبادلي: العمل كحلقة وصل بين مقدمي الخدمة والمستفيدين لضمان تدفق العملاء للمراكز المشاركة
+هل تريد مني صياغة عرض تقديمي (Pitch Deck) بناء على هذه التفاصيل لتقديمه لشركاء محتملين
+
+......
+بناءً على كل التفاصيل الدقيقة والمعقدة التي ناقشناها لمنصة "ماذا"، إليك البرومبت (الأمر برمجياً) الشامل والجاهز لتقديمه لمبرمج يستخدم أدوات الذكاء الاصطناعي في البرمجة (مثل GitHub Copilot, ChatGPT, or Claude) لبناء النظام.
+لقد قمت بصياغة البرومبت باللغة الإنجليزية، لأنها اللغة الأساسية والأكثر دقة للتعامل مع نماذج الذكاء الاصطناعي في الأكواد والبرمجة الخلفية المعقدة.
+Comprehensive Development Prompt for Platform Maza (منصة ماذا)
+Project Overview:
+Develop "Platform Maza" (منصة ماذا), a complex, multi-functional digital ecosystem supporting Arabic-speaking families of people with special needs. This is a progressive web application combining telehealth, AI-driven diagnostics, educational content, a marketplace, and dynamic pricing.
+Core Role-Based Access:
+ * Admin: System management, content validation, data analytics.
+ * Specialist/Center: Manage profiles, schedule sessions, conduct telehealth, access child records.
+ * Parent (End User): Book sessions, take AI assessments, manage child's IEP (Individualized Education Program), purchase coupons.
+Key Functional Specifications & Technical Modules:
+1. Localization & Dynamic Payment System (Geo-IP Based):
+ * Implement a payment gateway (e.g., Paymob, Stripe, PayPal) that automatically detects the user's location via IP Address.
+ * Pricing Logic:
+   * Inside Egypt: Displays prices in EGP and provides local payment options (Fawry, Vodafone Cash, local cards).
+   * Outside Egypt: Displays prices in USD and provides international payment options (Credit Cards, PayPal).
+2. AI-Powered Assessment & Reporting Module:
+ * Integrate a flexible assessment interface to administer standard tests (Speech, Skill, Behavior, Psychometric, Intelligence (IQ), Language).
+ * AI Integration Task: Develop/integrate an AI model (e.g., via OpenAI API) to:
+   * Analyze test scores (manual input or interaction data).
+   * Automatically generate a comprehensive Diagnostic Report (in Arabic).
+   * Automatically create a customized Individualized Education Program (IEP/البرنامج العلاجي الفردي) with short-term and long-term goals based on the diagnosis.
+3. Telehealth & Booking System:
+ * Implement a real-time scheduling calendar (like Calendly) where specialists set availability.
+ * Integrate a secure, HIPAA-compliant video conferencing API (e.g., Agora, Twilio Video, or Zoom API) for online sessions within the platform.
+ * Automatically send WhatsApp/Email/SMS session reminders.
+4. Progress Tracking & Case Management:
+ * Create a "Digital Case File" for each child.
+ * Allow specialists to log progress notes after each session.
+ * Include a data visualization dashboard (charts/graphs) showing the child's progress against IEP goals over time.
+5. Business Model Modules:
+ * Coupon System: Generate unique QR/Codes for discounts on partner services (like Life Skills Center) or products (like EduMarket), with safe checkout.
+ * Data Acquisition & Lead Generation: Implement a robust database to securely collect user data (parent profile, child’s condition) to connect them with suitable centers.
+ * Center Directory & Rating System: A searchable map/list of centers with an approved-only rating/review mechanism.
+6. Content Management & Specialties:
+ * A blog/content hub categorized by: Speech, Skill Development, Behavior Modification, Psychology, etc.
+Technical Stack Recommendations (to be confirmed by the developer):
+ * Backend: Node.js/Python (Django or FastAPI) for robust AI integration and API management.
+ * Frontend: React/Vue.js (Responsive for mobile).
+ * Database: PostgreSQL for structured medical-grade data.
+ * Security: Implement strict data encryption and privacy protocols (GDPR/HIPAA guidelines).
+Expected Output:
+Please provide a full technical architecture plan, database schema, API documentation structure, and the core boilerplate code for the Dynamic Pricing and AI-Reporting modules.
+إضافة من عندي لضمان نجاح المشروع (الفراغات التي ملأتها في البرومبت):
+لكي تكتمل الصورة، قمت بإضافة النقاط التالية في البرومبت أعلاه لأنها ضرورية تقنياً:
+ * تقنية الـ Telehealth المدمجة: بدلاً من مجرد وضع رابط Zoom، طلبت دمج واجهة فيديو (Embedded Video) داخل موقعك لضمان بقاء المستخدمين على منصتك.
+ * أمن البيانات وخصوصيتها (Data Privacy): بما أنك تتعامل مع بيانات حساسة لأطفال وتشخيصات نفسية، أضفت ضرورة الالتزام بمعايير HIPAA/GDPR، وهي معايير عالمية لحماية البيانات الطبية.
+ * إدارة الحالات الرقمية (Digital Case File): أضفت فكرة "الملف الرقمي" لكل طفل، حيث لا تضيع التقارير والجلسات، بل تكون مؤرشفة لكل حالة.
+ * تصور البيانات (Data Visualization): أضفت طلب عمل رسوم بيانية تظهر تقدم الطفل لولي الأمر، لأن الأرقام المجردة لا تعطي صورة واضحة كالمخططات.
+
+ أبرز الجديد في مجال التخاطب خلال السنتين اللي فاتوا بيركز على التقنية والذكاء الاصطناعي وتوسيع الوصول:
+
+- *AI لتوضيح الكلام وتعزيز التدريب*: أنظمة تعلم آلي بتحول الكلام غير الواضح (مثل حالات الـdysarthria) إلى كلام مفهوم وتقلل أخطاء الكلمات بحوالي 28%، وكمان بتولد تمارين فورية وتقييم آلي لحالات التأخر والنطق. أدوات AI بقت تُستخدم لتتبع التقدم وتقليل عبء التوثيق على الأخصائيين. 【a458】【b01a】
+
+- *أجهزة قابلة للارتداء*: جهاز مرن بيتلزق على الرقبة ويترجم حركات عضلات الحنجرة لكلام مسموع بدقة ∼95%، بيساعد اللي فقدوا الصوت بعد عمليات أو أمراض. 【cc14】
+
+- *التقنية في الجلسات اليومية*: 89% من الأخصائيين بيستخدموا أدوات رقمية أسبوعيًا (Boom Cards، فيديوهات، ملفات تفاعلية، شاشات ذكية)، وده زوّد التفاعل وسهّل المتابعة. منصات Tele-therapy الآمنة (HIPAA) بقت معيار للجلسات عن بُعد. 【8a72】【9eb5】
+
+- *الفصول الافتراضية والعلاج عن بُعد*: دراسات حديثة رصدت توجه كبير لاستخدام الفصول الافتراضية وأدوات التعلم المعزز بالتكنولوجيا في علاج اضطرابات التواصل. 【0d83】【172d】
+
+- *بروتوكولات جديدة داخل فرق طبية*: التخاطب دخل ضمن فرق علاج اضطرابات النوم (مثل انقطاع النفس) كخيار بديل لما الطرق التقليدية مش كافية. 【37bb】
+
+الخلاصة: المجال بيتجه لـ"علاج مدعوم بالبيانات" — AI للتقييم والتمرين الفوري، أجهزة لبث الصوت، وجلسات هجينة (حضوري/أونلاين) بتقنيات تفاعلية. لو مهتم بجانب معين (أطفال، توحد، أجهزة)، قوللي أعمّق لك.
+
+إليك تحديث لخطة العمل التقنية لتشمل الخصائص المتقدمة التي ذكرتها مع التركيز على دمج الذكاء الاصطناعي وإدارة الجلسات والمدفوعات الدولية والمحلية
+تطوير منصة ماذا (النظام المتكامل للمراكز والاستشارات)
+1. نظام الحجز والاستشارات الأونلاين (Booking & Telehealth)
+ * جدولة المواعيد: نظام تقويم (Calendar) يتيح للأخصائي تحديد مواعيد توافره ولولي الأمر اختيار الموعد المناسب
+ * غرف الجلسات الافتراضية: دمج تقنيات (WebRTC) أو الربط مع (Zoom/Google Meet API) لتقديم جلسات فيديو مباشرة داخل المنصة
+ * نظام التذكيرات: إرسال تنبيهات تلقائية (SMS/Email/WhatsApp) قبل موعد الجلسة
+2. نظام الاختبارات الذكي (AI Assessment System)
+ * واجهة الاختبارات: بيئة تفاعلية لتقديم الاختبارات (ذكاء لغة مقاييس نفسية)
+ * التصحيح التلقائي بالذكاء الاصطناعي: استخدام خوارزميات لتحليل إجابات الطفل أو ملاحظات الأخصائي لاستخراج الدرجات الخام وتحويلها لدرجات معيارية
+ * منشئ التقارير الآلي (Auto-Report Generator): بمجرد انتهاء الاختبار يقوم النظام بكتابة مسودة تقرير تشخيصي متكامل يشمل نقاط القوة والضعف
+ * بناء البرنامج العلاجي: بناء على نتائج الاختبار يقترح الذكاء الاصطناعي خطة تربوية فردية (IEP) تشمل الأهداف قصيرة وطويلة المدى
+3. إدارة التخصصات والمجالات (Multi-Disciplinary)
+توفير أقسام مستقلة لكل تخصص مع نماذج تقييم ومتابعة خاصة بكل منها
+ * التخاطب واضطرابات اللغة
+ * تنمية المهارات الإدراكية
+ * تعديل السلوك والقياس النفسي
+ * مقاييس الذكاء والقدرات
+4. نظام المتابعة الرقمي (Session Tracking)
+ * سجل المتابعة: لكل حالة "ملف رقمي" يحتوي على تطور الأداء في كل جلسة مع إمكانية رفع فيديوهات أو صور لتدريبات الطفل
+ * تقارير دورية: رسم بياني يوضح مدى تقدم الطفل في الأهداف المحددة داخل البرنامج العلاجي
+5. نظام التسعير والمدفوعات (Multi-Currency Payment Gateway)
+ * التسعير الجغرافي (Geo-Pricing):
+   * يتعرف الموقع على موقع المستخدم تلقائيا (IP Address)
+   * إذا كان المستخدم داخل مصر: تظهر الأسعار بالجنيه المصري مع وسائل دفع (فوري ميزة محافظ إلكترونية)
+   * إذا كان المستخدم خارج مصر: تظهر الأسعار بالدولار الأمريكي مع وسائل دفع (بطاقات ائتمان عالمية PayPal)
+ * الفواتير الإلكترونية: إصدار فاتورة مفصلة بالخدمة المحجوزة ترسل تلقائيا للمستخدم
+6. المتطلبات التقنية للمبرمج
+ * قاعدة البيانات: نظام قوي (PostgreSQL) لتأمين بيانات الحالات الطبية والخصوصية
+ * الذكاء الاصطناعي: الربط مع (OpenAI API) أو بناء نماذج مخصصة لمعالجة البيانات وتوليد التقارير
+ * لوحة التحكم: واجهة خاصة للإدارة لمراقبة الأرباح وعدد الجلسات المنفذة وأداء الأخصائيين
+هل تريد مني البدء في تصميم نموذج لشكل (لوحة تحكم الأخصائي) أو (نموذج تقرير الحالة) الذي سيصدره النظام

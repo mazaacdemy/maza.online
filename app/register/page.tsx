@@ -2,59 +2,59 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-export default function Login() {
+export default function Register() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("PARENT");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
-  const urlMessage = searchParams?.get('verified') ? 'تم تأكيد حسابك بنجاح! يمكنك الآن تسجيل الدخول.' : searchParams?.get('registered') ? 'تم التسجيل بنجاح! راجع بريدك الإلكتروني لتأكيد الحساب.' : '';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
-
-    setLoading(false);
-
-    if (!result || result.error) {
-      setError(result?.error || "البريد الإلكتروني أو كلمة المرور غير صحيحة.");
+    // Basic validation
+    if (!name || !email || !password) {
+      setError("يرجى تعبئة جميع الحقول المطلوبة.");
+      setLoading(false);
       return;
     }
 
-    // Fetch the session to get the role, then redirect
-    const sessionRes = await fetch("/api/auth/session");
-    const session = await sessionRes.json();
-    const role = (session?.user as any)?.role;
-
-    if (role === "ADMIN") {
-      router.push("/dashboard/admin");
-    } else if (role === "SPECIALIST") {
-      router.push("/dashboard/specialist");
-    } else {
-      router.push("/dashboard/parent");
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password, role }),
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        router.push("/login?registered=true");
+      } else {
+        setError(data.error || "فشل التسجيل. يرجى المحاولة مرة أخرى.");
+      }
+    } catch (err: any) {
+      setError("تعذر الاتصال بالخادم.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="dashboard-container" style={{ justifyContent: "center", alignItems: "center" }}>
+    <div className="dashboard-container" style={{ justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
       <div
         className="card glass-panel"
         style={{
-          maxWidth: "400px",
+          maxWidth: "450px",
           width: "100%",
           padding: "2.5rem",
           background: "rgba(15, 23, 42, 0.8)",
+          margin: "2rem",
         }}
       >
         <div className="logo" style={{ justifyContent: "center", marginBottom: "2rem" }}>
@@ -71,40 +71,23 @@ export default function Login() {
             color: "var(--text-primary)",
           }}
         >
-          تسجيل الدخول للمنصة
+          إنشاء حساب جديد
         </h3>
 
         {error && (
           <div
             style={{
-              background: "rgba(239, 68, 68, 0.1)",
-              border: "1px solid rgba(239, 68, 68, 0.3)",
-              color: "#f87171",
-              padding: "0.8rem 1rem",
-              borderRadius: "10px",
-              marginBottom: "1.2rem",
-              fontSize: "0.9rem",
-              textAlign: "center",
+               background: "rgba(239, 68, 68, 0.1)",
+               border: "1px solid rgba(239, 68, 68, 0.3)",
+               color: "#f87171",
+               padding: "0.8rem 1rem",
+               borderRadius: "10px",
+               marginBottom: "1.2rem",
+               fontSize: "0.9rem",
+               textAlign: "center",
             }}
           >
             {error}
-          </div>
-        )}
-
-        {urlMessage && !error && (
-          <div
-            style={{
-              background: "rgba(74, 222, 128, 0.1)",
-              border: "1px solid rgba(74, 222, 128, 0.3)",
-              color: "#4ade80",
-              padding: "0.8rem 1rem",
-              borderRadius: "10px",
-              marginBottom: "1.2rem",
-              fontSize: "0.9rem",
-              textAlign: "center",
-            }}
-          >
-            {urlMessage}
           </div>
         )}
 
@@ -112,6 +95,34 @@ export default function Login() {
           onSubmit={handleSubmit}
           style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
         >
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                color: "var(--text-secondary)",
+              }}
+            >
+              الاسم الكامل
+            </label>
+            <input
+              type="text"
+              required
+              className="glass-panel"
+              style={{
+                width: "100%",
+                padding: "0.8rem",
+                border: "1px solid var(--glass-border)",
+                color: "var(--text-primary)",
+                outline: "none",
+                background: "rgba(255,255,255,0.05)",
+              }}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="أدخل اسمك الكامل"
+            />
+          </div>
+
           <div>
             <label
               style={{
@@ -136,8 +147,41 @@ export default function Login() {
               }}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="example@domain.com"
             />
           </div>
+
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                color: "var(--text-secondary)",
+              }}
+            >
+              نوع الحساب
+            </label>
+            <select
+              className="glass-panel"
+              style={{
+                width: "100%",
+                padding: "0.8rem",
+                border: "1px solid var(--glass-border)",
+                color: "var(--text-primary)",
+                outline: "none",
+                background: "rgba(15, 23, 42, 0.9)", // slightly darker solid bg for select options visibility
+                appearance: "none",
+                cursor: "pointer",
+              }}
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <option value="PARENT">ولي أمر</option>
+              <option value="SPECIALIST">أخصائي</option>
+              <option value="CENTER">مركز مستقل</option>
+            </select>
+          </div>
+
           <div>
             <label
               style={{
@@ -162,6 +206,8 @@ export default function Login() {
               }}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              minLength={6}
             />
           </div>
 
@@ -176,7 +222,7 @@ export default function Login() {
               cursor: loading ? "not-allowed" : "pointer",
             }}
           >
-            {loading ? "جارٍ التحقق..." : "تسجيل الدخول"}
+            {loading ? "جارٍ الإنشاء..." : "إنشاء الحساب"}
           </button>
         </form>
 
@@ -188,16 +234,16 @@ export default function Login() {
             color: "var(--text-secondary)",
           }}
         >
-          ليس لديك حساب أخصائي أو ولي أمر؟{" "}
+          لديك حساب بالفعل؟{" "}
           <Link
-            href="/register"
+            href="/login"
             style={{
               color: "var(--accent-primary)",
               textDecoration: "none",
               fontWeight: "bold",
             }}
           >
-            سجل هنا
+            تسجيل الدخول
           </Link>
         </div>
       </div>

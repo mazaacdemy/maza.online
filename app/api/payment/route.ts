@@ -1,25 +1,36 @@
 import { NextResponse } from 'next/server';
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
   try {
-    const { amount, currency, userId, paymentMethod } = await request.json();
+    // In a real app, Next.js provides headers() or request.headers
+    const forwardedFor = request.headers.get('x-forwarded-for') || '';
+    const realIp = request.headers.get('x-real-ip') || '';
+    
+    // Simple mock heuristic for geo-pricing
+    // Localhost or standard Egyptian IP blocks
+    const isEgypt = forwardedFor.includes('156.') || 
+                    forwardedFor.includes('197.') || 
+                    realIp === '::1' || 
+                    forwardedFor.includes('127.0.0.1');
 
-    // Geo-Pricing Simulation (Egypt vs International)
-    let gateway = 'Stripe (USD)';
-    if (currency === 'EGP' || paymentMethod === 'Fawry' || paymentMethod === 'Meeza') {
-      gateway = 'Paymob (EGP)';
-    }
+    // Maza Platform Base Price
+    const basePriceEGP = 500;
+    const basePriceUSD = 50;
 
-    // Mock an external API call to the respective payment gateway (Stripe/Paymob)
-    const transactionId = `${gateway.split(' ')[0].toUpperCase()}_${Math.random().toString(36).substr(2, 9)}`;
+    const pricing = isEgypt 
+      ? { currency: 'EGP', amount: basePriceEGP, location: 'Egypt (Local)' }
+      : { currency: 'USD', amount: basePriceUSD, location: 'International' };
 
     return NextResponse.json({
       success: true,
-      transactionId,
-      gateway,
-      message: `تم إنشاء الفاتورة بنجاح عبر ${gateway}. القيمة: ${amount} ${currency}`
+      pricing: pricing,
+      paymentMethods: isEgypt 
+        ? ['Fawry', 'Vodafone Cash', 'Meeza', 'Local Credit Card']
+        : ['Stripe', 'PayPal', 'International Credit Card'],
+      message: isEgypt 
+        ? 'تم تحديد التسعير المحلي بناءً على الموقع الجغرافي' 
+        : 'International pricing applied based on Geo-IP'
     });
-
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }

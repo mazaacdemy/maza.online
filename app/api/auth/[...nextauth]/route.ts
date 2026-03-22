@@ -27,7 +27,11 @@ export const authOptions: AuthOptions = {
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
 
         if (!isPasswordValid) {
-          return null;
+          throw new Error("البريد الإلكتروني أو كلمة المرور غير صحيحة.");
+        }
+
+        if (user.emailVerified === null) {
+          throw new Error("يرجى التحقق من بريدك الإلكتروني أولاً عبر الرابط المرسل إليك عند التسجيل.");
         }
 
         return { 
