@@ -38,8 +38,9 @@ export async function POST(request: Request) {
 
     const assessment = await prisma.assessment.create({
       data: {
-        summary,
-        proposedPlan: iepPlan,
+        type: 'General Assessment',
+        aiSummary: summary,
+        aiProposedPlan: iepPlan,
         patientId: patient.id,
         specialistId: specialistId,
       }
