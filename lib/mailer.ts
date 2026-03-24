@@ -32,3 +32,13 @@ export const sendVerificationEmail = async (email: string, token: string) => {
 
   await transporter.sendMail(mailOptions);
 };
+export const sendEmail = async ({ to, subject, html }: { to: string; subject: string; html: string }) => {
+  const mailOptions = {
+    from: `"منصة ماذا (Maza)" <${process.env.EMAIL_USER}>`,
+    to,
+    subject,
+    html,
+  };
+
+  await transporter.sendMail(mailOptions);
+};

@@ -6,9 +6,10 @@ import Link from 'next/link';
 export default function WelcomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [showBanner, setShowBanner] = useState(false);
+  const [cmsContent, setCmsContent] = useState<any>(null);
 
   // Slides configuration
-  const slides = [
+  const defaultSlides = [
     {
       id: 0,
       bgClass: "bg-pos-center",
@@ -48,6 +49,14 @@ export default function WelcomePage() {
   ];
 
   useEffect(() => {
+    // Fetch CMS content
+    fetch('/api/admin/content')
+      .then(res => res.json())
+      .then(data => {
+        if (data && !data.error) setCmsContent(data);
+      })
+      .catch(e => console.error("CMS Error:", e));
+
     // Show PWA install banner after 3 seconds
     const timer = setTimeout(() => setShowBanner(true), 3000);
     return () => clearTimeout(timer);
@@ -56,10 +65,12 @@ export default function WelcomePage() {
   useEffect(() => {
     // Auto slide every 6 seconds
     const slideInterval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
+      setCurrentSlide((prev) => (prev + 1) % defaultSlides.length);
     }, 6000);
     return () => clearInterval(slideInterval);
-  }, [slides.length]);
+  }, [defaultSlides.length]);
+
+  const content = cmsContent || {};
 
   return (
     <div className="welcome-container bg-color-primary min-h-screen relative overflow-hidden text-primary">
@@ -81,15 +92,19 @@ export default function WelcomePage() {
 
       {/* Full Screen Hero Slider */}
       <div className="slider-container">
-        {slides.map((slide, index) => (
+        {defaultSlides.map((slide, index) => (
           <div 
             key={slide.id} 
             className={`slide ${index === currentSlide ? 'active' : ''} ${slide.bgClass} slide-bg-${index}`}
           >
             <div className="slide-overlay"></div>
             <div className="slide-content">
-              <h2 className="slide-title">{slide.title}</h2>
-              <p className="slide-subtitle">{slide.subtitle}</p>
+              <h2 className="slide-title">
+                {index === 0 && content.welcome_title ? content.welcome_title : slide.title}
+              </h2>
+              <p className="slide-subtitle">
+                {index === 0 && content.welcome_subtitle ? content.welcome_subtitle : slide.subtitle}
+              </p>
               <div className="slide-actions">
                 <Link href={slide.link} className="btn-gradient hero-btn">
                   {slide.cta}
@@ -101,7 +116,7 @@ export default function WelcomePage() {
 
         {/* Slider Navigation Dots */}
         <div className="slider-nav">
-          {slides.map((_, idx) => (
+          {defaultSlides.map((_, idx) => (
             <button 
               key={idx} 
               className={`slider-dot ${idx === currentSlide ? 'active' : ''}`}
@@ -121,7 +136,9 @@ export default function WelcomePage() {
         <div className="category-card glass overflow-hidden category-card-styled card-border-bottom-purple">
           <img src="https://images.unsplash.com/photo-1594608661623-aa0bd3a07d9d?auto=format&fit=crop&q=80&w=800" alt="ذوي الاحتياجات الخاصة" className="category-img" />
           <h3 className="category-title">ذوي الاحتياجات الخاصة</h3>
-          <p className="text-secondary line-height-18">نقدم لهم تقارير تقييم ذكية وجلسات متابعة تخاطب وسلوك مكثفة.</p>
+          <p className="text-secondary line-height-18">
+            {content.about_text || "نقدم لهم تقارير تقييم ذكية وجلسات متابعة تخاطب وسلوك مكثفة."}
+          </p>
         </div>
 
         <div className="category-card glass overflow-hidden category-card-styled card-border-bottom-purple">
@@ -142,7 +159,9 @@ export default function WelcomePage() {
         <div className="feature-box glass">
           <div className="feature-icon">🤖</div>
           <h4 className="feature-title text-accent-primary">تقارير ذكاء اصطناعي</h4>
-          <p className="text-secondary line-height-18">تقنيات متقدمة لتحليل الاختبارات وتلخيص الجلسات لإصدار تقارير طبية وتربوية فورية تساعدك في متابعة التطور.</p>
+          <p className="text-secondary line-height-18">
+            {content.services_text || "تقنيات متقدمة لتحليل الاختبارات وتلخيص الجلسات لإصدار تقارير طبية وتربوية فورية تساعدك في متابعة التطور."}
+          </p>
         </div>
         <div className="feature-box glass">
           <div className="feature-icon">🎥</div>

@@ -86,6 +86,12 @@ export default function Login() {
             />
           </div>
 
+          <div className="text-left mb-1">
+            <Link href="/forgot-password" className="text-sm text-secondary hover:text-primary underline">
+              نسيت كلمة المرور؟
+            </Link>
+          </div>
+
           <button
             type="submit"
             className={`btn-gradient mt-1-5 p-0-8 text-lg ${loading ? 'btn-loading' : ''}`}

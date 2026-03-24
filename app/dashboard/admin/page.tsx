@@ -52,6 +52,9 @@ export default async function AdminDashboard() {
           <Link href="/dashboard/admin/settings" className="nav-item">
             إعدادات المنصة والذكاء الاصطناعي
           </Link>
+          <Link href="/dashboard/admin/content" className="nav-item">
+            إدارة محتوى الموقع (CMS)
+          </Link>
         </nav>
       </aside>
 
