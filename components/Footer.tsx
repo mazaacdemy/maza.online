@@ -58,7 +58,7 @@ export default function Footer() {
       <div className="footer-bottom">
         <p>© 2026 منصة ماذا - جميع الحقوق محفوظة</p>
         <p className="developer-credit mt-1 color-accent-primary text-sm-secondary-mt">
-          تم تطوير المنصة بواسطة م. مجدي طه
+          المطور: مجدى طه
         </p>
       </div>
 
