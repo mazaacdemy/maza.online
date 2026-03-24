@@ -1,77 +1,57 @@
-'use client';
-
 import React from 'react';
-import Link from 'next/link';
-import Footer from '@/components/Footer';
 
 export default function PrivacyPage() {
   return (
-    <div className="info-page">
-      <nav className="simple-nav glass-panel">
-        <Link href="/welcome" className="back-link">← العودة للرئيسية</Link>
-        <div className="logo">سياسة الخصوصية</div>
-      </nav>
+    <>
+      <div className="immersive-header bg-privacy-hero">
+        <div className="immersive-overlay"></div>
+        <h1 className="immersive-title">سياسة الخصوصية</h1>
+      </div>
 
-      <main className="content glass-panel mt-4">
-        <section className="privacy-content">
-          <h2>حماية بياناتك هي أولويتنا</h2>
-          <p className="update-date">نحن ندرك قيمة البيانات الطبية والاجتماعية وحساسيتها.</p>
+      <main className="overlapping-content">
+        <section className="policy-content">
+          <p className="update-date">تاريخ السريان: مارس 2026</p>
 
           <div className="policy-block">
-            <h3>التشفير والأمان</h3>
-            <p>يتم تشفير جميع البيانات المخزنة وقاعدة البيانات باستخدام خوارزميات AES-256 المتطورة. الجلسات والاتصالات محمية بالكامل وبروتوكول HTTPS المشفر.</p>
+            <h3>1. التزامنا تجاه خصوصيتك</h3>
+            <p>في منصة "ماذا Maza"، ندرك تماماً حساسية البيانات السريرية والشخصية والصحية التي تتم مشاركتها من قِبل أولياء الأمور والمراكز والأخصائيين والبالغين. نحن نلتزم بأعلى معايير الأمان العالمية لحماية البيانات الصحية (مثل اللائحة العامة لحماية البيانات GDPR وقانون قابلية التأمين الصحي والمساءلة HIPAA) لضمان بقاء معلوماتكم وجلساتكم في سرية تامة ومحكمة التشفير في جميع الأوقات.</p>
           </div>
 
           <div className="policy-block">
-            <h3>الذكاء الاصطناعي (Gemini)</h3>
-            <p>عند استخدام الذكاء الاصطناعي لتحليل التقييمات، يتم إرسال البيانات بشكل مجهول (Anonymized) ولا يتلقى محرك AI أي معلومات قد تعرف بهوية الشخص (الاسم، العنوان، إلخ).</p>
+            <h3>2. أنواع البيانات التي نقوم بجمعها وكيف نستخدمها</h3>
+            <p>
+              نقوم بجمع المعلومات الأساسية (مثل الاسم، البريد الإلكتروني، ونوع الدور الذي تلعبه على المنصة سواء كولي أمر أو أخصائي أو مركز). 
+              بالإضافة إلى البيانات السريرية الأساسية (ملخصات الجلسات، نتائج التقييمات، والجداول الزمنية) بهدف دمجها بأمان وتقديم تقارير طبية دقيقة لمتابعة تطور الحالات. 
+              أما بالنسبة لبيانات الدفع، فهي تتم معالجتها لحظياً عبر بوابات دفع عالمية ومحلية موثقة ومعتمدة عالمياً (Stripe & Paymob)، <strong>ولا يتم تخزين أي أرقام بطاقات ائتمانية على خوادمنا نهائياً.</strong>
+            </p>
           </div>
 
           <div className="policy-block">
-            <h3>حقوق المستخدم</h3>
-            <p>لك الحق الكامل في طلب نسخة من بياناتك، أو طلب حذف حسابك وبياناتك الطبية نهائياً من سجلاتنا في أي وقت.</p>
+            <h3>3. دور الذكاء الاصطناعي (AI) وسرية التحليل</h3>
+            <p>نستعين بأحدث نماذج الذكاء الاصطناعي التوليدي من Google (Gemini 1.5 Pro) لتحليل تقييمات المقاييس العالمية مثل CARS، وإنشاء خطط مقترحة من ملخصات جلسات الـ Telehealth. السياسة الصارمة في المنصة تنص على <strong>تجريد البيانات (Anonymization)</strong>؛ حيث لا يتم إرسال أي أسماء صريحة أو أرقام هويات للذكاء الاصطناعي، ولا يتم استخدام بيانات عملائنا أو تقاريرهم لتدريب أو تحسين النماذج الخارجية (No Data Training Policy).</p>
+          </div>
+
+          <div className="policy-block">
+            <h3>4. مشاركة البيانات والإفصاح للأطراف الثالثة</h3>
+            <p>نحن لا نقوم ببيع، تأجير، أو استثمار بياناتك الشخصية لصالح أي أطراف إعلانية خارجية تحت أي ظرف. تقتصر مشاركة البيانات حصراً على مزودي الخدمات التقنية الموثوقين اللازمين لتشغيل المنصة بشكل احترافي، مثل مزود خوادم الفيديو (Daily.co) الخاص بالغرف الافتراضية. جميع هؤلاء الشركاء التقنيين موقعون على اتفاقيات سرية صارمة ومعايير أمنية عسكرية تمنعهم من تداول أو الاحتفاظ بالبيانات خارج الإطار الخدمي.</p>
+          </div>
+
+          <div className="policy-block">
+            <h3>5. تقنيات أمان وتشفير البيانات</h3>
+            <p>تستخدم المنصة بروتوكولات التشفير من طرف إلى طرف المتقدمة (End-to-End Encryption) أثناء المكالمات المرئية والمحادثات لضمان عدم تمكن أي شخص من اعتراض أو الاستماع للجلسة. كما يتم تشفير قاعدة البيانات المركزية أثناء التخزين عبر خوادم Supabase المريحة خلف جدران حماية نشطة. لا يحق لأي موظف بداخل المنصة الإطلاع على التقارير الطبية نهائياً.</p>
+          </div>
+          
+          <div className="policy-block">
+            <h3>6. حقوقك والتحكم الشامل ببياناتك</h3>
+            <p>تمتلك الحق الكامل في الطلب والإطلاع على نسخة كاملة من بياناتك ومعلوماتك المسجلة لدينا في أي وقت. كما يمكنك التعديل عليها، أو ممارسة "الحق في النسيان" (Right to be Forgotten) والذي يمكنك من تقديم طلب رسمي لمسح سجلك وسجل طفلك بالكامل من خوادم المنصة بشكل لا رجعة فيه والحذف النهائي لجميع التقارير وذلك بمراسلة الدعم الفني الخاص بنا.</p>
+          </div>
+          
+          <div className="policy-block">
+            <h3>7. ملفات تعريف الارتباط (Cookies) وتتبع الجلسات</h3>
+            <p>نستخدم ملفات تعريف الارتباط الأساسية لضمان بقاءك مسجلاً للدخول ومنع محاولات الاختراق وحماية جلستك المفتوحة. لا نستخدم الكوكيز للتتبع الإعلاني العشوائي، ويمكنك دوماً التحكم في الكوكيز من إعدادات متصفحك الأساسي.</p>
           </div>
         </section>
       </main>
-
-      <Footer />
-
-      <style jsx>{`
-        .info-page {
-          min-height: 100vh;
-          background: var(--bg-color);
-          color: var(--text-primary);
-          direction: rtl;
-          padding: 2rem 10% 0;
-        }
-        .simple-nav {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 1rem 2rem;
-          margin-bottom: 2rem;
-        }
-        .back-link {
-          color: var(--text-secondary);
-          text-decoration: none;
-          font-weight: 500;
-        }
-        .logo { font-size: 1.5rem; font-weight: 800; }
-        
-        .content { padding: 4rem; border-radius: 24px; }
-        .privacy-content h2 { font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--accent-primary); }
-        .update-date { color: var(--text-secondary); margin-bottom: 3rem; }
-
-        .policy-block {
-          margin-bottom: 2.5rem;
-          padding: 1.5rem;
-          background: rgba(var(--accent-primary-rgb), 0.03);
-          border-right: 4px solid var(--accent-primary);
-          border-radius: 4px 12px 12px 4px;
-        }
-        .policy-block h3 { margin-bottom: 1rem; color: var(--text-primary); }
-        .policy-block p { color: var(--text-secondary); line-height: 1.7; }
-      `}</style>
-    </div>
+    </>
   );
 }

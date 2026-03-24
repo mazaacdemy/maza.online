@@ -1,82 +1,45 @@
-'use client';
-
 import React from 'react';
-import Link from 'next/link';
-import Footer from '@/components/Footer';
 
 export default function PoliciesPage() {
   return (
-    <div className="info-page">
-      <nav className="simple-nav glass-panel">
-        <Link href="/welcome" className="back-link">← العودة للرئيسية</Link>
-        <div className="logo">سياسة الاستخدام</div>
-      </nav>
+    <>
+      <div className="immersive-header bg-policies-hero">
+        <div className="immersive-overlay"></div>
+        <h1 className="immersive-title">الشروط والسياسات</h1>
+      </div>
 
-      <main className="content glass-panel mt-4">
+      <main className="overlapping-content">
         <section className="policy-content">
-          <h2>شروط واستخدام منصة ماذا</h2>
           <p className="update-date">آخر تحديث: مارس 2026</p>
 
           <div className="policy-block">
-            <h3>1. الحسابات والاشتراكات</h3>
-            <p>يجب على المستخدم تقديم معلومات دقيقة عند التسجيل. المنصة تدعم ثلاث أدوار رئيسية: أخصائي، ولي أمر، وأدمن. يمنع مشاركة الحسابات مع أطرف خارجية لضمان خصوصية البيانات.</p>
+            <h3>1. الموافقة والقبول والشروط الأساسية</h3>
+            <p>باستخدامك لمنصة "ماذا Maza" (النسخة الرقمية وخدمات الـ Telehealth)، فإنك توافق صراحة على الالتزام الكامل بهذه الشروط والأحكام. المنصة مصممة لتكون حلقة الوصل الآمنة بين أولياء الأمور والمراكز والبالغين ذوي الاحتياجات مع النخبة من الأخصائيين المعتمدين محلياً ودولياً. يجب على جميع المستخدمين تقديم معلومات حقيقية ودقيقة أثناء إنشاء الحسابات للحفاظ على مصداقية الملفات السريرية.</p>
           </div>
 
           <div className="policy-block">
-            <h3>2. الجلسات والتقييمات</h3>
-            <p>الجلسات التي يتم حجزها عبر المنصة تخضع لسياسة الإلغاء قبل 24 ساعة. التقييمات الصادرة عن الذكاء الاصطناعي هي أدوات مساعدة للأخصائي ويجب اعتمادها من قبل المتخصص البشري.</p>
+            <h3>2. الجلسات، التقييمات، وإخلاء المسؤولية الطبية</h3>
+            <p>الجلسات التي تُعقد عبر منصة "ماذا" هي خدمات إرشادية وتأهيلية وتثقيفية تقدم على أيدي أخصائيين محترفين. منصة "ماذا" بصفتها التقنية لا تعطي وصفات طبية دوائية مباشرة ولا تحل بديلاً عن زيارة طوارئ المستشفيات في حالات الخطر المباشر. 
+            <strong>تقارير الذكاء الاصطناعي (AI Reports)</strong> المُولدة من المنصة تعتبر أدوات دعم متطورة لمساندة قرار الأخصائيين وتسريع كتابة الخطة العلاجية وليست تشخيصاً منفرداً دون التدقيق والمراجعة البشرية من قِبل الأخصائي المعالج.</p>
           </div>
 
           <div className="policy-block">
-            <h3>3. الدفع والاسترداد</h3>
-            <p>ندعم الدفع بالعملات المحلية (EGP) والدولار (USD). يتم تطبيق أسعار مختلفة بناءً على الموقع الجغرافي. في حال عدم إتمام الجلسة لسبب تقني من طرفنا، يتم استرداد المبلغ كاملاً.</p>
+            <h3>3. الدفع، التسعير الجغرافي، وسياسة الاسترداد الحازمة</h3>
+            <p>توفر المنصة نظام تسعير ذكي يعتمد على التوزيع الجغرافي لضمان العدالة (بالجنيه المصري أو بالدولار الأمريكي وفقاً للأكواد الجغرافية). يتم دفع الرسوم مقدماً لتأكيد المواعيد مع الأخصائيين والمراكز.
+            في حالة الإلغاء، يمكنك استرداد المبلغ كاملاً أو جدولته مجدداً بشرط الإلغاء قبل موعد الجلسة بـ <strong>24 ساعة</strong> على الأقل كحد أقصى. يُستثنى من ذلك فشل انعقاد الجلسة نتيجة لخلل تقني من خوادم المنصة (مثل انقطاع الـ Telehealth Router)، حيث يتم تعويض العميل بنسبة 100%.</p>
           </div>
 
           <div className="policy-block">
-            <h3>4. السلوك العام</h3>
-            <p>يلتزم المستخدمون بالتعامل المهني والأخلاقي خلال الجلسات الافتراضية. أي تجاوز قد يؤدي إلى تعليق الحساب فوراً.</p>
+            <h3>4. السلوك المهني ومعايير المنصة والأمان</h3>
+            <p>نتوقع من جميع المستخدمين (ولي أمر، مريض بالغ، وأخصائي) التمتع بأقصى درجات الاحترام المتبادل خلال الجلسات المرئية والصوتية. يُحظر أخذ لقطات شاشة أو تسجيل الجلسات دون الموافقة الكتابية الصريحة من كلا الطرفين داخل منصة الغرفة. للمنصة الحق المطلق والكامل في إيقاف وإلغاء عضوية أي مستخدم ينتهك هذه المعايير أو يسيء استخدام المنصة فوراً.</p>
+          </div>
+          
+          <div className="policy-block">
+            <h3>5. حقوق الملكية الفكرية (IP Rights) والنشر</h3>
+            <p>كل ما يتم عرضه في منصة "ماذا" من تصميمات، شعارات، أكواد برمجية، محرك معالجة البيانات (Maza AI Engine)، والنصوص الطبية المكتوبة، مملوكة بالكامل لـ "أكاديمية ماذا الرقمية". يمنع منعاً باتاً استنساخ الواجهات، أو استخدام التقارير المنتجة من المنصة في برمجيات أو مواقع خارجية دون إذن رسمي موقع.</p>
           </div>
         </section>
       </main>
-
-      <Footer />
-
-      <style jsx>{`
-        .info-page {
-          min-height: 100vh;
-          background: var(--bg-color);
-          color: var(--text-primary);
-          direction: rtl;
-          padding: 2rem 10% 0;
-        }
-        .simple-nav {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 1rem 2rem;
-          margin-bottom: 2rem;
-        }
-        .back-link {
-          color: var(--text-secondary);
-          text-decoration: none;
-          font-weight: 500;
-        }
-        .logo { font-size: 1.5rem; font-weight: 800; }
-        
-        .content { padding: 4rem; border-radius: 24px; }
-        .policy-content h2 { font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--accent-primary); }
-        .update-date { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 3rem; }
-
-        .policy-block {
-          margin-bottom: 2.5rem;
-          padding: 1.5rem;
-          background: rgba(255, 255, 255, 0.02);
-          border-radius: 12px;
-          border-right: 4px solid var(--accent-secondary);
-        }
-        .policy-block h3 { margin-bottom: 1rem; color: var(--text-primary); }
-        .policy-block p { color: var(--text-secondary); line-height: 1.7; }
-      `}</style>
-    </div>
+    </>
   );
 }

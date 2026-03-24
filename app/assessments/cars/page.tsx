@@ -77,19 +77,19 @@ export default function CARSAssessment() {
   };
 
   const getOptions = (qKey: string, questionLabel: string) => (
-    <div style={{ marginBottom: '1.5rem', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
-      <label style={{ display: 'block', marginBottom: '1rem', color: 'var(--text-primary)', fontWeight: 'bold', fontSize: '1.1rem' }}>{questionLabel}</label>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', color: 'var(--text-secondary)' }}>
+    <div className="cars-question-box">
+      <label className="form-label font-bold mb-1">{questionLabel}</label>
+      <div className="flex-item-details">
+        <label className="radio-label">
           <input type="radio" value="1" checked={(answers as any)[qKey] === "1"} onChange={() => setAnswers({...answers, [qKey]: "1"})} /> طبيعي ومناسب للعمر
         </label>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', color: 'var(--text-secondary)' }}>
+        <label className="radio-label">
           <input type="radio" value="2" checked={(answers as any)[qKey] === "2"} onChange={() => setAnswers({...answers, [qKey]: "2"})} /> تأثر بسيط
         </label>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', color: 'var(--text-secondary)' }}>
+        <label className="radio-label">
           <input type="radio" value="3" checked={(answers as any)[qKey] === "3"} onChange={() => setAnswers({...answers, [qKey]: "3"})} /> تأثر متوسط
         </label>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', color: 'var(--text-secondary)' }}>
+        <label className="radio-label">
           <input type="radio" value="4" checked={(answers as any)[qKey] === "4"} onChange={() => setAnswers({...answers, [qKey]: "4"})} /> تأثر شديد
         </label>
       </div>
@@ -111,20 +111,21 @@ export default function CARSAssessment() {
       </aside>
 
       {/* Main Content */}
-      <main className="main-content" style={{ display: 'flex', justifyContent: 'center' }}>
-        <div className="card glass-panel" style={{ maxWidth: '800px', width: '100%', padding: '3rem' }}>
+      <main className="main-content flex-center-h">
+        <div className="card glass-panel cars-card">
           
-          <h2 style={{ marginBottom: '1rem', textAlign: 'center', color: 'var(--accent-primary)', fontSize: '2rem' }}>مقياس تقدير التوحد الطفولي (CARS)</h2>
-          <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '2.5rem', lineHeight: '1.6' }}>
+          <h2 className="cars-title">مقياس تقدير التوحد الطفولي (CARS)</h2>
+          <p className="cars-instruction">
             أجب على البنود التالية وسيتم إرسالها فوراً لمحرك الذكاء الاصطناعي Maza AI لتدقيقها ودمجها للوصول لخطة تدخل فردية (IEP).
           </p>
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ marginBottom: '2rem' }}>
-              <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)', fontWeight: 'bold' }}>اختر المريض:</label>
+          <form onSubmit={handleSubmit} className="flex-col">
+            <div className="mb-2">
+              <label className="form-label font-bold">اختر المريض:</label>
               <select 
-                className="glass-panel" 
-                style={{ width: '100%', padding: '1rem', background: 'rgba(15, 23, 42, 0.9)', color: 'white', border: '1px solid var(--glass-border)', outline: 'none', fontSize: '1.1rem' }}
+                title="اختر المريض"
+                aria-label="اختر المريض"
+                className="glass-panel cars-select" 
                 value={patientId}
                 onChange={(e) => setPatientId(e.target.value)}
                 required
@@ -144,8 +145,7 @@ export default function CARSAssessment() {
 
             <button
               type="submit"
-              className="btn-gradient"
-              style={{ marginTop: '2rem', padding: '1.2rem', fontSize: '1.2rem', fontWeight: 'bold', width: '100%', opacity: loading ? 0.7 : 1, cursor: loading ? "not-allowed" : "pointer" }}
+              className={`btn-gradient submit-btn mt-2 ${loading ? 'opacity-loading' : 'cursor-pointer'}`}
               disabled={loading}
             >
               {loading ? "جاري المعالجة المركزية بالـ AI وحفظ التقرير..." : "رفع التقييم لـ Maza AI واعتماد التقرير"}

@@ -9,10 +9,10 @@ export default async function VerifyPage({ searchParams }: { searchParams: { tok
   
   if (!token) {
     return (
-      <div className="dashboard-container" style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <div className="card glass-panel" style={{ padding: '3rem', textAlign: 'center' }}>
-          <h2 style={{ color: '#ef4444' }}>رابط التفعيل غير صالح</h2>
-          <Link href="/login" className="btn-outline" style={{ marginTop: '1rem', display: 'inline-block' }}>العودة لتسجيل الدخول</Link>
+      <div className="dashboard-container flex-center">
+        <div className="card glass-panel verify-card">
+          <h2 className="text-danger">رابط التفعيل غير صالح</h2>
+          <Link href="/login" className="btn-outline mt-1 inline-block">العودة لتسجيل الدخول</Link>
         </div>
       </div>
     );
@@ -24,10 +24,10 @@ export default async function VerifyPage({ searchParams }: { searchParams: { tok
 
   if (!user) {
     return (
-      <div className="dashboard-container" style={{ justifyContent: 'center', alignItems: 'center' }}>
-         <div className="card glass-panel" style={{ padding: '3rem', textAlign: 'center' }}>
-            <h2 style={{ color: '#ef4444' }}>الرابط منتهي الصلاحية أو غير صحيح</h2>
-            <Link href="/login" className="btn-outline" style={{ marginTop: '1rem', display: 'inline-block' }}>العودة لتسجيل الدخول</Link>
+      <div className="dashboard-container flex-center">
+         <div className="card glass-panel verify-card">
+            <h2 className="text-danger">الرابط منتهي الصلاحية أو غير صحيح</h2>
+            <Link href="/login" className="btn-outline mt-1 inline-block">العودة لتسجيل الدخول</Link>
          </div>
       </div>
     );

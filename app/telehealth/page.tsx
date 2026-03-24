@@ -100,43 +100,45 @@ export default function Telehealth() {
         </nav>
       </aside>
 
-      <main className="main-content" style={{ display: 'flex', flexDirection: 'column' }}>
+      <main className="main-content flex-col">
         <header className="topbar">
-          <h2 style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-             <span style={{ width: '12px', height: '12px', background: 'var(--success)', borderRadius: '50%', display: 'inline-block', boxShadow: '0 0 10px var(--success)' }}></span>
+          <h2 className="flex-center-gap-1">
+             <span className="status-dot-success"></span>
              غرفة التخاطب الافتراضية
           </h2>
-          <div className="timer glass-panel" style={{ padding: '0.5rem 1rem', fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--accent-secondary)' }}>
+          <div className="timer glass-panel timer-text">
             نشط الآن
           </div>
         </header>
 
-        <div style={{ display: 'flex', gap: '1.5rem', flex: 1, marginTop: '1rem' }}>
+        <div className="telehealth-row">
           {/* Video Area */}
-          <div style={{ flex: 3, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div className="glass-panel" style={{ flex: 1, position: 'relative', overflow: 'hidden', borderRadius: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div className="telehealth-video-area">
+            <div className="glass-panel video-container">
               {roomLoading ? (
-                 <div style={{ color: 'var(--text-secondary)' }}>جاري إعداد الغرفة الآمنة...</div>
+                 <div className="p-1-text-secondary-no-list">جاري إعداد الغرفة الآمنة...</div>
               ) : (
                 <iframe
+                  title="غرفة الجلسة الافتراضية"
                   src={roomUrl}
                   allow="camera; microphone; fullscreen; display-capture"
-                  style={{ width: '100%', height: '100%', border: 'none' }}
+                  className="w-full-h-full-no-border"
                 ></iframe>
               )}
             </div>
           </div>
 
-          <div className="glass-panel" style={{ flex: 1, padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-            <h3 style={{ marginBottom: '1rem', color: 'var(--accent-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div className="glass-panel telehealth-notes-area">
+            <h3 className="flex-center-gap-1 color-accent-primary mb-1">
               ملاحظات الجلسة وتغذية AI
             </h3>
             
-            <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>اختر الحالة (المريض):</label>
+            <div className="mb-1">
+              <label className="form-label">اختر الحالة (المريض):</label>
               <select 
-                className="glass-panel" 
-                style={{ padding: '0.5rem', width: '100%', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid var(--glass-border)' }}
+                title="اختر المريض"
+                aria-label="اختر المريض"
+                className="glass-panel telehealth-select" 
                 value={patientId}
                 onChange={(e) => setPatientId(e.target.value)}
               >
@@ -148,20 +150,18 @@ export default function Telehealth() {
             </div>
 
             <textarea 
-               className="glass-panel" 
-               style={{ flex: 1, width: '100%', resize: 'none', padding: '1rem', background: 'rgba(0,0,0,0.2)', border: 'none', color: 'var(--text-primary)', outline: 'none', lineHeight: '1.6' }} 
+               className="glass-panel telehealth-textarea" 
                placeholder="اكتب ملاحظاتك أثناء الجلسة هنا. سيقوم مساعد Maza الذكي (Gemini) بتلخيصها لاحقاً وتضمينها في تقرير الحالة..."
                value={notes}
                onChange={(e) => setNotes(e.target.value)}
             ></textarea>
             
-            {error && <div style={{ color: '#f87171', marginTop: '0.5rem', fontSize: '0.9rem' }}>{error}</div>}
-            {reportSaved && <div style={{ color: '#4ade80', marginTop: '0.5rem', fontSize: '0.9rem' }}>تم حفظ تقرير AI في سجل المريض بنجاح!</div>}
+            {error && <div className="text-error-sm">{error}</div>}
+            {reportSaved && <div className="text-success-sm">تم حفظ تقرير AI في سجل المريض بنجاح!</div>}
 
-            <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
+            <div className="flex-row-gap mt-1">
                <button 
-                  className="btn-gradient" 
-                  style={{ flex: 1, opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }} 
+                  className={`btn-gradient flex-1 ${loading ? "opacity-loading" : "cursor-pointer"}`} 
                   onClick={handleSaveNotes}
                   disabled={loading}
                >

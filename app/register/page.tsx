@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -12,6 +12,17 @@ export default function Register() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  
+  // Handle role from query params
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const queryRole = params.get("role");
+      if (queryRole && ["PARENT", "SPECIALIST", "CENTER"].includes(queryRole)) {
+        setRole(queryRole);
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,77 +57,31 @@ export default function Register() {
   };
 
   return (
-    <div className="dashboard-container" style={{ justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
-      <div
-        className="card glass-panel"
-        style={{
-          maxWidth: "450px",
-          width: "100%",
-          padding: "2.5rem",
-          background: "rgba(15, 23, 42, 0.8)",
-          margin: "2rem",
-        }}
-      >
-        <div className="logo" style={{ justifyContent: "center", marginBottom: "2rem" }}>
+    <div className="login-wrapper">
+      <div className="card glass-panel login-card card-auth-logic">
+        <div className="logo flex-center mb-2 justify-center">
           <div className="logo-icon">M</div>
           <h2>
             ماذا <span>(Maza)</span>
           </h2>
         </div>
 
-        <h3
-          style={{
-            textAlign: "center",
-            marginBottom: "1.5rem",
-            color: "var(--text-primary)",
-          }}
-        >
-          إنشاء حساب جديد
-        </h3>
+        <h3 className="text-center mb-1-5 text-primary">إنشاء حساب جديد</h3>
 
         {error && (
-          <div
-            style={{
-               background: "rgba(239, 68, 68, 0.1)",
-               border: "1px solid rgba(239, 68, 68, 0.3)",
-               color: "#f87171",
-               padding: "0.8rem 1rem",
-               borderRadius: "10px",
-               marginBottom: "1.2rem",
-               fontSize: "0.9rem",
-               textAlign: "center",
-            }}
-          >
+          <div className="alert-error-auth">
             {error}
           </div>
         )}
 
-        <form
-          onSubmit={handleSubmit}
-          style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
-        >
+        <form onSubmit={handleSubmit} className="flex-col gap-1-5">
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                color: "var(--text-secondary)",
-              }}
-            >
-              الاسم الكامل
-            </label>
+            <label htmlFor="nameInput" className="form-label mb-05">الاسم الكامل</label>
             <input
+              id="nameInput"
               type="text"
               required
-              className="glass-panel"
-              style={{
-                width: "100%",
-                padding: "0.8rem",
-                border: "1px solid var(--glass-border)",
-                color: "var(--text-primary)",
-                outline: "none",
-                background: "rgba(255,255,255,0.05)",
-              }}
+              className="glass-panel input-auth-form bg-input-glass outline-none"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="أدخل اسمك الكامل"
@@ -124,27 +89,12 @@ export default function Register() {
           </div>
 
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                color: "var(--text-secondary)",
-              }}
-            >
-              البريد الإلكتروني
-            </label>
+            <label htmlFor="emailInput" className="form-label mb-05">البريد الإلكتروني</label>
             <input
+              id="emailInput"
               type="email"
               required
-              className="glass-panel"
-              style={{
-                width: "100%",
-                padding: "0.8rem",
-                border: "1px solid var(--glass-border)",
-                color: "var(--text-primary)",
-                outline: "none",
-                background: "rgba(255,255,255,0.05)",
-              }}
+              className="glass-panel input-auth-form bg-input-glass outline-none"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="example@domain.com"
@@ -152,29 +102,13 @@ export default function Register() {
           </div>
 
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                color: "var(--text-secondary)",
-              }}
-            >
-              نوع الحساب
-            </label>
+            <label htmlFor="roleSelect" className="form-label mb-05">نوع الحساب</label>
             <select
-              className="glass-panel"
-              style={{
-                width: "100%",
-                padding: "0.8rem",
-                border: "1px solid var(--glass-border)",
-                color: "var(--text-primary)",
-                outline: "none",
-                background: "rgba(15, 23, 42, 0.9)", // slightly darker solid bg for select options visibility
-                appearance: "none",
-                cursor: "pointer",
-              }}
+              id="roleSelect"
+              className="glass-panel select-auth-form"
               value={role}
               onChange={(e) => setRole(e.target.value)}
+              title="اختر نوع الحساب"
             >
               <option value="PARENT">ولي أمر</option>
               <option value="SPECIALIST">أخصائي</option>
@@ -183,27 +117,12 @@ export default function Register() {
           </div>
 
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                color: "var(--text-secondary)",
-              }}
-            >
-              كلمة المرور
-            </label>
+            <label htmlFor="passwordInput" className="form-label mb-05">كلمة المرور</label>
             <input
+              id="passwordInput"
               type="password"
               required
-              className="glass-panel"
-              style={{
-                width: "100%",
-                padding: "0.8rem",
-                border: "1px solid var(--glass-border)",
-                color: "var(--text-primary)",
-                outline: "none",
-                background: "rgba(255,255,255,0.08)",
-              }}
+              className="glass-panel input-auth-form input-auth-pass bg-input-glass outline-none"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
@@ -213,36 +132,16 @@ export default function Register() {
 
           <button
             type="submit"
-            className="btn-gradient mt-4"
+            className={`btn-gradient mt-4 btn-auth-submit ${loading ? 'btn-loading' : ''}`}
             disabled={loading}
-            style={{
-              padding: "0.8rem",
-              fontSize: "1.1rem",
-              opacity: loading ? 0.7 : 1,
-              cursor: loading ? "not-allowed" : "pointer",
-            }}
           >
             {loading ? "جارٍ الإنشاء..." : "إنشاء الحساب"}
           </button>
         </form>
 
-        <div
-          style={{
-            marginTop: "2rem",
-            textAlign: "center",
-            fontSize: "0.9rem",
-            color: "var(--text-secondary)",
-          }}
-        >
+        <div className="text-center mt-2 text-sm text-secondary">
           لديك حساب بالفعل؟{" "}
-          <Link
-            href="/login"
-            style={{
-              color: "var(--accent-primary)",
-              textDecoration: "none",
-              fontWeight: "bold",
-            }}
-          >
+          <Link href="/login" className="link-accent-bold">
             تسجيل الدخول
           </Link>
         </div>

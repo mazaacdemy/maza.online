@@ -1,260 +1,160 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Footer from '@/components/Footer';
-import ThemeToggle from '@/components/ThemeToggle';
 
 export default function WelcomePage() {
-  return (
-    <div className="welcome-container">
-      {/* Background with Animated Gradients */}
-      <div className="bg-glow"></div>
-      
-      {/* Navigation */}
-      <nav className="glass-nav">
-        <div className="logo">ماذا (Maza)</div>
-        <div className="nav-links">
-          <Link href="/about" className="login-btn">من نحن</Link>
-          <Link href="/contact" className="login-btn">اتصل بنا</Link>
-          <Link href="/guidance" className="login-btn">ارشادات أسرية</Link>
-          <Link href="/login" className="login-btn">دخول</Link>
-          <button className="join-btn">انضم إلينا</button>
-        </div>
-      </nav>
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [showBanner, setShowBanner] = useState(false);
 
-      {/* Hero Section */}
-      <header className="hero">
-        <h1 className="hero-title">منصة <span>ماذا</span> الرقمية</h1>
-        <p className="hero-subtitle">الحل الشامل لدعم الأسرة، الأطفال، والبالغين في رحلة التطور والتمكين النفسي.</p>
-        <div className="hero-actions">
-          <Link href="#categories" className="explore-btn">اكتشف الخدمات</Link>
+  // Slides configuration
+  const slides = [
+    {
+      id: 0,
+      bgClass: "bg-pos-center",
+      image: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=1920",
+      title: "مرحباً بكم يا أولياء الأمور",
+      subtitle: "نحن هنا لمساعدتكم في متابعة تطور أطفالكم. احجز جلسات، تابع التقارير الذكية، وكن جزءاً من النجاح.",
+      link: "/register?role=PARENT",
+      cta: "ابدأ رحلة التطور"
+    },
+    {
+      id: 1,
+      bgClass: "bg-pos-center",
+      image: "https://images.unsplash.com/photo-1544333314-bbd319f7e804?auto=format&fit=crop&q=80&w=1920",
+      title: "إلى النخبة من الأخصائيين",
+      subtitle: "طور عيادتك الرقمية معنا. قدم الجلسات عن بُعد، واستعن بالذكاء الاصطناعي في إصدار التقارير الطبية.",
+      link: "/register?role=SPECIALIST",
+      cta: "انضم كأخصائي"
+    },
+    {
+      id: 2,
+      bgClass: "bg-pos-center",
+      image: "https://images.unsplash.com/photo-1574607383476-f517f260d30b?auto=format&fit=crop&q=80&w=1920",
+      title: "للمراكز والمؤسسات التأهيلية",
+      subtitle: "أدر فريقاً كاملاً من الأخصائيين، تابع حجوزات المركز، واستفد من نظام شامل متكامل.",
+      link: "/register?role=CENTER",
+      cta: "سجل مركزك الآن"
+    },
+    {
+      id: 3,
+      bgClass: "bg-pos-center",
+      image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1920",
+      title: "استشارات دعم للبالغين",
+      subtitle: "احصل على استشارات نفسية واجتماعية بسرية تامة وتغلب على تحدياتك اليومية.",
+      link: "/register?role=PARENT",
+      cta: "احجز استشارتك"
+    }
+  ];
+
+  useEffect(() => {
+    // Show PWA install banner after 3 seconds
+    const timer = setTimeout(() => setShowBanner(true), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    // Auto slide every 6 seconds
+    const slideInterval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 6000);
+    return () => clearInterval(slideInterval);
+  }, [slides.length]);
+
+  return (
+    <div className="welcome-container bg-color-primary min-h-screen relative overflow-hidden text-primary">
+      
+      {/* App Install Banner */}
+      <div className={`app-install-banner ${showBanner ? 'visible' : ''}`}>
+        <div className="banner-text">
+          <strong>📱 تطبيق أكاديمية ماذا متاح الآن!</strong>
+          <p className="text-secondary m-0 text-sm">قم بتثبيت التطبيق على الشاشة الرئيسية لتجربة أسرع وأفضل.</p>
         </div>
-      </header>
+        <div className="install-buttons">
+          <button className="btn-install" onClick={() => setShowBanner(false)}>تثبيت على الموبايل</button>
+          <a href="https://play.google.com/store/apps/details?id=com.maza.app" target="_blank" rel="noopener noreferrer" className="btn-store">
+            📥 تحميل التطبيق
+          </a>
+          <button className="btn-close-styled cursor-pointer" onClick={() => setShowBanner(false)}>✕</button>
+        </div>
+      </div>
+
+      {/* Full Screen Hero Slider */}
+      <div className="slider-container">
+        {slides.map((slide, index) => (
+          <div 
+            key={slide.id} 
+            className={`slide ${index === currentSlide ? 'active' : ''} ${slide.bgClass} slide-bg-${index}`}
+          >
+            <div className="slide-overlay"></div>
+            <div className="slide-content">
+              <h2 className="slide-title">{slide.title}</h2>
+              <p className="slide-subtitle">{slide.subtitle}</p>
+              <div className="slide-actions">
+                <Link href={slide.link} className="btn-gradient hero-btn">
+                  {slide.cta}
+                </Link>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {/* Slider Navigation Dots */}
+        <div className="slider-nav">
+          {slides.map((_, idx) => (
+            <button 
+              key={idx} 
+              className={`slider-dot ${idx === currentSlide ? 'active' : ''}`}
+              onClick={() => setCurrentSlide(idx)}
+              aria-label={`Slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+      </div>
 
       {/* Categories Section */}
-      <section id="categories" className="categories-grid">
-        {/* Category 1: Special Needs */}
-        <div className="category-card glass">
-          <div className="icon">♿</div>
-          <h3>ذوي الاحتياجات الخاصة</h3>
-          <p>دعم متخصص في التخاطب، تنمية المهارات، وتعديل السلوك عبر جلسات فردية وتقارير ذكاء اصطناعي دقيقة.</p>
+      <section id="categories" className="categories-grid-styled">
+        <div className="text-center w-full mb-4 col-span-3">
+          <h2 className="section-title-large">من <span className="hero-title-highlight">نخدم؟</span></h2>
         </div>
 
-        {/* Category 2: Typical Kids */}
-        <div className="category-card glass">
-          <div className="icon">👶</div>
-          <h3>الأطفال العاديين</h3>
-          <p>تنمية المهارات الإبداعية، معالجة مشكلات التعلم، والتدريب على السلوكيات الإيجابية لجيل أقوى.</p>
+        <div className="category-card glass overflow-hidden category-card-styled card-border-bottom-purple">
+          <img src="https://images.unsplash.com/photo-1594608661623-aa0bd3a07d9d?auto=format&fit=crop&q=80&w=800" alt="ذوي الاحتياجات الخاصة" className="category-img" />
+          <h3 className="category-title">ذوي الاحتياجات الخاصة</h3>
+          <p className="text-secondary line-height-18">نقدم لهم تقارير تقييم ذكية وجلسات متابعة تخاطب وسلوك مكثفة.</p>
         </div>
 
-        {/* Category 3: Adults */}
-        <div className="category-card glass">
-          <div className="icon">👤</div>
-          <h3>الكبار والبالغين</h3>
-          <p>استشارات نفسية واجتماعية، دعم أكاديمي، وحلول للتحديات التي تواجهك في حياتك اليومية.</p>
+        <div className="category-card glass overflow-hidden category-card-styled card-border-bottom-purple">
+          <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&q=80&w=800" alt="الأطفال العاديين" className="category-img" />
+          <h3 className="category-title">الأطفال العاديين</h3>
+          <p className="text-secondary line-height-18">نركز على تنمية المهارات الإبداعية، التركيز، والتفوق الدراسي.</p>
+        </div>
+
+        <div className="category-card glass overflow-hidden category-card-styled card-border-bottom-purple">
+          <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=800" alt="الكبار والبالغين" className="category-img" />
+          <h3 className="category-title">الكبار والبالغين</h3>
+          <p className="text-secondary line-height-18">استشارات نفسية ومهنية ومهنية لدعم الاستقرار النفسي والإنتاجية.</p>
         </div>
       </section>
 
       {/* Why Maza? Section */}
-      <section className="features-section">
-        <div className="feature-item glass">
-          <h4>🤖 تقارير بالذكاء الاصطناعي</h4>
-          <p>نستخدم تقنيات Google Gemini لتحليل الاختبارات وإصدار تقارير طبية وتربوية فورية.</p>
+      <section className="features-grid border-top-glass">
+        <div className="feature-box glass">
+          <div className="feature-icon">🤖</div>
+          <h4 className="feature-title text-accent-primary">تقارير ذكاء اصطناعي</h4>
+          <p className="text-secondary line-height-18">تقنيات متقدمة لتحليل الاختبارات وتلخيص الجلسات لإصدار تقارير طبية وتربوية فورية تساعدك في متابعة التطور.</p>
         </div>
-        <div className="feature-item glass">
-          <h4>🎥 جلسات أونلاين</h4>
-          <p>تواصل مع أفضل الأخصائيين من منزلك عبر غرف جلسات افتراضية مؤمنة وفائقة الجودة.</p>
+        <div className="feature-box glass">
+          <div className="feature-icon">🎥</div>
+          <h4 className="feature-title text-accent-secondary">غرف Telehealth آمنة</h4>
+          <p className="text-secondary line-height-18">تواصل مع أفضل الأخصائيين من منزلك عبر غرف افتراضية عالية الدقة والسرية وتدعم جميع الأجهزة الذكية والأجهزة المحمولة.</p>
         </div>
-        <div className="feature-item glass">
-          <h4>🌍 دفع متعدد العملات</h4>
-          <p>سواء كنت داخل مصر أو خارجها، ندعم الدفع بالجنيه المصري والدولار بكل سلاسة.</p>
+        <div className="feature-box glass">
+          <div className="feature-icon">💳</div>
+          <h4 className="feature-title text-success">دفع متعدد وسلس</h4>
+          <p className="text-secondary line-height-18">مدعوم ببوابات عالمية ليتيح لك الدفع المحلي أو الدولي بناءً على موقعك الجغرافي بكل سهولة وأمان تام.</p>
         </div>
       </section>
-
-      <Footer />
-
-      <style jsx>{`
-        .welcome-container {
-          min-height: 100vh;
-          background: var(--bg-color);
-          color: var(--text-primary);
-          font-family: 'Inter', system-ui, -apple-system, sans-serif;
-          direction: rtl;
-          overflow-x: hidden;
-          position: relative;
-        }
-
-        .bg-glow {
-          position: fixed;
-          top: -20%;
-          right: -10%;
-          width: 60%;
-          height: 80%;
-          background: radial-gradient(circle, rgba(100, 50, 255, 0.15) 0%, transparent 70%);
-          z-index: 0;
-          filter: blur(80px);
-        }
-
-        .glass-nav {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 1.5rem 10%;
-          background: var(--glass-bg);
-          backdrop-filter: blur(15px);
-          border-bottom: 1px solid var(--glass-border);
-          position: sticky;
-          top: 0;
-          z-index: 100;
-        }
-
-        .logo {
-          font-size: 1.8rem;
-          font-weight: 800;
-          color: var(--text-primary);
-        }
-
-        .nav-links {
-          display: flex;
-          gap: 1.5rem;
-          align-items: center;
-        }
-
-        .login-btn {
-          color: var(--text-primary);
-          text-decoration: none;
-          font-weight: 500;
-          transition: 0.3s;
-        }
-
-        .join-btn {
-          background: var(--accent-primary);
-          color: #fff;
-          padding: 0.6rem 1.5rem;
-          border-radius: 50px;
-          border: none;
-          font-weight: 600;
-          cursor: pointer;
-          transition: 0.3s;
-        }
-
-        .hero {
-          text-align: center;
-          padding: 8rem 10% 5rem;
-          position: relative;
-          z-index: 1;
-        }
-
-        .hero-title {
-          font-size: 4rem;
-          font-weight: 900;
-          margin-bottom: 1.5rem;
-        }
-
-        .hero-title span {
-          color: var(--accent-primary);
-          text-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
-        }
-
-        .hero-subtitle {
-          font-size: 1.3rem;
-          color: var(--text-secondary);
-          max-width: 800px;
-          margin: 0 auto 3rem;
-          line-height: 1.6;
-        }
-
-        .explore-btn {
-          background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-          color: #fff;
-          padding: 1.2rem 3rem;
-          border-radius: 12px;
-          text-decoration: none;
-          font-weight: 600;
-          font-size: 1.1rem;
-          box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
-          transition: 0.3s;
-        }
-
-        .categories-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 2rem;
-          padding: 5rem 10%;
-          position: relative;
-          z-index: 1;
-        }
-
-        .glass {
-          background: var(--glass-bg);
-          backdrop-filter: blur(20px);
-          border: 1px solid var(--glass-border);
-          border-radius: 24px;
-          padding: 2.5rem;
-          transition: 0.4s;
-        }
-
-        .glass:hover {
-          transform: translateY(-10px);
-          background: rgba(255, 255, 255, 0.05);
-          border-color: rgba(99, 102, 241, 0.3);
-        }
-
-        .category-card .icon {
-          font-size: 3rem;
-          margin-bottom: 1.5rem;
-        }
-
-        .category-card h3 {
-          font-size: 1.6rem;
-          margin-bottom: 1rem;
-        }
-
-        .category-card p {
-          color: var(--text-secondary);
-          line-height: 1.5;
-        }
-
-        .features-section {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 1.5rem;
-          padding: 2rem 10% 8rem;
-          z-index: 1;
-          position: relative;
-        }
-
-        .feature-item {
-          flex: 1;
-          min-width: 250px;
-          padding: 1.5rem;
-        }
-
-        .feature-item h4 {
-          margin-bottom: 0.8rem;
-          font-size: 1.1rem;
-        }
-
-        .feature-item p {
-          font-size: 0.9rem;
-          color: var(--text-secondary);
-        }
-
-        .footer-glass {
-          text-align: center;
-          padding: 3rem;
-          background: rgba(255, 255, 255, 0.01);
-          border-top: 1px solid rgba(255, 255, 255, 0.03);
-          font-size: 0.9rem;
-          opacity: 0.4;
-        }
-
-        @media (max-width: 768px) {
-          .hero-title { font-size: 2.5rem; }
-          .hero-subtitle { font-size: 1rem; }
-        }
-      `}</style>
     </div>
   );
 }

@@ -2,17 +2,16 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Footer from '@/components/Footer';
 
 export default function ContactPage() {
   return (
-    <div className="info-page">
-      <nav className="simple-nav glass-panel">
-        <Link href="/welcome" className="back-link">← العودة للرئيسية</Link>
-        <div className="logo">اتصل بنا</div>
-      </nav>
+    <>
+      <div className="immersive-header bg-contact-hero">
+        <div className="immersive-overlay"></div>
+        <h1 className="immersive-title">تواصل معنا</h1>
+      </div>
 
-      <main className="content glass-panel mt-4">
+      <main className="overlapping-content">
         <section className="contact-grid">
           <div className="contact-info">
             <h2>يسرنا سماع صوتك</h2>
@@ -47,8 +46,6 @@ export default function ContactPage() {
           </form>
         </section>
       </main>
-
-      <Footer />
 
       <style jsx>{`
         .info-page {
@@ -108,6 +105,6 @@ export default function ContactPage() {
           .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
         }
       `}</style>
-    </div>
+    </>
   );
 }

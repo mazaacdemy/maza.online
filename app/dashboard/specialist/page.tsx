@@ -144,25 +144,27 @@ export default async function SpecialistDashboard() {
           </div>
 
           <div className="content-row">
-            <div className="card glass-panel upcoming-sessions" style={{ gridColumn: "span 2" }}>
+            <div className="card glass-panel upcoming-sessions col-span-2">
               <div className="card-header">
                 <h2>مواعيدك القادمة</h2>
                 <Link href="/dashboard/specialist/sessions" className="btn-outline">عرض الكل</Link>
               </div>
-              <ul className="session-list">
-                {upcomingSessionsList.length > 0 ? upcomingSessionsList.map((session: any) => (
-                  <li className="session-item" key={session.id}>
-                    <div className="time">{new Date(session.date).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}</div>
-                    <div className="details">
-                      <h4>{session.parent.name} <span className="tag tag-speech">{session.type}</span></h4>
-                      <p>تاريخ الجلسة: {new Date(session.date).toLocaleDateString('ar-EG')}</p>
-                    </div>
-                    <Link href="/telehealth" className="btn-primary join-btn">
-                      انضمام للجلسة
-                    </Link>
-                  </li>
-                )) : (
-                  <p style={{ padding: '1rem', color: 'var(--text-secondary)' }}>لا توجد جلسات مجدولة لك حالياً.</p>
+              <ul className="list-no-bullets-mt">
+                {upcomingSessionsList.length > 0 ? (
+                  upcomingSessionsList.map((session: any) => (
+                    <li className="session-item" key={session.id}>
+                      <div className="time">{new Date(session.date).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}</div>
+                      <div className="details flex-1">
+                        <h4>{session.parent.name} <span className="tag tag-speech">{session.type}</span></h4>
+                        <p>تاريخ الجلسة: {new Date(session.date).toLocaleDateString('ar-EG')}</p>
+                      </div>
+                      <Link href="/telehealth" className="btn-primary join-btn">
+                        انضمام للجلسة
+                      </Link>
+                    </li>
+                  ))
+                ) : (
+                  <li className="p-1-text-secondary-no-list">لا توجد جلسات مجدولة لك حالياً.</li>
                 )}
               </ul>
             </div>
@@ -183,7 +185,7 @@ export default async function SpecialistDashboard() {
                     <span className="status ready">عرض</span>
                   </div>
                 )) : (
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>لا توجد تقارير بعد.</p>
+                  <p className="text-sm-secondary-mt-5">لا توجد تقارير بعد.</p>
                 )}
               </div>
             </div>

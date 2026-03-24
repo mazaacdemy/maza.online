@@ -80,19 +80,20 @@ export default function Booking() {
       </aside>
 
       {/* Main Content */}
-      <main className="main-content" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <div className="card glass-panel" style={{ maxWidth: '600px', width: '100%', padding: '2.5rem' }}>
-          <h2 style={{ marginBottom: '2rem', textAlign: 'center', color: 'var(--accent-primary)' }}>حجز جلسة جديدة</h2>
+      <main className="main-content flex-center">
+        <div className="card glass-panel form-card">
+          <h2 className="form-title">حجز جلسة جديدة</h2>
 
-          {error && <div style={{ background: "rgba(239, 68, 68, 0.1)", color: "#f87171", padding: "1rem", borderRadius: "8px", marginBottom: "1rem" }}>{error}</div>}
-          {success && <div style={{ background: "rgba(74, 222, 128, 0.1)", color: "#4ade80", padding: "1rem", borderRadius: "8px", marginBottom: "1rem" }}>{success}</div>}
+          {error && <div className="alert-error">{error}</div>}
+          {success && <div className="alert-success">{success}</div>}
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <form onSubmit={handleSubmit} className="form-layout">
             <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>اختر الأخصائي</label>
+              <label className="form-label">اختر الأخصائي</label>
               <select
-                className="glass-panel"
-                style={{ width: '100%', padding: '0.8rem', background: 'rgba(15, 23, 42, 0.9)', color: 'white', border: '1px solid var(--glass-border)', outline: 'none' }}
+                title="اختر الأخصائي"
+                aria-label="اختر الأخصائي"
+                className="glass-panel form-input-dark"
                 value={specialistId}
                 onChange={(e) => setSpecialistId(e.target.value)}
                 required
@@ -104,10 +105,11 @@ export default function Booking() {
             </div>
 
             <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>نوع الجلسة</label>
+              <label className="form-label">نوع الجلسة</label>
               <select
-                className="glass-panel"
-                style={{ width: '100%', padding: '0.8rem', background: 'rgba(15, 23, 42, 0.9)', color: 'white', border: '1px solid var(--glass-border)', outline: 'none' }}
+                title="نوع الجلسة"
+                aria-label="نوع الجلسة"
+                className="glass-panel form-input-dark"
                 value={type}
                 onChange={(e) => setType(e.target.value)}
                 required
@@ -117,24 +119,26 @@ export default function Booking() {
               </select>
             </div>
 
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <div style={{ flex: 1 }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>التاريخ</label>
+            <div className="flex-row-gap">
+              <div className="flex-1">
+                <label className="form-label">التاريخ</label>
                 <input
                   type="date"
-                  className="glass-panel"
-                  style={{ width: '100%', padding: '0.8rem', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid var(--glass-border)', outline: 'none' }}
+                  title="تاريخ الجلسة"
+                  aria-label="تاريخ الجلسة"
+                  className="glass-panel form-input-light"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
                   required
                 />
               </div>
-              <div style={{ flex: 1 }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>الوقت</label>
+              <div className="flex-1">
+                <label className="form-label">الوقت</label>
                 <input
                   type="time"
-                  className="glass-panel"
-                  style={{ width: '100%', padding: '0.8rem', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid var(--glass-border)', outline: 'none' }}
+                  title="وقت الجلسة"
+                  aria-label="وقت الجلسة"
+                  className="glass-panel form-input-light"
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
                   required
@@ -144,8 +148,7 @@ export default function Booking() {
 
             <button
               type="submit"
-              className="btn-gradient"
-              style={{ marginTop: '1rem', padding: '1rem', fontSize: '1.1rem', opacity: loading ? 0.7 : 1, cursor: loading ? "not-allowed" : "pointer" }}
+              className={`btn-gradient submit-btn ${loading ? "opacity-loading" : "cursor-pointer"}`}
               disabled={loading}
             >
               {loading ? "جارٍ الحجز..." : "تأكيد الحجز"}

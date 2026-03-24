@@ -2,20 +2,18 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Footer from '@/components/Footer';
 
 export default function AboutPage() {
   return (
-    <div className="info-page">
-      <nav className="simple-nav glass-panel">
-        <Link href="/welcome" className="back-link">← العودة للرئيسية</Link>
-        <div className="logo">من نحن</div>
-      </nav>
+    <>
+      <div className="immersive-header bg-about-hero">
+        <div className="immersive-overlay"></div>
+        <h1 className="immersive-title">قصة منصة <span className="immersive-title-gradient">ماذا</span></h1>
+      </div>
 
-      <main className="content glass-panel mt-4">
-        <section className="hero-section">
-          <h1>قصة منصة <span className="text-gradient">ماذا</span></h1>
-          <p className="subtitle">نحن هنا لتمكين كل فرد في المجتمع عبر التكنولوجيا والذكاء الاصطناعي.</p>
+      <main className="overlapping-content">
+        <section className="text-center mb-4">
+          <p className="text-secondary subtitle-1-2rem">نحن هنا لتمكين كل فرد في المجتمع عبر التكنولوجيا والذكاء الاصطناعي.</p>
         </section>
 
         <section className="mission-grid">
@@ -47,8 +45,6 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
-
-      <Footer />
 
       <style jsx>{`
         .info-page {
@@ -106,6 +102,6 @@ export default function AboutPage() {
           .mission-grid, .audience-list { grid-template-columns: 1fr; }
         }
       `}</style>
-    </div>
+    </>
   );
 }

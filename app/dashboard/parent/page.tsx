@@ -70,13 +70,13 @@ export default async function ParentDashboard() {
         <section className="progress-section glass">
           <h3>تطور الأطفال</h3>
           {parent.patients.length === 0 ? (
-            <p style={{ marginTop: '1.5rem', color: 'var(--text-secondary)' }}>لا يوجد أطفال مسجلين. يمكنك إضافة طفل لتبدأ التقييم.</p>
+            <p className="empty-state-text">لا يوجد أطفال مسجلين. يمكنك إضافة طفل لتبدأ التقييم.</p>
           ) : (
-            <ul style={{ listStyle: 'none', padding: 0, marginTop: '1.5rem' }}>
+            <ul className="list-no-bullets-mt">
               {parent.patients.map(p => (
-                <li key={p.id} style={{ marginBottom: '1rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.5rem' }}>
+                <li key={p.id} className="list-item-bordered">
                   <strong>{p.name}</strong> - {p.diagnosis || 'لم يحدد بعد'}
-                  <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.3rem' }}>
+                  <div className="text-sm-secondary-mt">
                     عدد التقارير: {p.assessments.length}
                   </div>
                 </li>
@@ -85,16 +85,16 @@ export default async function ParentDashboard() {
           )}
         </section>
 
-        <section className="progress-section glass" style={{ marginTop: '2rem' }}>
+        <section className="progress-section glass mt-8">
           <h3>مواعيد الجلسات القادمة</h3>
           {upcomingAppointments === 0 ? (
-            <p style={{ marginTop: '1.5rem', color: 'var(--text-secondary)' }}>لا توجد جلسات مجدولة حالياً.</p>
+            <p className="empty-state-text">لا توجد جلسات مجدولة حالياً.</p>
           ) : (
-            <ul style={{ listStyle: 'none', padding: 0, marginTop: '1.5rem' }}>
+            <ul className="list-no-bullets-mt">
               {parent.appointments.filter(a => a.status === 'Scheduled').map(a => (
-                <li key={a.id} style={{ marginBottom: '1rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.5rem' }}>
+                <li key={a.id} className="list-item-bordered">
                   <strong>مع د. {a.specialist?.name || 'تم الحذف'}</strong> - {new Date(a.date).toLocaleString('ar-EG')}
-                  <p style={{ fontSize: '0.8rem', color: 'var(--accent-primary)', marginTop: '0.2rem' }}>نوع الجلسة: {a.type}</p>
+                  <p className="text-xs-primary-mt">نوع الجلسة: {a.type}</p>
                 </li>
               ))}
             </ul>

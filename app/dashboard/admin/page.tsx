@@ -36,7 +36,7 @@ export default async function AdminDashboard() {
       {/* Sidebar */}
       <aside className="sidebar glass-panel">
         <div className="logo">
-          <div className="logo-icon" style={{ background: 'var(--warning)' }}>A</div>
+          <div className="logo-icon admin-bg-warning">A</div>
           <h2>إدارة ماذا <span>(Maza)</span></h2>
         </div>
         <nav className="side-nav">
@@ -62,7 +62,7 @@ export default async function AdminDashboard() {
             <input type="text" placeholder="البحث برقم المعاملة أو الإيميل..." />
           </div>
           <div className="user-profile">
-            <div className="profile-info glass-panel" style={{ border: '1px solid var(--warning)' }}>
+            <div className="profile-info glass-panel admin-border-warning">
               <div className="text">
                 <span className="name">المدير العام (Super Admin)</span>
                 <span className="role">{session.user.email}</span>
@@ -88,7 +88,7 @@ export default async function AdminDashboard() {
               <div className="value">{totalAppointments}</div>
               <p className="trend positive">جلسات (Telehealth / المركز)</p>
             </div>
-            <div className="card glass-panel gradient-border" style={{ borderColor: 'var(--accent-secondary)' }}>
+            <div className="card glass-panel gradient-border admin-border-accent">
               <h3>تقارير AI المكتملة</h3>
               <div className="value">{totalAssessments}</div>
               <p className="trend">عمليات ناجحة عبر Gemini 1.5 Pro</p>
@@ -96,7 +96,7 @@ export default async function AdminDashboard() {
           </div>
 
           <div className="content-row">
-            <div className="card glass-panel upcoming-sessions" style={{ gridColumn: "span 2" }}>
+            <div className="card glass-panel upcoming-sessions col-span-2">
               <div className="card-header">
                 <h2>أحدث المنضمين للمنصة</h2>
                 <a href="#" className="btn-outline">إدارة الجميع</a>
@@ -104,8 +104,8 @@ export default async function AdminDashboard() {
               <ul className="session-list">
                 {recentUsers.map((user: any) => (
                   <li className="session-item" key={user.id}>
-                    <div className="details" style={{ flex: 1 }}>
-                      <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <div className="details flex-1">
+                      <h4 className="flex-center-gap-1">
                         {user.name} 
                         <span className={`tag ${user.role === 'SPECIALIST' ? 'tag-speech' : 'tag-behavior'}`}>
                            {user.role}
@@ -113,7 +113,7 @@ export default async function AdminDashboard() {
                       </h4>
                       <p>{user.email}</p>
                     </div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                    <div className="text-sm-secondary-mt">
                        {new Date(user.createdAt).toLocaleDateString('ar-EG')}
                     </div>
                   </li>
@@ -123,20 +123,20 @@ export default async function AdminDashboard() {
 
             <div className="card glass-panel ai-widget">
                <div className="card-header">
-                <h2 style={{ color: 'var(--success)' }}>مراقب النظام الحي</h2>
+                <h2 className="text-success-sm">مراقب النظام الحي</h2>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
-                 <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', borderLeft: '4px solid #10b981' }}>
-                    <h4 style={{ color: '#10b981', marginBottom: '0.3rem' }}>Stripe / Paymob Webhooks</h4>
-                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>تعمل بكفاءة وتستقبل المدفوعات.</p>
+              <div className="flex-col mt-1 gap-1">
+                 <div className="admin-badge-stripe">
+                    <h4 className="admin-title-stripe">Stripe / Paymob Webhooks</h4>
+                    <p className="text-sm-secondary-mt">تعمل بكفاءة وتستقبل المدفوعات.</p>
                  </div>
-                 <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', borderLeft: '4px solid #8b5cf6' }}>
-                    <h4 style={{ color: '#8b5cf6', marginBottom: '0.3rem' }}>Daily.co Video Engine</h4>
-                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>توليد الغرف نشط.</p>
+                 <div className="admin-badge-daily">
+                    <h4 className="admin-title-daily">Daily.co Video Engine</h4>
+                    <p className="text-sm-secondary-mt">توليد الغرف نشط.</p>
                  </div>
-                 <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', borderLeft: '4px solid #f59e0b' }}>
-                    <h4 style={{ color: '#f59e0b', marginBottom: '0.3rem' }}>Nodemailer SMTP</h4>
-                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>جاهز لإرسال إيميلات التفعيل.</p>
+                 <div className="admin-badge-mail">
+                    <h4 className="admin-title-mail">Nodemailer SMTP</h4>
+                    <p className="text-sm-secondary-mt">جاهز لإرسال إيميلات التفعيل.</p>
                  </div>
               </div>
             </div>

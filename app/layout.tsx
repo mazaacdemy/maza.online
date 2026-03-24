@@ -7,6 +7,8 @@ export const metadata = {
 
 import ThemeToggle from '@/components/ThemeToggle';
 import Providers from '@/components/Providers';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export default function RootLayout({
   children,
@@ -17,7 +19,9 @@ export default function RootLayout({
     <html lang="ar" dir="rtl">
       <body>
         <Providers>
+          <Navbar />
           {children}
+          <Footer />
           <ThemeToggle />
         </Providers>
       </body>
