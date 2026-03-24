@@ -14,9 +14,16 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) throw new Error("Missing credentials");
         const user = await prisma.user.findUnique({ where: { email: credentials.email } });
-        if (!user || !user.password) throw new Error("Invalid credentials");
+        if (!user) {
+          throw new Error("هذا الحساب غير موجود");
+        }
+        if (!user.password) {
+          throw new Error("هذا الحساب لا يمتلك كلمة مرور مسجلة");
+        }
         const isMatch = await bcrypt.compare(credentials.password, user.password);
-        if (!isMatch) throw new Error("Invalid credentials");
+        if (!isMatch) {
+          throw new Error("كلمة المرور غير صحيحة");
+        }
         return { id: user.id, name: user.name, email: user.email, role: user.role };
       }
     })

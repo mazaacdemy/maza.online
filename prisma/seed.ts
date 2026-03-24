@@ -6,6 +6,18 @@ const prisma = new PrismaClient()
 async function main() {
   const hashedPassword = await bcrypt.hash('Maza@2026', 10)
 
+  // 0. Create Admin
+  const admin = await prisma.user.upsert({
+    where: { email: 'mazaacdemy@gmail.com' },
+    update: {},
+    create: {
+      email: 'mazaacdemy@gmail.com',
+      name: 'المدير العام (Maza Admin)',
+      password: hashedPassword,
+      role: 'ADMIN',
+    },
+  })
+
   // 1. Create Specialists
   const specialist1 = await prisma.user.upsert({
     where: { email: 'specialist@maza.com' },

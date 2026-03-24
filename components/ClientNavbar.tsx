@@ -41,9 +41,12 @@ export default function ClientNavbar({ user }: { user: any }) {
                user.role === 'CENTER' ? '/dashboard/center' : 
                '/dashboard/parent'
              } 
-             className="btn-outline btn-sys-padding"
+             className="nav-profile-link"
           >
-            لوحة التحكم
+            <div className="user-avatar-small">
+              {user.name ? user.name[0].toUpperCase() : 'U'}
+            </div>
+            <span className="user-name-nav">{user.name || 'المستخدم'}</span>
           </Link>
         ) : (
           <Link href="/login" className="btn-primary btn-sys-padding-lg">
