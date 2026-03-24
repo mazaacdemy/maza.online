@@ -43,15 +43,15 @@ export default async function AdminDashboard() {
           <Link href="/dashboard/admin" className="nav-item active">
             لوحة قيادة النظام (Super Admin)
           </Link>
-          <a href="#" className="nav-item">
+          <Link href="/dashboard/admin/users" className="nav-item">
             إدارة المستخدمين والأخصائيين
-          </a>
-          <a href="#" className="nav-item">
+          </Link>
+          <Link href="/dashboard/admin/payments" className="nav-item">
             تقارير الإيرادات (Geo-Payments)
-          </a>
-          <a href="#" className="nav-item">
-            إعدادات الذكاء الاصطناعي (Prompts)
-          </a>
+          </Link>
+          <Link href="/dashboard/admin/settings" className="nav-item">
+            إعدادات المنصة والذكاء الاصطناعي
+          </Link>
         </nav>
       </aside>
 
