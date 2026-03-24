@@ -1,93 +1,156 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Booking() {
+  const [specialists, setSpecialists] = useState<any[]>([]);
+  const [specialistId, setSpecialistId] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [type, setType] = useState("Telehealth");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const router = useRouter();
+
+  useEffect(() => {
+    fetch("/api/specialists")
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setSpecialists(data.specialists);
+          if (data.specialists.length > 0) {
+            setSpecialistId(data.specialists[0].id);
+          }
+        }
+      });
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    if (!specialistId || !date || !time || !type) {
+      setError("Please fill all fields.");
+      setLoading(false);
+      return;
+    }
+
+    const combinedDate = new Date(`${date}T${time}`);
+
+    try {
+      const res = await fetch("/api/appointments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ specialistId, date: combinedDate.toISOString(), type }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setSuccess("تم حجز الموعد بنجاح!");
+        setTimeout(() => router.push("/dashboard/parent"), 2000);
+      } else {
+        setError(data.error || "فشل حجز الموعد.");
+      }
+    } catch (err) {
+      setError("خطأ في الاتصال بالخادم.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="dashboard-container">
-      {/* Sidebar - Same as Dashboard */}
+      {/* Sidebar */}
       <aside className="sidebar glass-panel">
         <div className="logo">
           <div className="logo-icon">M</div>
           <h2>ماذا <span>(Maza)</span></h2>
         </div>
         <nav className="side-nav">
-          <Link href="/" className="nav-item">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
-            الرئيسية
-          </Link>
-          <Link href="/booking" className="nav-item active">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
-            جدولة المواعيد
-          </Link>
-          <Link href="/telehealth" className="nav-item">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></svg>
-            غرف الجلسات الافتراضية
-          </Link>
-          <Link href="/report" className="nav-item">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg>
-            تقارير AI
-          </Link>
+          <Link href="/dashboard/parent" className="nav-item">الرئيسية</Link>
+          <Link href="/booking" className="nav-item active">جدولة المواعيد</Link>
+          <Link href="/telehealth" className="nav-item">غرف الجلسات الافتراضية</Link>
+          <Link href="/report" className="nav-item">تقارير AI</Link>
         </nav>
       </aside>
 
       {/* Main Content */}
-      <main className="main-content">
-        <header className="topbar">
-          <div className="search-bar glass-panel">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
-            <input type="text" placeholder="البحث في المواعيد..." />
-          </div>
-          <div className="user-profile">
-            <button className="icon-btn glass-panel notification-btn">
-              <span className="badge">1</span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>
-            </button>
-            <div className="profile-info glass-panel">
-              <img src="https://i.pravatar.cc/100?img=11" alt="Profile" className="avatar" />
-              <div className="text">
-                <span className="name">د. مصطفى كمال</span>
-              </div>
-            </div>
-          </div>
-        </header>
+      <main className="main-content" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div className="card glass-panel" style={{ maxWidth: '600px', width: '100%', padding: '2.5rem' }}>
+          <h2 style={{ marginBottom: '2rem', textAlign: 'center', color: 'var(--accent-primary)' }}>حجز جلسة جديدة</h2>
 
-        <div className="card glass-panel" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2>إدارة المواعيد والتقويم (Booking Calendar)</h2>
+          {error && <div style={{ background: "rgba(239, 68, 68, 0.1)", color: "#f87171", padding: "1rem", borderRadius: "8px", marginBottom: "1rem" }}>{error}</div>}
+          {success && <div style={{ background: "rgba(74, 222, 128, 0.1)", color: "#4ade80", padding: "1rem", borderRadius: "8px", marginBottom: "1rem" }}>{success}</div>}
+
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div>
+              <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>اختر الأخصائي</label>
+              <select
+                className="glass-panel"
+                style={{ width: '100%', padding: '0.8rem', background: 'rgba(15, 23, 42, 0.9)', color: 'white', border: '1px solid var(--glass-border)', outline: 'none' }}
+                value={specialistId}
+                onChange={(e) => setSpecialistId(e.target.value)}
+                required
+              >
+                {specialists.map(spec => (
+                  <option key={spec.id} value={spec.id}>د. {spec.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>نوع الجلسة</label>
+              <select
+                className="glass-panel"
+                style={{ width: '100%', padding: '0.8rem', background: 'rgba(15, 23, 42, 0.9)', color: 'white', border: '1px solid var(--glass-border)', outline: 'none' }}
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                required
+              >
+                <option value="Telehealth">جلسة عن بُعد (Telehealth)</option>
+                <option value="In-person">جلسة بالمركز (In-person)</option>
+              </select>
+            </div>
+
             <div style={{ display: 'flex', gap: '1rem' }}>
-              <button className="btn-outline">اليوم</button>
-              <button className="btn-primary">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-                مساحة جديدة المتاحة
-              </button>
+              <div style={{ flex: 1 }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>التاريخ</label>
+                <input
+                  type="date"
+                  className="glass-panel"
+                  style={{ width: '100%', padding: '0.8rem', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid var(--glass-border)', outline: 'none' }}
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  required
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>الوقت</label>
+                <input
+                  type="time"
+                  className="glass-panel"
+                  style={{ width: '100%', padding: '0.8rem', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid var(--glass-border)', outline: 'none' }}
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                  required
+                />
+              </div>
             </div>
-          </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '1rem', textAlign: 'center' }}>
-            {['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'].map(day => (
-              <div key={day} style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', fontWeight: 'bold' }}>
-                {day}
-              </div>
-            ))}
-            
-            {/* Calendar Grid Mockup */}
-            {Array.from({ length: 35 }).map((_, i) => (
-              <div key={i} style={{ padding: '2rem 0', background: i === 15 ? 'rgba(139, 92, 246, 0.2)' : 'rgba(255,255,255,0.02)', border: i === 15 ? '1px solid var(--accent-primary)' : '1px solid var(--glass-border)', borderRadius: '12px', minHeight: '100px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                <span style={{ fontSize: '1.2rem', color: i === 15 ? 'var(--accent-primary)' : 'var(--text-primary)', fontWeight: i === 15 ? 'bold' : 'normal' }}>{i + 1}</span>
-                {i === 15 && (
-                  <div style={{ fontSize: '0.7rem', padding: '0.3rem', background: 'var(--accent-secondary)', borderRadius: '4px', width: '80%' }}>
-                    3 جلسات اليوم
-                  </div>
-                )}
-                {i === 20 && (
-                  <div style={{ fontSize: '0.7rem', padding: '0.3rem', background: 'var(--success)', borderRadius: '4px', width: '80%' }}>
-                    1 تقييم AI
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+            <button
+              type="submit"
+              className="btn-gradient"
+              style={{ marginTop: '1rem', padding: '1rem', fontSize: '1.1rem', opacity: loading ? 0.7 : 1, cursor: loading ? "not-allowed" : "pointer" }}
+              disabled={loading}
+            >
+              {loading ? "جارٍ الحجز..." : "تأكيد الحجز"}
+            </button>
+          </form>
         </div>
       </main>
     </div>

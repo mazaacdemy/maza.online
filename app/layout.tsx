@@ -6,6 +6,7 @@ export const metadata = {
 };
 
 import ThemeToggle from '@/components/ThemeToggle';
+import Providers from '@/components/Providers';
 
 export default function RootLayout({
   children,
@@ -15,8 +16,10 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body>
-        {children}
-        <ThemeToggle />
+        <Providers>
+          {children}
+          <ThemeToggle />
+        </Providers>
       </body>
     </html>
   );

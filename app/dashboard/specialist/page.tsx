@@ -1,26 +1,48 @@
 import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Dashboard() {
-  // --- Data Fetching from PostgreSQL via Prisma ---
-  // In a real scenario, this uses the currently authenticated specialist's ID
-  const totalPatients = await prisma.patient.count();
-  const upcomingSessionsList = await prisma.appointment.findMany({
-    where: { status: 'Scheduled' },
-    include: { parent: true },
-    take: 5,
-    orderBy: { date: 'asc' }
-  });
-  const upcomingSessionsCount = upcomingSessionsList.length;
+export default async function SpecialistDashboard() {
+  const session = await getServerSession(authOptions);
+  
+  if (!session || !session.user?.email || (session.user as any).role !== "SPECIALIST") {
+    redirect('/login');
+  }
 
-  const recentReportsList = await prisma.assessment.findMany({
-    include: { patient: true },
-    take: 3,
-    orderBy: { id: 'desc' }
+  const specialistEmail = session.user.email;
+  const specialist = await prisma.user.findUnique({
+    where: { email: specialistEmail },
+    include: {
+      specialistSessions: {
+        include: { parent: true }
+      },
+      assessments: {
+        include: { patient: true }
+      }
+    }
   });
-  const recentReportsCount = recentReportsList.length;
+
+  if (!specialist) return <div>User not found</div>;
+
+  const totalPatientsConnected = await prisma.patient.count(); // For an admin/center this would be global, for specialist it could be linked patients only. Just using total for now as an example metric.
+  
+  const upcomingSessionsList = specialist.specialistSessions
+    .filter(a => a.status === 'Scheduled')
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .slice(0, 5);
+
+  const upcomingSessionsCount = specialist.specialistSessions.filter(a => a.status === 'Scheduled').length;
+  
+  const recentReportsList = specialist.assessments
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 3);
+    
+  const recentReportsCount = specialist.assessments.length;
+
   return (
     <div className="dashboard-container">
       {/* Sidebar */}
@@ -30,13 +52,13 @@ export default async function Dashboard() {
           <h2>ماذا <span>(Maza)</span></h2>
         </div>
         <nav className="side-nav">
-          <a href="#" className="nav-item active">
+          <Link href="/dashboard/specialist" className="nav-item active">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
               <polyline points="9 22 9 12 15 12 15 22" />
             </svg>
             الرئيسية
-          </a>
+          </Link>
           <Link href="/dashboard/specialist/sessions" className="nav-item">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
@@ -90,7 +112,7 @@ export default async function Dashboard() {
             <div className="profile-info glass-panel">
               <img src="https://i.pravatar.cc/100?img=11" alt="Profile" className="avatar" />
               <div className="text">
-                <span className="name">د. مصطفى كمال</span>
+                <span className="name">{specialist.name}</span>
                 <span className="role">أخصائي تخاطب وتعديل سلوك</span>
               </div>
             </div>
@@ -100,68 +122,69 @@ export default async function Dashboard() {
         <div className="dashboard-grid">
           <div className="stat-cards">
             <div className="card glass-panel gradient-border">
-              <h3>جلسات اليوم</h3>
+              <h3>المهام/الجلسات النشطة</h3>
               <div className="value">{upcomingSessionsCount}</div>
-              <p className="trend positive">↑ بيانات متصلة بـ DB</p>
+              <p className="trend positive">↑ الجلسات المجدولة لك</p>
             </div>
             <div className="card glass-panel gradient-border">
-              <h3>تقارير AI المنجزة</h3>
+              <h3>تقاريرك المنجزة</h3>
               <div className="value text-gradient">{recentReportsCount}</div>
-              <p className="trend">في انتظار المراجعة</p>
+              <p className="trend">بمساعدة Maza AI</p>
             </div>
             <div className="card glass-panel gradient-border">
-              <h3>الحالات المسجلة</h3>
-              <div className="value">{totalPatients}</div>
-              <p className="trend positive">↑ متصل بجدول Patients</p>
+              <h3>إجمالي مستخدمي المنصة</h3>
+              <div className="value">{totalPatientsConnected}</div>
+              <p className="trend">حالة طبية مسجلة بالنظام</p>
             </div>
             <div className="card glass-panel gradient-border earnings-card">
               <h3>إيرادات الشهر</h3>
-              <div className="value">$1,250 <span className="local-currency">/ 12,000 ج.م</span></div>
-              <p className="trend positive">مدفوعات دولية ومحلية نشطة</p>
+              <div className="value">$0 <span className="local-currency">/ 0 ج.م</span></div>
+              <p className="trend positive">لم يتم تفعيل الدفع الفعلي بعد</p>
             </div>
           </div>
 
           <div className="content-row">
             <div className="card glass-panel upcoming-sessions" style={{ gridColumn: "span 2" }}>
               <div className="card-header">
-                <h2>مواعيد اليوم (Telehealth)</h2>
+                <h2>مواعيدك القادمة</h2>
                 <Link href="/dashboard/specialist/sessions" className="btn-outline">عرض الكل</Link>
               </div>
               <ul className="session-list">
-                {upcomingSessionsList.length > 0 ? upcomingSessionsList.map((session: any, idx: number) => (
+                {upcomingSessionsList.length > 0 ? upcomingSessionsList.map((session: any) => (
                   <li className="session-item" key={session.id}>
                     <div className="time">{new Date(session.date).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}</div>
                     <div className="details">
                       <h4>{session.parent.name} <span className="tag tag-speech">{session.type}</span></h4>
-                      <p>جلسة متابعة - حالة {idx === 0 ? 'يحيى' : 'سجا'}</p>
+                      <p>تاريخ الجلسة: {new Date(session.date).toLocaleDateString('ar-EG')}</p>
                     </div>
-                    <button className="btn-primary join-btn">
+                    <Link href="/telehealth" className="btn-primary join-btn">
                       انضمام للجلسة
-                    </button>
+                    </Link>
                   </li>
                 )) : (
-                  <p style={{ padding: '1rem', color: 'var(--text-secondary)' }}>لا توجد جلسات مجدولة اليوم.</p>
+                  <p style={{ padding: '1rem', color: 'var(--text-secondary)' }}>لا توجد جلسات مجدولة لك حالياً.</p>
                 )}
               </ul>
             </div>
 
             <div className="card glass-panel ai-widget">
-              <div className="card-header">
+               <div className="card-header">
                 <h2>مساعد Maza الذكي ✨</h2>
               </div>
               <div className="ai-content">
                 <div className="ai-burst"></div>
-                <p>تم تحليل تقييم حالة &quot;ياسين محمد&quot; بنجاح. لقد صممت مسودة البرنامج العلاجي (IEP).</p>
-                <button className="btn-gradient mt-4">مراجعة تقرير الحالة واعتماده</button>
+                <p>مرحباً بك! يمكنك كتابة ملاحظات الجلسات أثناء الانعقاد داخل غرفة "telehealth"، وسيقوم نظامنا بتوليد تقرير لك.</p>
               </div>
               <div className="recent-reports mt-4">
-                <h4>تقارير بانتظارك</h4>
-                {recentReportsList.map((report: any) => (
+                <h4>أحدث التقارير المصدرة</h4>
+                {recentReportsList.length > 0 ? recentReportsList.map((report: any) => (
                   <div className="report-item" key={report.id}>
-                    <span>{report.type} - {report.patient.name}</span>
-                    <span className="status ready">جاهز</span>
+                    <span>{report.type} - حالة: {report.patient.name}</span>
+                    <span className="status ready">عرض</span>
                   </div>
-                ))}
+                )) : (
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>لا توجد تقارير بعد.</p>
+                )}
               </div>
             </div>
           </div>

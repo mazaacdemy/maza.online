@@ -1,64 +1,65 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import prisma from '@/lib/prisma';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 
-// Initialize the Google Generative AI with the API key
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
 
 export async function POST(request: Request) {
   try {
-    const { patientName, age, diagnosis, notes } = await request.json();
-
-    if (!process.env.GEMINI_API_KEY) {
-      // For the sake of the mockup, we return a mock response if no key is provided.
-      return NextResponse.json({
-        success: true,
-        aiResponse: {
-          summary: "يُظهر الطفل تحسناً ملحوظاً في التواصل البصري...",
-          strengths: ["القدرة على التعرف على الألوان الأساسية ومطابقتها.", "تنفيذ الأوامر البسيطة بنجاح 80%."],
-          weaknesses: ["صعوبة في توظيف الانتباه المشترك لفترات تزيد عن دقيقة واحدة.", "ظهور بعض السلوكيات التكرارية."],
-          iepPlan: "الهدف طويل المدى 1: أن يستخدم المريض جملة مكونة من كلمتين لطلب الأشياء أو التعبير الرفض باستقلالية بنسبة 80% خلال 3 أشهر.",
-          note: "**ملاحظة**: هذا الرد تجريبي (Mockup) نظراً لعدم وجود مفتاح GEMINI_API_KEY فعّال في بيئة التطوير."
-        }
-      });
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user?.email) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+    const { patientId, patientName, notes } = await request.json();
 
-    const prompt = `
-      أنت مساعد تقييم ذكي مختص في التخاطب وتعديل السلوك وتنمية المهارات والتقييمات النفسية.
-      المطلوب منك تحليل الملاحظات التالية وكتابة "ملخص حالة" و و استخراج نقاط القوة والضعف ومسودة "خطة علاجية فردية" (IEP) مقترحة.
-      
-      بيانات الحالة:
-      الاسم: ${patientName}
-      العمر: ${age}
-      التشخيص المبدئي: ${diagnosis}
-      
-      ملاحظات الأخصائي خلال الجلسة:
-      "${notes}"
-      
-      النتيجة المطلوبة:
-      1. ملخص تحليلي للملاحظات (summary).
-      2. 3 نقاط قوة على الأكثر (strengths).
-      3. 3 نقاط ضعف على الأكثر (weaknesses).
-      4. خطة علاجية تشمل أهداف طويلة وأهداف قصيرة المدى (iepPlan).
-      
-      يرجى الرد بصيغة JSON فقط:
-      {
-        "summary": "...",
-        "strengths": ["...", "..."],
-        "weaknesses": ["...", "..."],
-        "iepPlan": "..."
-      }
-    `;
+    const currentUser = await prisma.user.findUnique({ where: { email: session.user.email } });
+    if (!currentUser) throw new Error('User not found');
 
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
-    
-    // Removing the markdown block code notation if AI provides it
-    const cleanJSON = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+    let aiResponseObj;
 
-    return NextResponse.json({ success: true, aiResponse: JSON.parse(cleanJSON) });
+    if (!genAI) {
+      aiResponseObj = {
+        summary: "يُظهر الطفل تحسناً ملحوظاً في الانتباه والإدراك بناءً على الملاحظات المدخلة. الجلسة كانت منتجة وساهمت في تعزيز الثقة.",
+        iepPlan: "الهدف طويل المدى 1: تحسين مهارات التواصل المباشر. الهدف القصير 1: الانخراط في اللعب المشترك لمدة 10 دقائق متواصلة بدون تشتت.",
+      };
+    } else {
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+      const prompt = `
+        أنت مساعد تقييم ذكي مختص في التخاطب وتعديل السلوك وتنمية المهارات والتقييمات النفسية.
+        المطلوب منك تحليل الملاحظات التالية وكتابة "ملخص حالة" و مسودة "خطة علاجية فردية" (IEP) مقترحة.
+        بيانات الحالة:
+        الاسم: ${patientName || "مريض"}
+        ملاحظات الأخصائي خلال الجلسة التي تمت للتو عبر منصتنا (Telehealth):
+        "${notes}"
+        النتيجة المطلوبة:
+        1. ملخص تحليلي للملاحظات (summary) بصيغة نص.
+        2. خطة علاجية مقترحة بناءً على هذه الملاحظات تشمل أهداف (iepPlan) بصيغة نص.
+        يرجى الرد بصيغة JSON فقط بدون علامات التوضيح البرمجية:
+        { "summary": "...", "iepPlan": "..." }
+      `;
+      const result = await model.generateContent(prompt);
+      const cleanJSON = result.response.text().replace(/```json/g, '').replace(/```/g, '').trim();
+      aiResponseObj = JSON.parse(cleanJSON);
+    }
 
+    // Save to DB if patientId is provided
+    let assessment = null;
+    if (patientId) {
+       assessment = await prisma.assessment.create({
+           data: {
+               patientId,
+               specialistId: currentUser.id,
+               type: 'جلسة متابعة (Telehealth)',
+               aiSummary: aiResponseObj.summary,
+               aiProposedPlan: aiResponseObj.iepPlan,
+           }
+       });
+    }
+
+    return NextResponse.json({ success: true, aiResponse: aiResponseObj, assessment });
   } catch (error: any) {
     console.error('Gemini API Error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

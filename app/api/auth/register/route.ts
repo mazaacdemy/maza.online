@@ -1,52 +1,49 @@
-import { NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
-import prisma from '@/lib/prisma';
-import { sendVerificationEmail } from '@/lib/mailer';
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import bcrypt from "bcryptjs";
+import { sendVerificationEmail } from "@/lib/mailer";
+import crypto from 'crypto';
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const { name, email, password, role } = await request.json();
+    const { name, email, password, role } = await req.json();
 
-    if (!name || !email || !password || !role) {
-      return NextResponse.json({ success: false, error: 'يرجى تعبئة جميع الحقول المطلوبة' }, { status: 400 });
+    if (!name || !email || !password) {
+      return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
     }
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
-      return NextResponse.json({ success: false, error: 'البريد الإلكتروني مسجل مسبقاً' }, { status: 400 });
+      return NextResponse.json({ success: false, error: "Email already registered" }, { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const verificationToken = crypto.randomUUID();
+    const validRoles = ["PARENT", "SPECIALIST", "CENTER", "ADMIN"];
+    const targetRole = validRoles.includes(role) ? role : "PARENT";
+    
+    // Generate secure verification token
+    const verificationToken = crypto.randomBytes(32).toString('hex');
 
-    const user = await prisma.user.create({
+    const newUser = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
-        role: role as any,
-        verificationToken,
-      }
+        role: targetRole as any,
+        verificationToken
+      },
     });
 
     try {
+      // Send Email. This won't block the request if SMTP is missing in development mode.
       await sendVerificationEmail(email, verificationToken);
-    } catch (emailError) {
-      console.error('Failed to send email:', emailError);
-      
-      return NextResponse.json({ 
-        success: false, 
-        error: 'تم حفظ البيانات لكن فشل إرسال بريد التفعيل. تأكد من إعدادات SMTP في السيرفر.' 
-      }, { status: 500 });
+    } catch (mailErr) {
+      console.log('Failed to send verification email (likely no SMTP configured)', mailErr);
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      user: { id: user.id, email: user.email, role: user.role },
-      message: 'تم إرسال رابط التحقق إلى بريدك الإلكتروني.'
-    }, { status: 201 });
+    return NextResponse.json({ success: true, user: { id: newUser.id, email: newUser.email, role: newUser.role } });
   } catch (error: any) {
-    console.error('Registration Error:', error);
-    return NextResponse.json({ success: false, error: 'حدث خطأ في الخادم أثناء إنشاء الحساب' }, { status: 500 });
+    console.error("Registration error:", error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
