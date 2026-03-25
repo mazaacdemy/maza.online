@@ -35,7 +35,8 @@ export default async function AdminPaymentsPage() {
 
   // Fetch all appointments that have a price set
   const appointments = (await prisma.appointment.findMany({
-    where: { price: { not: null } },
+    // @ts-ignore - 'price' field is added in schema but IDE might not sync after prisma generate
+    where: { price: { not: null } } as any,
     include: { specialist: { select: { name: true } }, parent: { select: { name: true } } },
     orderBy: { date: 'desc' },
   })) as unknown as AppointmentWithRelations[];

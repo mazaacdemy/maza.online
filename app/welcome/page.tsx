@@ -57,7 +57,7 @@ export default function WelcomePage() {
   const content = cmsContent || {};
 
   return (
-    <div className="welcome-container-premium min-h-screen relative overflow-hidden bg-dark">
+    <div className="welcome-container-premium min-h-screen relative overflow-hidden bg-dark" dir="rtl">
       
       {/* Background Ambient Glows */}
       <div className="ambient-glow glow-1"></div>
@@ -89,17 +89,31 @@ export default function WelcomePage() {
               >
                 <div className="slide-overlay-gradient"></div>
                 <div className="slide-content-premium container">
-                  <div className="content-inner animate-slide-up">
-                    <h1 className="hero-main-title">{slide.title}</h1>
-                    <p className="hero-subtext">{slide.subtitle}</p>
-                    <div className="hero-actions">
-                      <Link href={slide.link || '#'} className="btn-world-class shadow-glow">
-                        ابدأ الرحلة الآن
-                      </Link>
-                      <Link href="/about" className="btn-outline-world-class">
-                        تعرف علينا أكثر
-                      </Link>
+                  <div className="flex flex-col md:flex-row-reverse items-center justify-between gap-12 h-full pt-16">
+                    {/* Content Column (Logical Start in RTL, but we want it on the LEFT side of the girl) */}
+                    <div className="hero-content-col md:w-1/2 text-right animate-slide-up">
+                      <div className="badge-premium mb-6 inline-flex items-center gap-3">
+                        <span className="w-8 h-[2px] bg-accent-primary"></span>
+                        <span className="text-xs font-bold uppercase tracking-[0.2em] text-accent-primary">نحو مستقبل مشرق</span>
+                      </div>
+                      <h1 className="hero-main-title leading-[1.1] text-white mb-8">
+                        {slide.title}
+                      </h1>
+                      <p className="hero-subtext text-xl opacity-70 mb-10 max-w-xl leading-relaxed font-light">
+                        {slide.subtitle}
+                      </p>
+                      <div className="hero-actions flex flex-wrap gap-4">
+                        <Link href={slide.link || '#'} className="btn-premium btn-premium-primary shadow-glow text-lg">
+                          ابدأ الرحلة الآن <span className="mr-2">←</span>
+                        </Link>
+                        <Link href="/about" className="btn-premium btn-premium-outline text-lg">
+                          تعرف على الأكاديمية
+                        </Link>
+                      </div>
                     </div>
+
+                    {/* Visual Space (This will be on the RIGHT in RTL flex-row-reverse) */}
+                    <div className="md:w-1/2 h-full hidden md:block"></div>
                   </div>
                 </div>
               </div>
@@ -116,61 +130,58 @@ export default function WelcomePage() {
             background-color: #050505;
             color: #ffffff;
             direction: rtl;
+            overflow-x: hidden;
+            font-family: 'Inter', system-ui, sans-serif;
           }
           .bg-dark { background-color: #050505; }
           
           /* Ambient Glows */
           .ambient-glow {
             position: absolute;
-            width: 600px;
-            height: 600px;
+            width: 800px;
+            height: 800px;
             border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.15;
+            filter: blur(150px);
+            opacity: 0.1;
             pointer-events: none;
-            z-index: 1;
+            z-index: 0;
           }
-          .glow-1 { top: -100px; left: -100px; background: var(--accent-primary); }
-          .glow-2 { bottom: -100px; right: -100px; background: #6366f1; }
+          .glow-1 { top: -200px; left: -200px; background: var(--accent-primary); }
+          .glow-2 { bottom: -200px; right: -200px; background: #4f46e5; }
 
           /* App Install Banner */
           .app-install-banner-premium {
             position: fixed;
-            bottom: -100px;
+            bottom: -120px;
             left: 0;
             width: 100%;
             z-index: 1000;
             padding: 1.5rem;
-            transition: bottom 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
           }
-          .app-install-banner-premium.visible { bottom: 0; }
+          .app-install-banner-premium.visible {
+            transform: translateY(-120px);
+          }
           .banner-glass-panel {
             background: rgba(255, 255, 255, 0.03);
+            -webkit-backdrop-filter: blur(20px);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem 2.5rem;
+            padding: 1.25rem 2.5rem;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-          }
-          .badge-new {
-            background: var(--accent-primary);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            font-weight: 800;
-            display: inline-block;
-            margin-bottom: 0.5rem;
           }
 
           /* Hero Slider */
           .hero-slider-section {
             height: 100vh;
+            min-height: 700px;
             width: 100%;
             position: relative;
+            margin-top: -80px; /* Blend with navbar */
           }
           .slider-wrapper {
             height: 100%;
@@ -180,52 +191,56 @@ export default function WelcomePage() {
           }
           .slide-premium {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background-size: cover;
             background-position: center;
             opacity: 0;
-            transition: opacity 1.5s ease-in-out, transform 2s ease-out;
-            transform: scale(1.1);
+            visibility: hidden;
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
           }
           .slide-premium.active {
             opacity: 1;
-            transform: scale(1.0);
+            visibility: visible;
             z-index: 2;
           }
           .slide-overlay-gradient {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8));
+            background: linear-gradient(to left, rgba(5,5,5,0.3) 0%, rgba(5,5,5,0.85) 60%, #050505 100%);
+            z-index: 1;
           }
-          .slide-content-premium {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            max-width: 900px;
-          }
+
           .hero-main-title {
-            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
             font-weight: 900;
             line-height: 1.1;
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+            background: linear-gradient(to bottom, #fff, rgba(255,255,255,0.8));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
           }
+
           .hero-subtext {
             font-size: 1.25rem;
-            color: rgba(255,255,255,0.7);
-            margin-bottom: 2.5rem;
-            line-height: 1.6;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.7;
+            max-width: 600px;
           }
-          .shadow-glow { box-shadow: 0 0 30px rgba(var(--accent-primary-rgb), 0.4); }
 
-          /* Background Images Loop via Prop (or fallback to style-jsx) */
+          .badge-premium {
+            background: rgba(var(--accent-primary-rgb), 0.1);
+            color: var(--accent-primary);
+            padding: 6px 16px;
+            border-radius: 30px;
+            border: 1px solid rgba(var(--accent-primary-rgb), 0.2);
+          }
+
+          .shadow-glow {
+            box-shadow: 0 10px 40px rgba(var(--accent-primary-rgb), 0.3);
+          }
+
+          /* Background Images */
           ${slides.map((slide, index) => `
             .slide-dynamic-${index} {
               background-image: url('${slide.image}');
@@ -276,6 +291,7 @@ export default function WelcomePage() {
             font-weight: 700;
             text-decoration: none;
             margin-right: 1rem;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             transition: all 0.3s;
           }
@@ -283,9 +299,6 @@ export default function WelcomePage() {
 
           /* Services Grid */
           .premium-cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
             margin-top: 3rem;
           }
           .premium-card {
@@ -338,106 +351,130 @@ export default function WelcomePage() {
       </section>
 
       {/* Services Section with "World-Class" Cards */}
-      <section className="services-section-premium container py-4">
-        <div className="section-header-center mb-4">
-          <span className="section-tag bg-accent-primary/20 color-accent-primary">خدماتنا</span>
-          <h2 className="section-title-premium text-4xl font-bold mt-1">نحن نصنع <span className="text-gradient">المستقبل</span> لأطفالنا</h2>
-          <p className="section-subtitle text-secondary mt-1">منصة متكاملة تجمع بين الخبرة البشرية وأحدث تقنيات الذكاء الاصطناعي.</p>
+      <section className="services-section-premium section-spacing container">
+        <div className="text-center mb-16 animate-slide-up">
+          <div className="badge-premium mb-4">خدمات متخصصة</div>
+          <h2 className="text-4xl md:text-5xl font-black mb-6">نحن نصنع <span className="text-accent-primary">المستقبل</span> لأطفالنا</h2>
+          <p className="text-white/60 text-lg max-w-2xl mx-auto leading-relaxed">
+            نجمع بين الخبرة البشرية العميقة وأحدث تكنولوجيا الذكاء الاصطناعي لتقديم رعاية متكاملة.
+          </p>
         </div>
 
-        <div className="premium-cards-grid grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="premium-card group glass-morph">
-             <div className="card-image-wrapper overflow-hidden rounded-t-2xl h-200">
-                <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop" alt="Special Needs" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+        <div className="premium-cards-grid grid grid-cols-1 md:grid-cols-3 gap-12">
+          {/* Diagnostic Special Needs */}
+          <div className="glass-card group flex flex-col overflow-hidden">
+             <div className="relative h-64 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop" alt="Special Needs" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] to-transparent opacity-60"></div>
              </div>
-             <div className="card-body p-2 flex-col gap-1">
-                <h3 className="text-xl font-bold">ذوي الاحتياجات الخاصة</h3>
-                <p className="text-secondary line-height-18">{content.about_summary || "نقدم لهم تقارير تقييم ذكية وجلسات متابعة تخاطب وسلوك مكثفة."}</p>
-                <Link href="/register?role=PARENT" className="card-link color-accent-primary font-bold">اشترك الآن <span>→</span></Link>
+             <div className="p-8 flex-col gap-4">
+                <h3 className="text-2xl font-bold mb-3">ذوي الاحتياجات الخاصة</h3>
+                <p className="text-white/60 mb-6 leading-relaxed">
+                  {content.about_summary || "نقدم لهم تقارير تقييم ذكية وجلسات متابعة تخاطب وسلوك مكثفة تحت إشراف نخبة من الأخصائيين."}
+                </p>
+                <Link href="/register?role=PARENT" className="text-accent-primary font-bold inline-flex items-center gap-2 group-hover:gap-4 transition-all">
+                  اشترك الآن <span className="text-xl">←</span>
+                </Link>
              </div>
           </div>
 
-          <div className="premium-card group glass-morph active-premium relative">
-             <div className="card-image-wrapper overflow-hidden rounded-t-2xl h-200">
-                <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&q=80&w=800" alt="Typical Children" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+          {/* Child Skills Development */}
+          <div className="glass-card group flex flex-col overflow-hidden border-accent-primary/20 bg-accent-primary/5">
+             <div className="relative h-64 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&q=80&w=800" alt="Typical Children" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] to-transparent opacity-60"></div>
+                <div className="absolute top-4 right-4 bg-accent-primary text-white text-xs font-bold px-3 py-1 rounded-full">الأكثر طلباً</div>
              </div>
-             <div className="card-body p-2 flex-col gap-1">
-                <h3 className="text-xl font-bold">تنميـة مهـارات الأطفـال</h3>
-                <p className="text-secondary line-height-18">{content.specialist_summary || "نركز على تنمية المهارات الإبداعية، التركيز، والتفوق الدراسي عبر خطط مدروسة."}</p>
-                <Link href="/register?role=PARENT" className="card-link color-accent-primary font-bold">ابدأ الرحلة <span>→</span></Link>
+             <div className="p-8 flex-col gap-4">
+                <h3 className="text-2xl font-bold mb-3">تنمية مهارات الأطفال</h3>
+                <p className="text-white/60 mb-6 leading-relaxed">
+                  {content.specialist_summary || "نركز على تنمية المهارات الإبداعية، التركيز، والتفوق الدراسي عبر خطط تربوية مدروسة بعناية."}
+                </p>
+                <Link href="/register?role=PARENT" className="text-accent-primary font-bold inline-flex items-center gap-2 group-hover:gap-4 transition-all">
+                  ابدأ الرحلة <span className="text-xl">←</span>
+                </Link>
              </div>
-             <div className="absolute top-1 right-1 bg-accent-primary color-white px-1 py-0-5 rounded-full text-xs font-bold shadow-lg">الأكثر طلباً</div>
           </div>
 
-          <div className="premium-card group glass-morph">
-             <div className="card-image-wrapper overflow-hidden rounded-t-2xl h-200">
-                <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=800" alt="Adults" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+          {/* Adult Empowerment */}
+          <div className="glass-card group flex flex-col overflow-hidden">
+             <div className="relative h-64 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=800" alt="Adults" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] to-transparent opacity-60"></div>
              </div>
-             <div className="card-body p-2 flex-col gap-1">
-                <h3 className="text-xl font-bold">تمكيـن الكبـار والبالغيـن</h3>
-                <p className="text-secondary line-height-18">{content.adult_summary || "استشارات نفسية ومهنية لدعم الاستقرار النفسي والإنتاجية في الحياة المعاصرة."}</p>
-                <Link href="/register?role=PARENT" className="card-link color-accent-primary font-bold">احجز موعدك <span>→</span></Link>
+             <div className="p-8 flex-col gap-4">
+                <h3 className="text-2xl font-bold mb-3">تمكين الكبار والبالغين</h3>
+                <p className="text-white/60 mb-6 leading-relaxed">
+                  {content.adult_summary || "استشارات نفسية ومهنية لدعم الاستقرار النفسي والإنتاجية في مواجهة تحديات الحياة المعاصرة."}
+                </p>
+                <Link href="/register?role=PARENT" className="text-accent-primary font-bold inline-flex items-center gap-2 group-hover:gap-4 transition-all">
+                  احجز موعدك <span className="text-xl">←</span>
+                </Link>
              </div>
           </div>
         </div>
       </section>
 
       {/* AI Features Highlight */}
-      <section className="ai-highlight-section container py-4">
-         <div className="glass-panel p-4 flex flex-col md:flex-row-reverse items-center gap-4 overflow-hidden relative border border-white/10 rounded-3xl">
-            <div className="ai-image-side relative flex-1 w-full">
-               <div className="absolute top-2 left-2 bg-gradient-to-r from-purple-600 to-blue-600 color-white px-2 py-1 rounded-full text-sm font-bold animate-pulse shadow-xl z-10">AI Powered</div>
-               <img 
-                 src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1200" 
-                 alt="AI Technology" 
-                 className="rounded-2xl shadow-2xl w-full h-full object-cover"
-               />
-            </div>
-            <div className="ai-content-side flex-1 flex-col gap-2">
-               <h2 className="text-3xl font-bold color-white">تقنيات الذكاء الاصطناعي <br/>في خدمتك دائمـاً</h2>
-               <div className="feature-list-premium flex-col gap-2">
-                  <div className="feature-item-premium flex items-start gap-1">
-                     <span className="text-2xl">🤖</span>
-                     <div>
-                        <h4 className="font-bold color-white">تقارير سريرية فورية</h4>
-                        <p className="text-secondary text-sm">توليد تقارير شاملة بناءً على مقاييس عالمية في ثوانٍ معدودة لتوفير الوقت والجهد.</p>
-                     </div>
-                  </div>
-                  <div className="feature-item-premium flex items-start gap-1">
-                     <span className="text-2xl">📊</span>
-                     <div>
-                        <h4 className="font-bold color-white">تحليل مسار التطور</h4>
-                        <p className="text-secondary text-sm">مراقبة دقيقة لكل الجلسات برسوم بيانية تفاعلية توضح مدى التقدم المحقق أسبوعياً.</p>
-                     </div>
-                  </div>
+      <section className="ai-highlight-section section-spacing container">
+         <div className="glass-card p-0 overflow-hidden relative">
+            <div className="flex flex-col md:flex-row-reverse items-stretch">
+               <div className="md:w-1/2 relative min-h-[400px]">
+                  <img 
+                    src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1200" 
+                    alt="AI Technology" 
+                    className="absolute inset-0 w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-1000"
+                  />
+                  <div className="absolute top-6 left-6 bg-accent-primary text-white text-xs font-bold px-4 py-2 rounded-full animate-pulse shadow-2xl">مدعوم بالذكاء الاصطناعي</div>
                </div>
-               <button className="btn-gradient px-3 py-1 mt-1 rounded-xl font-bold shadow-lg-glow w-fit">اكتشف القوة الآن</button>
+               <div className="md:w-1/2 p-12 md:p-16 flex flex-col justify-center">
+                  <h2 className="text-4xl font-black mb-8 leading-tight">تقنيات الغد، <br/><span className="text-accent-primary">بين يديك اليوم</span></h2>
+                  <div className="space-y-8 mb-10">
+                     <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl">🤖</div>
+                        <div>
+                           <h4 className="font-bold text-xl mb-1">تقارير سريرية ذكية</h4>
+                           <p className="text-white/50 leading-relaxed">توليد تقارير شاملة بناءً على مقاييس عالمية في ثوانٍ لتحسين دقة التشخيص.</p>
+                        </div>
+                     </div>
+                     <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl">📊</div>
+                        <div>
+                           <h4 className="font-bold text-xl mb-1">تحليل ديناميكي للنمو</h4>
+                           <p className="text-white/50 leading-relaxed">مراقبة دقيقة لكل الجلسات برسوم بيانية توضح مدى التقدم المحقق أسبوعياً.</p>
+                        </div>
+                     </div>
+                  </div>
+                  <button className="btn-premium btn-premium-primary self-start text-lg px-10">استكشف النظام الآن</button>
+               </div>
             </div>
          </div>
       </section>
 
-      {/* Why Choose Us Icons */}
-      <section className="trust-section-premium py-6 bg-dark-lighter/30">
-         <div className="container grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            <div className="trust-item flex-col items-center gap-1">
-               <div className="text-4xl mb-1 bg-white/5 w-16 h-16 flex-center rounded-full mx-auto border border-white/10 group-hover:bg-accent-primary/20 transition-all">🔒</div>
-               <h4 className="font-bold color-white">خصوصية تامة</h4>
-               <p className="text-xs text-secondary">بياناتك مشفرة ومحمية بالكامل</p>
-            </div>
-            <div className="trust-item flex-col items-center gap-1">
-               <div className="text-4xl mb-1 bg-white/5 w-16 h-16 flex-center rounded-full mx-auto border border-white/10">🌍</div>
-               <h4 className="font-bold color-white">دعم عالمي</h4>
-               <p className="text-xs text-secondary">نخدمكم في أي مكان حول العالم</p>
-            </div>
-            <div className="trust-item flex-col items-center gap-1">
-               <div className="text-4xl mb-1 bg-white/5 w-16 h-16 flex-center rounded-full mx-auto border border-white/10">👩‍⚕️</div>
-               <h4 className="font-bold color-white">نخبة الأخصائيين</h4>
-               <p className="text-xs text-secondary">أفضل الكفاءات في مجالات التأهيل</p>
-            </div>
-            <div className="trust-item flex-col items-center gap-1">
-               <div className="text-4xl mb-1 bg-white/5 w-16 h-16 flex-center rounded-full mx-auto border border-white/10">⚡</div>
-               <h4 className="font-bold color-white">سرعة فائقة</h4>
-               <p className="text-xs text-secondary">واجهة سلسة وأداء استثنائي</p>
+      {/* Trust & Stats Section */}
+      <section className="trust-section-premium section-spacing bg-white/[0.02]">
+         <div className="container">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
+               <div className="text-center group">
+                  <div className="text-4xl mb-4 w-20 h-20 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 mx-auto group-hover:scale-110 transition-transform">🔒</div>
+                  <h4 className="font-bold text-lg mb-2">خصوصية تامة</h4>
+                  <p className="text-sm text-white/40">بياناتك مشفرة ومحمية بالكامل وفق المعايير العالمية.</p>
+               </div>
+               <div className="text-center group">
+                  <div className="text-4xl mb-4 w-20 h-20 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 mx-auto group-hover:scale-110 transition-transform">🌍</div>
+                  <h4 className="font-bold text-lg mb-2">دعم عالمي</h4>
+                  <p className="text-sm text-white/40">نخدمكم في أي مكان حول العالم عبر منصتنا السحابية.</p>
+               </div>
+               <div className="text-center group">
+                  <div className="text-4xl mb-4 w-20 h-20 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 mx-auto group-hover:scale-110 transition-transform">👩‍⚕️</div>
+                  <h4 className="font-bold text-lg mb-2">نخبة الأخصائيين</h4>
+                  <p className="text-sm text-white/40">أفضل الكفاءات العربية في مجالات التأهيل والتربية الخاصة.</p>
+               </div>
+               <div className="text-center group">
+                  <div className="text-4xl mb-4 w-20 h-20 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 mx-auto group-hover:scale-110 transition-transform">⚡</div>
+                  <h4 className="font-bold text-lg mb-2">سرعة استثنائية</h4>
+                  <p className="text-sm text-white/40">استجابة فائقة وجاهزية دائمة لدعم احتياجات طفلكم.</p>
+               </div>
             </div>
          </div>
       </section>
