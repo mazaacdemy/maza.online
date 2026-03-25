@@ -65,7 +65,7 @@ export default function WelcomePage() {
 
       {/* App Install Banner */}
       <div className={`app-install-banner-premium ${showBanner ? 'visible' : ''}`}>
-        <div className="banner-content glass-panel">
+        <div className="banner-content banner-glass-panel">
           <div className="banner-text">
             <span className="badge-new">NEW</span>
             <strong>تطبيق أكاديمية ماذا متاح الآن!</strong>
@@ -112,11 +112,215 @@ export default function WelcomePage() {
         </div>
 
         <style jsx>{`
+          .welcome-container-premium {
+            background-color: #050505;
+            color: #ffffff;
+            direction: rtl;
+          }
+          .bg-dark { background-color: #050505; }
+          
+          /* Ambient Glows */
+          .ambient-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 1;
+          }
+          .glow-1 { top: -100px; left: -100px; background: var(--accent-primary); }
+          .glow-2 { bottom: -100px; right: -100px; background: #6366f1; }
+
+          /* App Install Banner */
+          .app-install-banner-premium {
+            position: fixed;
+            bottom: -100px;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1.5rem;
+            transition: bottom 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+          }
+          .app-install-banner-premium.visible { bottom: 0; }
+          .banner-glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2.5rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+          }
+          .badge-new {
+            background: var(--accent-primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+          }
+
+          /* Hero Slider */
+          .hero-slider-section {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+          }
+          .slider-wrapper {
+            height: 100%;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+          }
+          .slide-premium {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out, transform 2s ease-out;
+            transform: scale(1.1);
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .slide-premium.active {
+            opacity: 1;
+            transform: scale(1.0);
+            z-index: 2;
+          }
+          .slide-overlay-gradient {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8));
+          }
+          .slide-content-premium {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 900px;
+          }
+          .hero-main-title {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+          }
+          .hero-subtext {
+            font-size: 1.25rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+          }
+          .shadow-glow { box-shadow: 0 0 30px rgba(var(--accent-primary-rgb), 0.4); }
+
+          /* Background Images Loop via Prop (or fallback to style-jsx) */
           ${slides.map((slide, index) => `
             .slide-dynamic-${index} {
               background-image: url('${slide.image}');
             }
           `).join('\n')}
+
+          /* Slider Nav */
+          .slider-nav-premium {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 20;
+          }
+          .nav-dot-premium {
+            width: 40px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all 0.3s;
+          }
+          .nav-dot-premium.active {
+            background: white;
+            width: 60px;
+          }
+
+          /* Buttons */
+          .btn-world-class {
+            background: white;
+            color: black;
+            padding: 1rem 2.5rem;
+            border-radius: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-block;
+          }
+          .btn-world-class:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(255,255,255,0.2); }
+          
+          .btn-outline-world-class {
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-right: 1rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+          }
+          .btn-outline-world-class:hover { background: rgba(255,255,255,0.1); border-color: white; }
+
+          /* Services Grid */
+          .premium-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+          }
+          .premium-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 32px;
+            padding: 1rem;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+          }
+          .premium-card:hover { 
+            background: rgba(255,255,255,0.06); 
+            transform: translateY(-10px);
+            border-color: rgba(255,255,255,0.1);
+          }
+          .active-premium { border: 1px solid rgba(var(--accent-primary-rgb), 0.3); }
+
+          .h-200 { height: 200px; }
+          .text-gradient {
+            background: linear-gradient(to left, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
+
+          .animate-slide-up {
+            animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          }
+          @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          
+          @media (max-width: 768px) {
+            .hero-actions { display: flex; flex-direction: column; gap: 1rem; }
+            .btn-outline-world-class { margin-right: 0; }
+          }
         `}</style>
 
         {/* Custom Progress Navigation */}
@@ -144,7 +348,7 @@ export default function WelcomePage() {
         <div className="premium-cards-grid grid grid-cols-1 md:grid-cols-3 gap-3">
           <div className="premium-card group glass-morph">
              <div className="card-image-wrapper overflow-hidden rounded-t-2xl h-200">
-                <img src="https://images.unsplash.com/photo-1594608661623-aa0bd3a07d9d?auto=format&fit=crop&q=80&w=800" alt="Special Needs" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop" alt="Special Needs" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
              </div>
              <div className="card-body p-2 flex-col gap-1">
                 <h3 className="text-xl font-bold">ذوي الاحتياجات الخاصة</h3>
