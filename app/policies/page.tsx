@@ -1,19 +1,48 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 
 export default function PoliciesPage() {
+  const [cmsContent, setCmsContent] = useState<any>(null);
+
+  useEffect(() => {
+    fetch('/api/admin/content')
+      .then(res => res.json())
+      .then(data => {
+        if (data && !data.error) setCmsContent(data);
+      })
+      .catch(e => console.error("CMS Error:", e));
+  }, []);
+
+  const content = cmsContent || {};
+
   return (
     <>
-      <div className="immersive-header bg-policies-hero">
+      <div className="immersive-header dynamic-bg">
         <div className="immersive-overlay"></div>
-        <h1 className="immersive-title">الشروط والسياسات</h1>
+        <h1 className="immersive-title">
+          {content.policies_page_title || "الشروط والسياسات"}
+        </h1>
       </div>
+
+      <style jsx>{`
+        .dynamic-bg {
+          background-image: url('${content.policies_page_img || "/images/policies-hero-fallback.jpg"}');
+        }
+      `}</style>
 
       <main className="overlapping-content">
         <section className="policy-content">
           <p className="update-date">آخر تحديث: مارس 2026</p>
 
-          <div className="policy-block">
-            <h3>1. الموافقة والقبول والشروط الأساسية</h3>
+          {content.policies_page_description ? (
+            <div className="policy-block whitespace-pre-wrap">
+              {content.policies_page_description}
+            </div>
+          ) : (
+            <>
+              <div className="policy-block">
+                <h3>1. الموافقة والقبول والشروط الأساسية</h3>
             <p>باستخدامك لمنصة "ماذا Maza" (النسخة الرقمية وخدمات الـ Telehealth)، فإنك توافق صراحة على الالتزام الكامل بهذه الشروط والأحكام. المنصة مصممة لتكون حلقة الوصل الآمنة بين أولياء الأمور والمراكز والبالغين ذوي الاحتياجات مع النخبة من الأخصائيين المعتمدين محلياً ودولياً. يجب على جميع المستخدمين تقديم معلومات حقيقية ودقيقة أثناء إنشاء الحسابات للحفاظ على مصداقية الملفات السريرية.</p>
           </div>
 
@@ -38,6 +67,8 @@ export default function PoliciesPage() {
             <h3>5. حقوق الملكية الفكرية (IP Rights) والنشر</h3>
             <p>كل ما يتم عرضه في منصة "ماذا" من تصميمات، شعارات، أكواد برمجية، محرك معالجة البيانات (Maza AI Engine)، والنصوص الطبية المكتوبة، مملوكة بالكامل لـ "أكاديمية ماذا الرقمية". يمنع منعاً باتاً استنساخ الواجهات، أو استخدام التقارير المنتجة من المنصة في برمجيات أو مواقع خارجية دون إذن رسمي موقع.</p>
           </div>
+            </>
+          )}
         </section>
       </main>
     </>

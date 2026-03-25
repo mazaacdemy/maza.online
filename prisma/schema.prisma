@@ -18,7 +18,8 @@ model User {
   resetToken        String?
   resetTokenExpiry  DateTime?
   createdAt         DateTime  @default(now())
-  updatedAt DateTime @updatedAt
+  profileImage      String?
+  updatedAt         DateTime  @updatedAt
 
   patients     Patient[]     @relation("ParentPatients")
   appointments Appointment[] @relation("ParentAppointments")
@@ -36,6 +37,8 @@ enum Role {
   PARENT
   ADMIN
   CENTER
+  MODERATOR
+  SUPER_ADMIN
 }
 
 model Patient {
@@ -72,6 +75,9 @@ model Appointment {
   specialist   User     @relation("SpecialistAppointments", fields: [specialistId], references: [id])
   parentId     String
   parent       User     @relation("ParentAppointments", fields: [parentId], references: [id])
+  paymentStatus String  @default("PENDING") // PENDING, PAID, FAILED
+  stripeSessionId String?
+  price         Float?
 }
 
 model Coupon {
@@ -88,4 +94,16 @@ model Setting {
   id    String @id @default(uuid())
   key   String @unique
   value String
+}
+
+model Slide {
+  id        String   @id @default(uuid())
+  image     String
+  title     String
+  subtitle  String?
+  link      String?
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

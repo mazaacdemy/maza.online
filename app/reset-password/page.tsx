@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function ResetPassword() {
+function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -53,6 +53,51 @@ export default function ResetPassword() {
   };
 
   return (
+    <>
+      {message && <div className="p-1 glass-panel text-success text-center mt-1">{message}. جارٍ تحويلك لصفحة الدخول...</div>}
+      {error && <div className="p-1 glass-panel text-error text-center mt-1">{error}</div>}
+
+      {!message && token && (
+        <form onSubmit={handleSubmit} className="flex-col gap-1.5 mt-2">
+          <div className="flex-col gap-0.5">
+            <label className="text-sm-secondary">كلمة المرور الجديدة</label>
+            <input 
+              required
+              type="password" 
+              className="input-field glass-panel w-full" 
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          <div className="flex-col gap-0.5">
+            <label className="text-sm-secondary">تأكيد كلمة المرور</label>
+            <input 
+              required
+              type="password" 
+              className="input-field glass-panel w-full" 
+              placeholder="••••••••"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            disabled={isLoading}
+            className="btn-primary w-full py-1 text-lg mt-1"
+          >
+            {isLoading ? 'جاري التغيير...' : 'تحديث كلمة المرور'}
+          </button>
+        </form>
+      )}
+    </>
+  );
+}
+
+export default function ResetPassword() {
+  return (
     <main className="login-wrapper">
       <div className="card glass-panel login-card animate-fade-in max-w-450">
         <div className="flex-col gap-1 text-center">
@@ -61,44 +106,9 @@ export default function ResetPassword() {
           <p className="text-sm-secondary">أدخل كلمة المرور الجديدة الخاصة بك أدناه.</p>
         </div>
 
-        {message && <div className="p-1 glass-panel text-success text-center mt-1">{message}. جارٍ تحويلك لصفحة الدخول...</div>}
-        {error && <div className="p-1 glass-panel text-error text-center mt-1">{error}</div>}
-
-        {!message && token && (
-          <form onSubmit={handleSubmit} className="flex-col gap-1.5 mt-2">
-            <div className="flex-col gap-0.5">
-              <label className="text-sm-secondary">كلمة المرور الجديدة</label>
-              <input 
-                required
-                type="password" 
-                className="input-field glass-panel w-full" 
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-
-            <div className="flex-col gap-0.5">
-              <label className="text-sm-secondary">تأكيد كلمة المرور</label>
-              <input 
-                required
-                type="password" 
-                className="input-field glass-panel w-full" 
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
-
-            <button 
-              type="submit" 
-              disabled={isLoading}
-              className="btn-primary w-full py-1 text-lg mt-1"
-            >
-              {isLoading ? 'جاري التغيير...' : 'تحديث كلمة المرور'}
-            </button>
-          </form>
-        )}
+        <Suspense fallback={<div className="text-center mt-2 text-secondary">جاري التحميل...</div>}>
+          <ResetPasswordForm />
+        </Suspense>
 
         <div className="text-center mt-2">
           <Link href="/login" className="text-sm-secondary hover:text-primary underline">

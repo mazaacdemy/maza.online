@@ -8,7 +8,10 @@ export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState("PARENT");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -30,8 +33,14 @@ export default function Register() {
     setLoading(true);
 
     // Basic validation
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !confirmPassword) {
       setError("يرجى تعبئة جميع الحقول المطلوبة.");
+      setLoading(false);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("كلمات المرور غير متطابقة.");
       setLoading(false);
       return;
     }
@@ -56,6 +65,20 @@ export default function Register() {
     }
   };
 
+  const EyeIcon = ({ visible }: { visible: boolean }) => (
+    visible ? (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+        <line x1="1" y1="1" x2="23" y2="23"></line>
+      </svg>
+    ) : (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>
+    )
+  );
+
   return (
     <div className="login-wrapper">
       <div className="card glass-panel login-card card-auth-logic">
@@ -74,7 +97,7 @@ export default function Register() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="flex-col gap-1-5">
+        <form onSubmit={handleSubmit} className="flex-col gap-1-2">
           <div>
             <label htmlFor="nameInput" className="form-label mb-05">الاسم الكامل</label>
             <input
@@ -118,21 +141,55 @@ export default function Register() {
 
           <div>
             <label htmlFor="passwordInput" className="form-label mb-05">كلمة المرور</label>
-            <input
-              id="passwordInput"
-              type="password"
-              required
-              className="glass-panel input-auth-form input-auth-pass bg-input-glass outline-none"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              minLength={6}
-            />
+            <div className="password-wrapper">
+              <input
+                id="passwordInput"
+                type={showPassword ? "text" : "password"}
+                required
+                className="glass-panel input-auth-form input-auth-pass bg-input-glass outline-none"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                minLength={6}
+              />
+              <button
+                type="button"
+                className="eye-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+                title={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
+              >
+                <EyeIcon visible={showPassword} />
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="confirmPasswordInput" className="form-label mb-05">تأكيد كلمة المرور</label>
+            <div className="password-wrapper">
+              <input
+                id="confirmPasswordInput"
+                type={showConfirmPassword ? "text" : "password"}
+                required
+                className="glass-panel input-auth-form input-auth-pass bg-input-glass outline-none"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="••••••••"
+                minLength={6}
+              />
+              <button
+                type="button"
+                className="eye-toggle"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                title={showConfirmPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
+              >
+                <EyeIcon visible={showConfirmPassword} />
+              </button>
+            </div>
           </div>
 
           <button
             type="submit"
-            className={`btn-gradient mt-4 btn-auth-submit ${loading ? 'btn-loading' : ''}`}
+            className={`btn-gradient mt-2 btn-auth-submit ${loading ? 'btn-loading' : ''}`}
             disabled={loading}
           >
             {loading ? "جارٍ الإنشاء..." : "إنشاء الحساب"}

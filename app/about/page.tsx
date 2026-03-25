@@ -1,19 +1,42 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function AboutPage() {
+  const [cmsContent, setCmsContent] = useState<any>(null);
+
+  useEffect(() => {
+    fetch('/api/admin/content')
+      .then(res => res.json())
+      .then(data => {
+        if (data && !data.error) setCmsContent(data);
+      })
+      .catch(e => console.error("CMS Error:", e));
+  }, []);
+
+  const content = cmsContent || {};
+
   return (
     <>
-      <div className="immersive-header bg-about-hero">
+      <div className="immersive-header dynamic-bg">
         <div className="immersive-overlay"></div>
-        <h1 className="immersive-title">قصة منصة <span className="immersive-title-gradient">ماذا</span></h1>
+        <h1 className="immersive-title">
+          {content.about_page_title || "قصة منصة ماذا"}
+        </h1>
       </div>
+
+      <style jsx>{`
+        .dynamic-bg {
+          background-image: url('${content.about_page_img || "/images/about-hero-fallback.jpg"}');
+        }
+      `}</style>
 
       <main className="overlapping-content">
         <section className="text-center mb-4">
-          <p className="text-secondary subtitle-1-2rem">نحن هنا لتمكين كل فرد في المجتمع عبر التكنولوجيا والذكاء الاصطناعي.</p>
+          <p className="text-secondary subtitle-1-2rem">
+            {content.about_page_description || "نحن هنا لتمكين كل فرد في المجتمع عبر التكنولوجيا والذكاء الاصطناعي."}
+          </p>
         </section>
 
         <section className="mission-grid">

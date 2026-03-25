@@ -95,6 +95,7 @@ export default async function ParentDashboard() {
                 <li key={a.id} className="list-item-bordered">
                   <strong>مع د. {a.specialist?.name || 'تم الحذف'}</strong> - {new Date(a.date).toLocaleString('ar-EG')}
                   <p className="text-xs-primary-mt">نوع الجلسة: {a.type}</p>
+                  <p className={`text-xs mt-1 ${a.paymentStatus === 'PAID' ? 'text-green-500' : 'text-yellow-500'}`}>حالة الدفع: {a.paymentStatus === 'PAID' ? 'مدفوع' : 'في الانتظار'}</p>
                 </li>
               ))}
             </ul>

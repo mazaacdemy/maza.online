@@ -1,21 +1,44 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function ContactPage() {
+  const [cmsContent, setCmsContent] = useState<any>(null);
+
+  useEffect(() => {
+    fetch('/api/admin/content')
+      .then(res => res.json())
+      .then(data => {
+        if (data && !data.error) setCmsContent(data);
+      })
+      .catch(e => console.error("CMS Error:", e));
+  }, []);
+
+  const content = cmsContent || {};
+
   return (
     <>
-      <div className="immersive-header bg-contact-hero">
+      <div className="immersive-header dynamic-bg">
         <div className="immersive-overlay"></div>
-        <h1 className="immersive-title">تواصل معنا</h1>
+        <h1 className="immersive-title">
+          {content.contact_page_title || "تواصل معنا"}
+        </h1>
       </div>
+
+      <style jsx>{`
+        .dynamic-bg {
+          background-image: url('${content.contact_page_img || "/images/contact-hero-fallback.jpg"}');
+        }
+      `}</style>
 
       <main className="overlapping-content">
         <section className="contact-grid">
           <div className="contact-info">
             <h2>يسرنا سماع صوتك</h2>
-            <p>نحن هنا للمساعدة، سواء كنت أخصائياً، ولي أمر، أو متدرباً جديداً.</p>
+            <p>
+              {content.contact_page_description || "نحن هنا للمساعدة، سواء كنت أخصائياً، ولي أمر، أو متدرباً جديداً."}
+            </p>
             
             <div className="info-items">
               <div className="info-item">

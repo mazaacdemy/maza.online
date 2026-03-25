@@ -51,8 +51,13 @@ export default function Booking() {
 
       const data = await res.json();
       if (data.success) {
-        setSuccess("تم حجز الموعد بنجاح!");
-        setTimeout(() => router.push("/dashboard/parent"), 2000);
+        if (data.url) {
+          // Redirect to Stripe checkout
+          window.location.href = data.url;
+        } else {
+          setSuccess(data.message || "تم حجز الموعد بنجاح!");
+          setTimeout(() => router.push("/dashboard/parent"), 2000);
+        }
       } else {
         setError(data.error || "فشل حجز الموعد.");
       }

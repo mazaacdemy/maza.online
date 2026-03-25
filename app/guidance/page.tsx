@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 const cards = [
@@ -55,18 +55,41 @@ const cards = [
 ];
 
 export default function GuidancePage() {
+  const [cmsContent, setCmsContent] = useState<any>(null);
+
+  useEffect(() => {
+    fetch('/api/admin/content')
+      .then(res => res.json())
+      .then(data => {
+        if (data && !data.error) setCmsContent(data);
+      })
+      .catch(e => console.error("CMS Error:", e));
+  }, []);
+
+  const content = cmsContent || {};
+
   return (
     <div className="bg-color-primary min-h-screen text-primary">
-      <div className="immersive-header bg-guidance-hero">
+      <div className="immersive-header dynamic-bg">
         <div className="immersive-overlay"></div>
-        <h1 className="immersive-title">إرشادات <span className="immersive-title-gradient">أسرية</span></h1>
+        <h1 className="immersive-title">
+          {content.guidance_page_title || "إرشادات أسرية"}
+        </h1>
       </div>
+
+      <style jsx>{`
+        .dynamic-bg {
+          background-image: url('${content.guidance_page_img || "/images/guidance-hero-fallback.jpg"}');
+        }
+      `}</style>
 
       <main className="overlapping-content">
         <header className="hero-section">
           <div className="hero-badge">💡 الدليل المعرفي</div>
           <h2>دليل <span className="text-gradient">ماذا</span> للإرشاد الأسري</h2>
-          <p className="subtitle">نقف بجانبكم بالمعرفة والخبرة لنبني معاً مستقبلاً أفضل لأطفالنا وللمجتمع.</p>
+          <p className="subtitle">
+            {content.guidance_page_description || "نقف بجانبكم بالمعرفة والخبرة لنبني معاً مستقبلاً أفضل لأطفالنا وللمجتمع."}
+          </p>
         </header>
 
         <div className="guidance-grid">

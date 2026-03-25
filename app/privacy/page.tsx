@@ -1,19 +1,48 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 
 export default function PrivacyPage() {
+  const [cmsContent, setCmsContent] = useState<any>(null);
+
+  useEffect(() => {
+    fetch('/api/admin/content')
+      .then(res => res.json())
+      .then(data => {
+        if (data && !data.error) setCmsContent(data);
+      })
+      .catch(e => console.error("CMS Error:", e));
+  }, []);
+
+  const content = cmsContent || {};
+
   return (
     <>
-      <div className="immersive-header bg-privacy-hero">
+      <div className="immersive-header dynamic-bg">
         <div className="immersive-overlay"></div>
-        <h1 className="immersive-title">سياسة الخصوصية</h1>
+        <h1 className="immersive-title">
+          {content.privacy_page_title || "سياسة الخصوصية"}
+        </h1>
       </div>
+
+      <style jsx>{`
+        .dynamic-bg {
+          background-image: url('${content.privacy_page_img || "/images/privacy-hero-fallback.jpg"}');
+        }
+      `}</style>
 
       <main className="overlapping-content">
         <section className="policy-content">
           <p className="update-date">تاريخ السريان: مارس 2026</p>
 
-          <div className="policy-block">
-            <h3>1. التزامنا تجاه خصوصيتك</h3>
+          {content.privacy_page_description ? (
+            <div className="policy-block whitespace-pre-wrap">
+              {content.privacy_page_description}
+            </div>
+          ) : (
+            <>
+              <div className="policy-block">
+                <h3>1. التزامنا تجاه خصوصيتك</h3>
             <p>في منصة "ماذا Maza"، ندرك تماماً حساسية البيانات السريرية والشخصية والصحية التي تتم مشاركتها من قِبل أولياء الأمور والمراكز والأخصائيين والبالغين. نحن نلتزم بأعلى معايير الأمان العالمية لحماية البيانات الصحية (مثل اللائحة العامة لحماية البيانات GDPR وقانون قابلية التأمين الصحي والمساءلة HIPAA) لضمان بقاء معلوماتكم وجلساتكم في سرية تامة ومحكمة التشفير في جميع الأوقات.</p>
           </div>
 
@@ -50,6 +79,8 @@ export default function PrivacyPage() {
             <h3>7. ملفات تعريف الارتباط (Cookies) وتتبع الجلسات</h3>
             <p>نستخدم ملفات تعريف الارتباط الأساسية لضمان بقاءك مسجلاً للدخول ومنع محاولات الاختراق وحماية جلستك المفتوحة. لا نستخدم الكوكيز للتتبع الإعلاني العشوائي، ويمكنك دوماً التحكم في الكوكيز من إعدادات متصفحك الأساسي.</p>
           </div>
+            </>
+          )}
         </section>
       </main>
     </>

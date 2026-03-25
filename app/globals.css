@@ -930,7 +930,7 @@ a:hover {
 
 /* slider backgrounds to avoid inline styles */
 .slide-bg-0 { background-image: url('https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=1920') !important; }
-.slide-bg-1 { background-image: url('https://images.unsplash.com/photo-1544333306-6454a2cfe636?auto=format&fit=crop&q=80&w=1920') !important; }
+.slide-bg-1 { background-image: url('https://health-admin.andalusiagroup.net/storage/AKW/posts/February2023/097c108be8fe5b699db9296ab082280353fbd023desktop.webp') !important; }
 .slide-bg-2 { background-image: url('https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&q=80&w=1920') !important; }
 .slide-bg-3 { background-image: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1920') !important; }
 
@@ -942,6 +942,266 @@ a:hover {
   font-size: 2.8rem; 
   margin-bottom: 3.5rem; 
   font-weight: 900;
+}
+
+/* Navbar Profile Dropdown */
+.profile-dropdown-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nav-profile-link-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.nav-profile-link-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent-primary);
+}
+
+.user-avatar-small {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+.user-name-nav {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.dropdown-arrow {
+  font-size: 0.7rem;
+  opacity: 0.6;
+  margin-right: 5px;
+}
+
+.profile-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  width: 220px;
+  padding: 0.8rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  transform-origin: top left;
+  background: rgba(15, 23, 42, 0.95);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.dropdown-header {
+  padding: 0.5rem 0.8rem;
+}
+
+.dropdown-user-name {
+  font-weight: 700;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.dropdown-user-role {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--glass-border);
+  margin: 0.5rem 0;
+}
+
+.dropdown-item {
+  padding: 0.8rem;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.2s;
+  background: transparent;
+  border: none;
+  text-align: right;
+  width: 100%;
+  cursor: pointer;
+  display: block;
+}
+
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  padding-right: 1.2rem;
+}
+
+.dropdown-item.text-danger:hover {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+@media (max-width: 1024px) {
+  .profile-dropdown-container {
+    width: 100%;
+    margin-top: 1rem;
+    justify-content: center;
+  }
+  .nav-profile-link-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .profile-dropdown-menu {
+    position: static;
+    width: 100%;
+    margin-top: 1rem;
+    box-shadow: none;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.03);
+  }
+}
+
+/* CMS Specific Styles */
+.cms-input, .cms-textarea {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: white !important; /* Ensure visibility in dark mode */
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all 0.3s;
+    outline: none;
+}
+
+.cms-input:focus, .cms-textarea:focus {
+    border-color: var(--accent-primary);
+    background: rgba(30, 41, 59, 0.9);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+}
+
+.cms-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.cms-tabs {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px 12px 0 0;
+}
+
+.cms-tab-btn {
+    padding: 0.8rem 1.5rem;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: 8px;
+    transition: 0.3s;
+    font-weight: 600;
+}
+
+.cms-tab-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.cms-tab-btn.active {
+    color: var(--accent-primary);
+    background: rgba(139, 92, 246, 0.1);
+    box-shadow: inset 0 -2px 0 var(--accent-primary);
+}
+
+.immersive-header {
+    height: 400px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    background-image: var(--bg-image, none);
+}
+
+.slide-premium {
+    background-image: var(--bg-image, none);
+}
+    justify-content: center;
+}
+
+.image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-placeholder {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Password visibility toggle */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.password-wrapper input {
+  padding-left: 3rem !important; /* Make room for the eye icon */
+}
+
+.eye-toggle {
+  position: absolute;
+  left: 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem;
+  transition: all 0.3s ease;
+  z-index: 10;
+  border-radius: 50%;
+}
+
+.eye-toggle:hover {
+  color: var(--accent-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.eye-toggle svg {
+  width: 20px;
+  height: 20px;
 }
 
 
