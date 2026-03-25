@@ -1152,8 +1152,6 @@ a:hover {
 .slide-premium {
     background-image: var(--bg-image, none);
 }
-    justify-content: center;
-}
 
 .image-preview {
     width: 100%;
