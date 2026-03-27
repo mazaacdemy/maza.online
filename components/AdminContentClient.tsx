@@ -33,9 +33,13 @@ export default function AdminContentClient() {
     f_title_1: '', f_desc_1: '', f_icon_1: '',
     f_title_2: '', f_desc_2: '', f_icon_2: '',
     f_title_3: '', f_desc_3: '', f_icon_3: '',
-    stat_1_label: 'دقة التشخيص', stat_1_value: '95',
-    stat_2_label: 'كفاءة الأخصائيين', stat_2_value: '100',
-    stat_3_label: 'رضا أولياء الأمور', stat_3_value: '98',
+    stat_1_label: 'حالة تم تأهيلها', stat_1_value: '15000', stat_1_icon: '🎯',
+    stat_2_label: 'أخصائي معتمد', stat_2_value: '80', stat_2_icon: '🏆',
+    stat_3_label: 'محافظة نخدمها', stat_3_value: '27', stat_3_icon: '📍',
+    stat_4_label: 'ساعة خبرة', stat_4_value: '25', stat_4_icon: '⏳',
+    service_1_title: 'رعاية ذوي الهمم', service_1_desc: 'خطط تأهيلية متكاملة لتطوير المهارات الحياتية والاجتماعية بأحدث الأساليب العالمية.', service_1_img: '/assets/services/disability.png',
+    service_2_title: 'دعم الأخصائيين', service_2_desc: 'أدوات مخصصة لتحسين جودة التشخيص والمتابعة الدقيقة للنتائج والتقارير.', service_2_img: '/assets/services/specialist.png',
+    service_3_title: 'الإرشاد الأسري', service_3_desc: 'نحن ندعم الأسرة كشريك أساسي في رحلة التأهيل والنمو المتكامل للطفل.', service_3_img: '/assets/services/family.png',
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -99,12 +103,12 @@ export default function AdminContentClient() {
 
   const renderInputField = (label: string, key: string, type: 'text' | 'textarea' = 'text') => (
     <div className="flex-col gap-0.5 mt-1">
-      <label htmlFor={key} className="text-sm-secondary font-bold mb-05">{label}</label>
+      <label htmlFor={key} className="text-[10px] uppercase tracking-widest opacity-60 font-bold mb-1 block">{label}</label>
       {type === 'text' ? (
         <input 
           id={key}
           title={label}
-          className="cms-input" 
+          className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm w-full focus:outline-none focus:border-indigo-500/50 transition-all" 
           value={content[key] || ''}
           onChange={(e) => updateField(key, e.target.value)}
           placeholder={`أدخل ${label}`}
@@ -113,7 +117,7 @@ export default function AdminContentClient() {
         <textarea 
           id={key}
           title={label}
-          className="cms-textarea" 
+          className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm w-full min-h-[80px] focus:outline-none focus:border-indigo-500/50 transition-all resize-y" 
           value={content[key] || ''}
           onChange={(e) => updateField(key, e.target.value)}
           placeholder={`أدخل ${label}`}
@@ -124,33 +128,34 @@ export default function AdminContentClient() {
 
   const renderImageField = (label: string, key: string) => (
     <div className="flex-col gap-0.5 mt-1">
-      <label htmlFor={key} className="text-sm-secondary font-bold mb-05">{label}</label>
-      <div className="flex row gap-1 items-center">
-        <input 
-          id={key}
-          title={label}
-          className="cms-input flex-1" 
-          value={content[key] || ''}
-          onChange={(e) => updateField(key, e.target.value)}
-          placeholder="رابط الصورة أو ارفع واحدة"
-        />
-        <div className="relative overflow-hidden btn-secondary px-2 py-0-5 cursor-pointer rounded-lg border border-primary/20 hover:bg-white/10 transition-colors flex-center">
-          <span className="text-sm">رفع 📁</span>
-          <input 
-            type="file" 
-            title="Upload file"
-            aria-label={`تغيير صورة ${label}`}
-            className="absolute inset-0 opacity-0 cursor-pointer" 
-            onChange={(e) => handleFileUpload(e, key)}
-          />
+      <label htmlFor={key} className="text-[10px] uppercase tracking-widest opacity-60 font-bold mb-1 block">{label}</label>
+      <div className="flex items-center gap-2">
+        <div className="w-16 h-16 flex-shrink-0 bg-black/40 rounded-lg border border-white/10 overflow-hidden flex-center">
+           {content[key] ? (
+             <img src={content[key]} alt="Thumb" className="w-full h-full object-cover" />
+           ) : (
+             <span className="text-[10px] opacity-30">📁</span>
+           )}
         </div>
-      </div>
-      <div className="image-preview-container bg-black/20 rounded-xl mt-1 border border-white/5 h-200 flex-center overflow-hidden">
-        {content[key] ? (
-          <img src={content[key]} alt={`Preview for ${label}`} className="w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = 'none')} />
-        ) : (
-          <span className="text-secondary text-xs opacity-50">لا توجد صورة محددة</span>
-        )}
+        <div className="flex-1 flex flex-col gap-1">
+            <input 
+              id={key}
+              title={label}
+              className="bg-white/5 border border-white/10 rounded-lg px-3 py-1 text-[11px] w-full focus:outline-none" 
+              value={content[key] || ''}
+              onChange={(e) => updateField(key, e.target.value)}
+              placeholder="رابط الصورة"
+            />
+            <div className="relative overflow-hidden btn-secondary inline-flex px-2 py-0.5 cursor-pointer rounded bg-white/5 text-[10px] hover:bg-white/10 transition-colors w-fit">
+              <span>رفع صورة</span>
+              <input 
+                type="file" 
+                title="Upload"
+                className="absolute inset-0 opacity-0 cursor-pointer" 
+                onChange={(e) => handleFileUpload(e, key)}
+              />
+            </div>
+        </div>
       </div>
     </div>
   );
@@ -191,66 +196,82 @@ export default function AdminContentClient() {
         ))}
       </div>
 
-      <div className="card glass-panel p-2 mt-1">
+      <div className="card glass-panel p-4 mt-2 border border-white/5 relative overflow-hidden">
         {activeTab === 'home' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="flex-col gap-1">
-              <h3 className="color-accent-primary font-bold border-b border-white/5 pb-1">القسم الترحيبي (Hero)</h3>
-              {renderInputField('نص التاج العلوى', 'hero_tag')}
-              {renderInputField('العنوان الرئيسي', 'welcome_title')}
-              {renderInputField('العنوان الفرعي', 'welcome_subtitle', 'textarea')}
-              {renderImageField('صورة الخلفية الرئيسية', 'home_hero_img')}
-            </div>
+          <div className="flex flex-col gap-6">
+            <section className="p-3 bg-white/5 rounded-2xl border border-white/5">
+              <h3 className="text-indigo-400 font-black text-sm mb-4 border-b border-white/10 pb-2 flex items-center gap-2">
+                <span>🚀</span> القسم الترحيبي (Hero Master)
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                 {renderInputField('نص التاج العلوى', 'hero_tag')}
+                 {renderInputField('العنوان الرئيسي', 'welcome_title')}
+                 <div className="md:col-span-2 lg:col-span-1">
+                    {renderImageField('صورة الخلفية', 'home_hero_img')}
+                 </div>
+                 <div className="col-span-1 md:col-span-2 lg:col-span-3">
+                    {renderInputField('العنوان الفرعي', 'welcome_subtitle', 'textarea')}
+                 </div>
+              </div>
+            </section>
             
-            <div className="flex-col gap-1">
-              <h3 className="color-accent-primary font-bold border-b border-white/5 pb-1">مميزات القالب (Parezy Features)</h3>
-              <div className="grid grid-cols-1 gap-2 border border-white/5 p-1 rounded-xl">
-                 <p className="font-bold text-xs color-highlight">الميزة 1 (دائرة)</p>
-                 {renderInputField('عنوان الميزة 1', 'f_title_1')}
-                 {renderInputField('وصف الميزة 1', 'f_desc_1', 'textarea')}
-                 {renderImageField('أيقونة الميزة 1', 'f_icon_1')}
+            <section className="p-3 bg-white/5 rounded-2xl border border-white/5">
+              <h3 className="text-indigo-400 font-black text-sm mb-4 border-b border-white/10 pb-2 flex items-center gap-2">
+                <span>📈</span> إحصائيات النجاح (World-Class Stats)
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                 {[1,2,3,4].map(num => (
+                    <div key={num} className="bg-black/20 p-3 rounded-xl border border-white/5">
+                       <p className="text-[10px] font-bold text-indigo-300 opacity-60 mb-2">إحصائية {num}</p>
+                       {renderInputField('التسمية', `stat_${num}_label`)}
+                       {renderInputField('القيمة', `stat_${num}_value`)}
+                       {renderInputField('الأيقونة', `stat_${num}_icon`)}
+                    </div>
+                 ))}
               </div>
-              <div className="grid grid-cols-1 gap-2 border border-white/5 p-1 rounded-xl mt-1">
-                 <p className="font-bold text-xs color-highlight">الميزة 2 (مربع)</p>
-                 {renderInputField('عنوان الميزة 2', 'f_title_2')}
-                 {renderInputField('وصف الميزة 2', 'f_desc_2', 'textarea')}
-                 {renderImageField('أيقونة الميزة 2', 'f_icon_2')}
-              </div>
-            </div>
+            </section>
 
-            <div className="flex-col gap-1">
-              <h3 className="color-accent-primary font-bold border-b border-white/5 pb-1">إحصائيات النجاح (Progress Bars)</h3>
-              <div className="grid grid-cols-2 gap-2">
-                 {renderInputField('تسمية 1', 'stat_1_label')}
-                 {renderInputField('قيمة 1 (%)', 'stat_1_value')}
-                 {renderInputField('تسمية 2', 'stat_2_label')}
-                 {renderInputField('قيمة 2 (%)', 'stat_2_value')}
-                 {renderInputField('تسمية 3', 'stat_3_label')}
-                 {renderInputField('قيمة 3 (%)', 'stat_3_value')}
+            <section className="p-3 bg-white/5 rounded-2xl border border-white/5">
+              <h3 className="text-indigo-400 font-black text-sm mb-4 border-b border-white/10 pb-2 flex items-center gap-2">
+                <span>🛠️</span> الخدمات الرئيسية (Services)
+              </h3>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                 {[1,2,3].map(num => (
+                    <div key={num} className="bg-black/20 p-3 rounded-xl border border-white/5">
+                       <p className="text-[10px] font-bold text-indigo-300 opacity-60 mb-2">الخدمة {num}</p>
+                       {renderInputField('العنوان', `service_${num}_title`)}
+                       {renderInputField('الوصف', `service_${num}_desc`, 'textarea')}
+                       {renderImageField('الصورة', `service_${num}_img`)}
+                    </div>
+                 ))}
               </div>
-            </div>
+            </section>
 
-            <div className="flex-col gap-1">
-              <h3 className="color-accent-primary font-bold border-b border-white/5 pb-1">ملخصات الأقسام</h3>
-              {renderInputField('ملخص "من نحن"', 'about_summary', 'textarea')}
-              {renderInputField('ملخص "خدماتنا"', 'services_summary', 'textarea')}
-              {renderInputField('ملخص "الأخصائيين"', 'specialist_summary', 'textarea')}
-              {renderInputField('ملخص "الكبار"', 'adult_summary', 'textarea')}
-            </div>
+            <section className="p-3 bg-white/5 rounded-2xl border border-white/5">
+              <h3 className="text-indigo-400 font-black text-sm mb-4 border-b border-white/10 pb-2 flex items-center gap-2">
+                <span>📝</span> ملخصات الأقسام
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                 {renderInputField('ملخص "من نحن"', 'about_summary', 'textarea')}
+                 {renderInputField('ملخص "خدماتنا"', 'services_summary', 'textarea')}
+                 {renderInputField('ملخص "الأخصائيين"', 'specialist_summary', 'textarea')}
+                 {renderInputField('ملخص "الكبار"', 'adult_summary', 'textarea')}
+              </div>
+            </section>
           </div>
         )}
 
         {activeTab === 'slider' && <AdminSlider />}
 
         {['about', 'contact', 'guidance', 'policies', 'privacy'].includes(activeTab) && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-             <div className="flex-col gap-1">
-               <h3 className="color-accent-primary font-bold border-b border-white/5 pb-1 caps">إعدادات صفحة {activeTab}</h3>
-               {renderInputField('عنوان الصفحة', `${activeTab}_page_title`)}
-               {renderInputField('وصف الصفحة التفصيلي', `${activeTab}_page_description`, 'textarea')}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+             <div className="md:col-span-2 flex flex-col gap-4">
+                <h3 className="text-indigo-400 font-bold border-b border-white/10 pb-2">إعدادات صفحة {activeTab}</h3>
+                {renderInputField('عنوان الصفحة', `${activeTab}_page_title`)}
+                {renderInputField('وصف الصفحة التفصيلي', `${activeTab}_page_description`, 'textarea')}
              </div>
-             <div className="flex-col gap-1">
-               {renderImageField('صورة الصفحة المعروضة', `${activeTab}_page_img`)}
+             <div className="bg-black/20 p-4 rounded-2xl border border-white/5">
+                {renderImageField('صورة الصفحة', `${activeTab}_page_img`)}
              </div>
           </div>
         )}

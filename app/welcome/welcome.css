@@ -1,0 +1,297 @@
+/* Welcome Page Styles - Industrial Grade Masterpiece V13.4 */
+
+.s-root { 
+  font-family: 'Cairo', sans-serif; 
+  background: #ffffff; 
+  color: #1e293b; 
+  overflow-x: hidden; 
+  transition: background 0.5s, color 0.5s; 
+}
+
+[data-theme='dark'] .s-root { 
+  background: #0f172a; 
+  color: #f1f5f9; 
+}
+
+.s-container { 
+  max-width: 1400px; 
+  margin: 0 auto; 
+  padding: 0 40px; 
+}
+
+.s-section-grand { 
+  padding-top: 100px !important; 
+  padding-bottom: 100px !important; 
+}
+
+.s-surface { 
+  background: #ffffff; 
+  transition: background 0.5s; 
+}
+
+[data-theme='dark'] .s-surface { 
+  background: #0f172a; 
+}
+
+.s-surface-muted { 
+  background: #f1f5f9; 
+  transition: background 0.5s; 
+}
+
+[data-theme='dark'] .s-surface-muted { 
+  background: #1e293b; 
+}
+
+/* Hero Section */
+.s-hero-adaptive { 
+  height: 100vh; 
+  position: relative; 
+  overflow: hidden; 
+  background: #000; 
+  z-index: 10; 
+}
+
+.s-slider { 
+  height: 100%; 
+  position: relative; 
+  z-index: 20; 
+}
+
+.s-slide { 
+  position: absolute; 
+  inset: 0; 
+  opacity: 0; 
+  visibility: hidden; 
+  transition: 1.5s cubic-bezier(0.16, 1, 0.3, 1); 
+  z-index: 30; 
+}
+
+.s-slide.active { 
+  opacity: 1; 
+  visibility: visible; 
+  z-index: 40; 
+}
+
+.s-slide-img { 
+  position: absolute; 
+  inset: 0; 
+  background-image: var(--slide-bg); 
+  background-size: cover; 
+  background-position: center; 
+  z-index: 1; 
+  filter: brightness(0.6); 
+  transform: scale(1.1); 
+  transition: 10s linear; 
+}
+
+.s-slide.active .s-slide-img { 
+  transform: scale(1); 
+}
+
+.s-hero-content-layer { 
+  z-index: 1000 !important; 
+}
+
+.s-hero-content { 
+  position: relative; 
+  z-index: 1001 !important; 
+  padding: 0; 
+  max-width: 950px; 
+  color: #ffffff !important; 
+  text-align: right; 
+}
+
+.s-tag { 
+  color: #818cf8; 
+  font-weight: 950; 
+  text-transform: uppercase; 
+  letter-spacing: 4px; 
+  font-size: 1.1rem; 
+  margin-bottom: 2rem; 
+  display: block; 
+}
+
+.s-title-h1 { 
+  font-size: clamp(3.5rem, 6.5vw, 6.5rem); 
+  font-weight: 950; 
+  line-height: 1.1; 
+  margin-bottom: 2.5rem; 
+  color: #ffffff !important; 
+  text-shadow: 0 4px 20px rgba(0,0,0,0.5); 
+}
+
+.s-title-h2 { 
+  font-size: clamp(3.5rem, 5vw, 5rem); 
+  font-weight: 950; 
+  line-height: 1.2; 
+}
+
+.s-title-p { 
+  font-size: 2rem; 
+  line-height: 1.8; 
+  max-width: 850px; 
+  color: #ffffff !important; 
+  opacity: 0.95; 
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3); 
+}
+
+.maza-hero-btn { 
+  display: inline-flex !important; 
+  align-items: center; 
+  justify-content: center; 
+  padding: 1.4rem 4rem; 
+  background: rgba(255,255,255,0.1) !important; 
+  color: #ffffff !important; 
+  border-radius: 20px; 
+  font-weight: 950; 
+  font-size: 1.4rem; 
+  text-decoration: none !important; 
+  -webkit-backdrop-filter: blur(15px); 
+  backdrop-filter: blur(15px); 
+  transition: 0.5s; 
+  border: 2px solid rgba(255,255,255,0.5) !important; 
+  cursor: pointer; 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+}
+
+.maza-hero-btn:hover { 
+  transform: translateY(-5px) scale(1.05); 
+  background: #ffffff !important; 
+  color: #4f46e5 !important; 
+  border-color: #ffffff !important; 
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+}
+
+.s-nav-btn { 
+  position: absolute; 
+  top: 50%; 
+  translate: 0 -50%; 
+  width: 90px; 
+  height: 90px; 
+  border-radius: 50%; 
+  background: rgba(255,255,255,0.1); 
+  color: white; 
+  border: 1px solid rgba(255,255,255,0.2); 
+  z-index: 2000; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  cursor: pointer; 
+  transition: 0.5s; 
+  -webkit-backdrop-filter: blur(15px); 
+  backdrop-filter: blur(15px); 
+}
+
+.s-nav-btn:hover { 
+  background: #6366f1; 
+  transform: translateY(-50%) scale(1.1); 
+  border-color: #ffffff; 
+}
+
+.s-nav-btn.right { right: 60px; }
+.s-nav-btn.left { left: 60px; }
+
+/* Components */
+.s-stat-value {
+  font-size: clamp(4rem, 8vw, 6.5rem);
+  font-weight: 950;
+  color: #6366f1;
+  line-height: 1;
+  margin-bottom: 1.2rem;
+  letter-spacing: -0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.s-stat-label {
+  font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+  font-weight: 950;
+  opacity: 0.95;
+  color: #1e293b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+}
+
+[data-theme='dark'] .s-stat-label {
+  color: #f1f5f9;
+}
+
+.s-stat-icon-bg { 
+  font-size: 80px; 
+  line-height: 1; 
+}
+
+.s-bento-dual { 
+  display: grid; 
+  grid-template-columns: 1.1fr 0.9fr; 
+  gap: 100px; 
+  align-items: center; 
+}
+
+.s-services-grid-v2 { 
+  display: grid; 
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 60px; 
+  margin: 60px 0; 
+  width: 100%; 
+}
+
+.s-stats-grid { 
+  display: grid; 
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 80px; 
+}
+
+.s-adaptive-card { 
+  border-radius: 60px; 
+  transition: 0.5s; 
+}
+
+.s-adaptive-card:hover { 
+  transform: translateY(-20px); 
+  background: white; 
+  box-shadow: 0 40px 80px -15px rgba(0,0,0,0.1); 
+}
+
+[data-theme='dark'] .s-adaptive-card:hover { 
+  background: #1e293b; 
+}
+
+/* Animations */
+.anim-up { 
+  animation: up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+  opacity: 0; 
+  animation-delay: var(--delay, 0s); 
+}
+
+.anim-pop { 
+  animation: pop 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards; 
+  opacity: 0; 
+}
+
+@keyframes up { 
+  from { opacity: 0; transform: translateY(80px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+@keyframes pop { 
+  from { opacity: 0; transform: scale(0.92); } 
+  to { opacity: 1; transform: scale(1); } 
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .s-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
+}
+
+@media (max-width: 768px) {
+  .s-container { padding: 0 30px; }
+  .s-bento-dual, .s-stats-grid, .s-services-grid-v2 { grid-template-columns: 1fr !important; gap: 60px; }
+  .s-hero-content { text-align: center; margin: 0 auto; padding: 40px 30px; }
+  .s-nav-btn { width: 70px; height: 70px; }
+  .s-nav-btn.right { right: 20px; }
+  .s-nav-btn.left { left: 20px; }
+  .s-title-h1 { font-size: 3.2rem; }
+}

@@ -1,9 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import './welcome.css'; 
 
 interface Slide {
   id: string | number;
@@ -14,58 +15,91 @@ interface Slide {
   btnText: string;
 }
 
+interface Stat {
+  l: string;
+  v: string;
+  p: string;
+  i: string;
+}
+
+interface Service {
+  i: string;
+  t: string;
+  d: string;
+}
+
 const defaultSlides: Slide[] = [
-  {
-    id: 'def1',
-    image: '/assets/hero/parent_v11.png',
-    title: 'تمكين طفلك يبدأ بخبراتنا',
-    subtitle: 'سجل الآن كولي أمر لتستفيد من برامج تأهيلية متكاملة مصممة خصيصاً لطفلك.',
-    link: '/register',
-    btnText: 'تسجيل ولي أمر'
-  },
-  {
-    id: 'def2',
-    image: '/assets/hero/specialist_v11.png',
-    title: 'مجتمع الأخصائيين المعتمدين',
-    subtitle: 'انضم لنخبة الأخصائيين واستخدم أدواتنا المتطورة في المتابعة والتشخيص.',
-    link: '/register',
-    btnText: 'تسجيل أخصائي'
-  },
-  {
-    id: 'def3',
-    image: '/assets/hero/center_v11.png',
-    title: 'حلول رقمية للمراكز المتخصصة',
-    subtitle: 'قم بإدارة مركزك بكفاءة عالية وتابع تقدم جميع الحالات في منصة واحدة.',
-    link: '/register',
-    btnText: 'تسجيل مركز متخصص'
-  },
-  {
-    id: 'def4',
-    image: '/assets/hero/consult_v11.png',
-    title: 'استشارة شخصية من الخبراء',
-    subtitle: 'احجز جلستك الآن مع طاقم خبراء متميز للحصول على توجيه دقيق ومدروس.',
-    link: '/contact',
-    btnText: 'طلب استشارة شخصية'
-  }
+  { id: 'def1', image: '/assets/hero/parent_v11.png', title: 'تمكين طفلك يبدأ بخبراتنا', subtitle: 'سجل الآن كولي أمر لتستفيد من برامج تأهيلية متكاملة مصممة خصيصاً لطفلك.', link: '/register', btnText: 'تسجيل ولي أمر' },
+  { id: 'def2', image: '/assets/hero/specialist_v11.png', title: 'مجتمع الأخصائيين المعتمدين', subtitle: 'انضم لنخبة الأخصائيين واستخدم أدواتنا المتطورة في المتابعة والتشخيص.', link: '/register', btnText: 'تسجيل أخصائي' },
+  { id: 'def3', image: '/assets/hero/center_v11.png', title: 'حلول رقمية للمراكز المتخصصة', subtitle: 'قم بإدارة مركزك بكفاءة عالية وتابع تقدم جميع الحالات في منصة واحدة.', link: '/register', btnText: 'تسجيل مركز متخصص' },
+  { id: 'def4', image: '/assets/hero/consult_v11.png', title: 'استشارة شخصية من الخبراء', subtitle: 'احجز جلستك الآن مع طاقم خبراء متميز للحصول على توجيه دقيق ومدروس.', link: '/contact', btnText: 'طلب استشارة شخصية' }
+];
+
+const defaultStats: Stat[] = [
+  { l: "حالة تم تأهيلها", v: "15000", p: "+", i: "🎯" },
+  { l: "أخصائي معتمد", v: "80", p: "+", i: "🏆" },
+  { l: "محافظة نخدمها", v: "27", p: "", i: "📍" },
+  { l: "ساعة خبرة", v: "25", p: "k+", i: "⏳" }
+];
+
+const defaultServices: Service[] = [
+  { i: "/assets/services/disability.png", t: "رعاية ذوي الهمم", d: "خطط تأهيلية متكاملة لتطوير المهارات الحياتية والاجتماعية بأحدث الأساليب العالمية." },
+  { i: "/assets/services/specialist.png", t: "دعم الأخصائيين", d: "أدوات مخصصة لتحسين جودة التشخيص والمتابعة الدقيقة للنتائج والتقارير." },
+  { i: "/assets/services/family.png", t: "الإرشاد الأسري", d: "نحن ندعم الأسرة كشريك أساسي في رحلة التأهيل والنمو المتكامل للطفل." }
 ];
 
 export default function WelcomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slides, setSlides] = useState<Slide[]>(defaultSlides);
+  const [stats, setStats] = useState<Stat[]>(defaultStats);
+  const [services, setServices] = useState<Service[]>(defaultServices);
   const [loading, setLoading] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch('/api/admin/slides');
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.length > 0) {
-            setSlides(data);
+        const [slidesRes, contentRes] = await Promise.all([
+          fetch('/api/admin/slides'),
+          fetch('/api/admin/content')
+        ]);
+
+        if (slidesRes.ok) {
+          const slidesData = await slidesRes.json();
+          if (slidesData && slidesData.length > 0) setSlides(slidesData);
+        }
+
+        if (contentRes.ok) {
+          const contentData = await contentRes.json();
+          if (contentData) {
+            const dynamicStats: Stat[] = [];
+            for (let i = 1; i <= 4; i++) {
+              if (contentData[`stat_${i}_label`] || contentData[`stat_${i}_value`]) {
+                dynamicStats.push({
+                  l: contentData[`stat_${i}_label`] || '',
+                  v: contentData[`stat_${i}_value`] || '',
+                  p: i === 1 || i === 2 ? '+' : i === 4 ? 'k+' : '',
+                  i: contentData[`stat_${i}_icon`] || '✨'
+                });
+              }
+            }
+            if (dynamicStats.length > 0) setStats(dynamicStats);
+
+            const dynamicServices: Service[] = [];
+            for (let i = 1; i <= 3; i++) {
+              if (contentData[`service_${i}_title`]) {
+                dynamicServices.push({
+                  t: contentData[`service_${i}_title`],
+                  d: contentData[`service_${i}_desc`] || '',
+                  i: contentData[`service_${i}_img`] || '/assets/services/disability.png'
+                });
+              }
+            }
+            if (dynamicServices.length > 0) setServices(dynamicServices);
           }
         }
       } catch (err) {
-        console.warn("API Fetch failed, using defaults", err);
+        console.warn("CMS Fetch failed", err);
       } finally {
         setLoading(false);
       }
@@ -89,189 +123,104 @@ export default function WelcomePage() {
   );
 
   return (
-    <div className="s-root" dir="rtl">
+    <div className="s-root" dir="rtl" ref={containerRef}>
       
-      {/* Hero Master - Optimization with Surgical Layering */}
       <section className="s-hero-adaptive">
         <div className="s-slider">
           {slides.map((slide, idx) => (
-            <div key={slide.id} className={`s-slide ${idx === currentSlide ? 'active' : ''}`}>
-              {/* background image using next/image for quality, but layered behind */}
-              <div className="s-slide-bg-container">
-                <Image 
-                  src={slide.image} 
-                  alt={slide.title} 
-                  fill 
-                  priority={idx === 0} 
-                  className="object-cover brightness-[0.7] transform scale-[1.05]"
-                  sizes="100vw"
-                  quality={95}
-                />
-              </div>
-              <div className="s-container h-full flex items-center relative z-20">
-                  <div className="s-glass-card">
-                     <h1 className="s-title-h1">{slide.title}</h1>
-                     <p className="s-title-p">{slide.subtitle}</p>
-                     <div className="mt-[55px]">
-                        <Link 
-                          href={slide.link} 
-                          className="maza-hero-btn" 
-                          title={slide.btnText || "اكتشف المزيد"}
-                          aria-label={slide.btnText || "اكتشف المزيد"}
-                        >
-                          {slide.btnText || "اكتشف المزيد"}
-                        </Link>
-                     </div>
+            <div key={idx} className={`s-slide ${idx === currentSlide ? 'active' : ''}`}>
+              {/* Dynamic background handled via standard data attribute or controlled injection in CSS */}
+              <div 
+                className="s-slide-img" 
+                data-bg={slide.image}
+                // Using double brackets to ensure it's not a template string in standard JSX if possible
+                {...({ style: { '--slide-bg': `url(${slide.image})` } } as any)} 
+              ></div>
+              <div className="s-container h-full flex items-center relative s-hero-content-layer">
+                <div className="s-hero-content">
+                  <h1 className="s-title-h1">{slide.title}</h1>
+                  <p className="s-title-p">{slide.subtitle}</p>
+                  <div className="mt-[55px]">
+                    <Link href={slide.link} className="maza-hero-btn" title={slide.btnText || "اكتشف المزيد"}>
+                      {slide.btnText || "اكتشف المزيد"}
+                    </Link>
                   </div>
+                </div>
               </div>
             </div>
           ))}
         </div>
         
-        <button className="s-nav-btn right" onClick={() => setCurrentSlide((currentSlide - 1 + slides.length) % slides.length)} title="السابق" aria-label="السابق">
-           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        <button className="s-nav-btn right" onClick={() => setCurrentSlide((currentSlide - 1 + slides.length) % slides.length)} title="السابق">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </button>
-        <button className="s-nav-btn left" onClick={() => setCurrentSlide((currentSlide + 1) % slides.length)} title="التالي" aria-label="التالي">
-           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <button className="s-nav-btn left" onClick={() => setCurrentSlide((currentSlide + 1) % slides.length)} title="التالي">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
       </section>
 
-      {/* About Section */}
       <section className="s-surface s-section-grand relative overflow-hidden">
         <div className="s-container">
-           <div className="s-bento-dual">
-             <div className="anim-up">
-                <div className="s-tag mb-8">عقد من التميز</div>
-                <h2 className="s-title-h2 mb-12">نقلة نوعية في <span className="text-indigo-600">التأهيل</span> الرقمي</h2>
-                <div className="bg-indigo-600/10 p-12 rounded-3xl border border-indigo-500/20 backdrop-blur-xl mb-12 text-right">
-                   <div className="text-sm font-bold text-indigo-400 mb-2 uppercase tracking-widest">خبرتنا المتراكمة</div>
-                   <div className="text-6xl font-black mb-4">10 سنوات</div>
-                   <div className="text-2xl opacity-90 leading-relaxed font-black">في رعاية وتمكين ذوي الهمم بأحدث المعايير الدولية</div>
-                </div>
-                <p className="text-2xl opacity-70 leading-relaxed mb-16">
-                   أكاديمية ماذا هي منصة تربوية وتأهيلية تسعى لتمكين ذوي الهمم وأسرهم عبر برامج مدروسة وفريق عمل متخصص. نحن نؤمن بالقدرات اللامحدودة لكل طفل ونعمل على صقلها بأفضل المعايير الدولية.
-                </p>
-                <div>
-                   <Link href="/about" className="maza-hero-btn" title="اكتشف كواليس العمل" aria-label="اكتشف كواليس العمل">اكتشف كواليس العمل</Link>
-                </div>
-             </div>
-             <div className="relative anim-pop p-0 overflow-hidden group min-h-[600px] rounded-[60px] border-none shadow-2xl">
-                <Image src="/assets/hero/parent_v11.png" alt="About Maza" fill className="object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-             </div>
+          <div className="s-bento-dual">
+            <div className="anim-up">
+              <div className="s-tag mb-8">عقد من التميز</div>
+              <h2 className="s-title-h2 mb-12">نقلة نوعية في <span className="text-indigo-600">التأهيل</span> الرقمي</h2>
+              <div className="bg-indigo-600/10 p-12 rounded-3xl border border-indigo-500/20 backdrop-blur-xl mb-12 text-right">
+                <div className="text-sm font-bold text-indigo-400 mb-2 uppercase tracking-widest">خبرتنا المتراكمة</div>
+                <div className="text-6xl font-black mb-4">10 سنوات</div>
+                <div className="text-2xl opacity-90 leading-relaxed font-black">في رعاية وتمكين ذوي الهمم بأحدث المعايير الدولية</div>
+              </div>
+              <p className="text-2xl opacity-70 leading-relaxed mb-16">
+                أكاديمية ماذا هي منصة تربوية وتأهيلية تسعى لتمكين ذوي الهمم وأسرهم عبر برامج مدروسة وفريق عمل متخصص. نحن نؤمن بالقدرات اللامحدودة لكل طفل ونعمل على صقلها بأفضل المعايير الدولية.
+              </p>
+              <div>
+                <Link href="/about" className="maza-hero-btn" title="اكتشف كواليس العمل">اكتشف كواليس العمل</Link>
+              </div>
+            </div>
+            <div className="relative anim-pop p-0 overflow-hidden group min-h-[600px] rounded-[60px] border-none shadow-2xl">
+              <img src="/assets/hero/parent_v11.png" alt="About Maza" className="w-full h-full object-cover grayscale-[0.2] transition-all duration-1000 scale-105 group-hover:scale-110" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
-       <section className="s-surface-muted s-section-grand relative overflow-hidden">
-         <div className="s-container flex flex-col items-center justify-center min-h-[50vh]">
-            <div className="text-center mb-32 anim-up">
-               <span className="s-tag">حلولنا الحصرية</span>
-               <h2 className="s-title-h2 mt-8">خدمات مصممة <span className="text-indigo-600">بدقة</span></h2>
-            </div>
-            <div className="s-services-grid-v2">
-              {[
-                { i: "/assets/services/disability.png", t: "رعاية ذوي الهمم", d: "خطط تأهيلية متكاملة لتطوير المهارات الحياتية والاجتماعية بأحدث الأساليب العالمية." },
-                { i: "/assets/services/specialist.png", t: "دعم الأخصائيين", d: "أدوات مخصصة لتحسين جودة التشخيص والمتابعة الدقيقة للنتائج والتقارير." },
-                { i: "/assets/services/family.png", t: "الإرشاد الأسري", d: "نحن ندعم الأسرة كشريك أساسي في رحلة التأهيل والنمو المتكامل للطفل." }
-              ].map((f, i) => (
-                <div key={i} className="s-adaptive-card p-12 text-right anim-up border-none shadow-none bg-slate-50 dark:bg-white/5" style={{ animationDelay: `${i * 0.2}s` }}>
-                   <div className="mb-10 w-40 h-40 overflow-hidden rounded-2xl mx-auto md:ml-0 md:mr-auto relative">
-                      <Image src={f.i} alt={f.t} fill className="object-cover transform hover:scale-110 transition-transform duration-500" />
-                   </div>
-                   <h3 className="text-4xl font-black mb-6 mt-8">{f.t}</h3>
-                   <p className="opacity-70 leading-relaxed text-2xl">{f.d}</p>
+      <section className="s-surface-muted s-section-grand relative overflow-hidden">
+        <div className="s-container">
+          <div className="text-center mb-32 anim-up">
+            <span className="s-tag">حلولنا الحصرية</span>
+            <h2 className="s-title-h2 mt-8">خدمات مصممة <span className="text-indigo-600">بدقة</span></h2>
+          </div>
+          <div className="s-services-grid-v2">
+            {services.map((f, i) => (
+              <div key={i} className="s-adaptive-card p-12 text-right anim-up border-none shadow-none bg-slate-50 dark:bg-white/5" {...({ style: { '--delay': `${i * 0.2}s` } } as any)}>
+                <div className="mb-10 w-40 h-40 overflow-hidden rounded-2xl mx-auto md:ml-0 md:mr-auto relative">
+                  <img src={f.i} alt={f.t} className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500" />
                 </div>
-              ))}
-            </div>
+                <h3 className="text-4xl font-black mb-6 mt-8">{f.t}</h3>
+                <p className="opacity-70 leading-relaxed text-2xl">{f.d}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Stats Section - HUGE TEXT Optimization */}
       <section className="s-surface s-section-grand relative overflow-hidden">
         <div className="s-container relative z-10">
-            <div className="s-stats-grid">
-               {[
-                 { l: "حالة تم تأهيلها", v: 15000, p: "+", i: "🎯" },
-                 { l: "أخصائي معتمد", v: 80, p: "+", i: "🏆" },
-                 { l: "محافظة نخدمها", v: 27, p: "", i: "📍" },
-                 { l: "ساعة خبرة", v: 25, p: "k+", i: "⏳" }
-               ].map((s, i) => (
-                 <div key={i} className="text-center md:text-right anim-up" style={{ animationDelay: `${i * 0.2}s` }}>
-                    <div className="s-stat-icon-bg mb-12 opacity-20">{s.i}</div>
-                    <div className="s-huge-number text-indigo-600 mb-6 flex items-center justify-center md:justify-start">
-                       <span>{s.v}</span>
-                       <span className="ml-2">{s.p}</span>
-                    </div>
-                    <div className="text-3xl font-black opacity-60 uppercase tracking-widest">{s.l}</div>
-                 </div>
-               ))}
-            </div>
+          <div className="s-stats-grid">
+            {stats.map((s, i) => (
+              <div key={i} className="text-center md:text-right anim-up" {...({ style: { '--delay': `${i * 0.3}s` } } as any)}>
+                <div className="s-stat-icon-bg mb-12 opacity-20">{s.i}</div>
+                <div className="s-stat-value">
+                  <span>{s.v}</span>
+                  <span className="ml-2">{s.p}</span>
+                </div>
+                <div className="s-stat-label">{s.l}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
-
-      <style jsx>{`
-        .s-root { font-family: 'Cairo', sans-serif; background: #ffffff; color: #1e293b; overflow-x: hidden; transition: background 0.5s, color 0.5s; }
-        :global([data-theme='dark']) .s-root { background: #0f172a; color: #f1f5f9; }
-        .s-container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
-        .s-section-grand { padding-top: 100px !important; padding-bottom: 100px !important; }
-        .s-surface { background: #ffffff; transition: background 0.5s; }
-        :global([data-theme='dark']) .s-surface { background: #0f172a; }
-        .s-surface-muted { background: #f1f5f9; transition: background 0.5s; }
-        :global([data-theme='dark']) .s-surface-muted { background: #1e293b; }
-        
-        .s-hero-adaptive { height: 100vh; position: relative; overflow: hidden; background: #000; }
-        .s-slider { height: 100%; position: relative; }
-        .s-slide { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .s-slide.active { opacity: 1; visibility: visible; z-index: 10; }
-        
-        .s-slide-bg-container { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
-        .active .s-slide-bg-container :global(img) { transform: scale(1) !important; transition: 10s linear !important; }
-
-        .s-glass-card { z-index: 1001; padding: 60px; max-width: 850px; color: #ffffff !important; text-align: right; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(25px); border-radius: 40px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
-        .s-tag { color: #818cf8; font-weight: 950; text-transform: uppercase; letter-spacing: 4px; font-size: 1.1rem; margin-bottom: 2rem; display: block; }
-        .s-title-h1 { font-size: clamp(3.5rem, 6vw, 5.5rem); font-weight: 950; line-height: 1.1; margin-bottom: 2.5rem; color: #ffffff !important; }
-        .s-title-h2 { font-size: clamp(3.5rem, 5vw, 5rem); font-weight: 950; line-height: 1.2; }
-        .s-title-p { font-size: 1.8rem; line-height: 1.8; max-width: 750px; color: #ffffff !important; opacity: 0.95; }
-        
-        .maza-hero-btn { display: inline-flex; align-items: center; justify-content: center; padding: 1.2rem 3rem; background: linear-gradient(135deg, #6366f1, #4f46e5); color: #ffffff !important; border-radius: 16px; font-weight: 900; font-size: 1.2rem; text-decoration: none; box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4); transition: 0.5s; border: 1px solid rgba(255,255,255,0.3); cursor: pointer; }
-        .maza-hero-btn:hover { transform: translateY(-5px) scale(1.05); background: linear-gradient(135deg, #818cf8, #6366f1); }
-        
-        .s-nav-btn { position: absolute; top: 50%; translate: 0 -50%; width: 90px; height: 90px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); z-index: 500; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.5s; backdrop-filter: blur(15px); }
-        .s-nav-btn:hover { background: #6366f1; transform: translateY(-50%) scale(1.1); border-color: #ffffff; }
-        .s-nav-btn.right { right: 60px; }
-        .s-nav-btn.left { left: 60px; }
-        
-        .s-huge-number { font-size: clamp(5rem, 10vw, 9rem); font-weight: 950; line-height: 1; letter-spacing: -2px; }
-        .s-stat-icon-bg { font-size: 120px; line-height: 1; margin-bottom: 2rem; }
-        
-        .s-bento-dual { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 100px; align-items: center; }
-        .s-services-grid-v2 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; margin: 60px 0; width: 100%; }
-        .s-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 80px; }
-        .s-adaptive-card { border-radius: 60px; transition: 0.5s; }
-        .s-adaptive-card:hover { transform: translateY(-20px); background: white; box-shadow: 0 40px 80px -15px rgba(0,0,0,0.1); }
-        :global([data-theme='dark']) .s-adaptive-card:hover { background: #1e293b; }
-
-        .anim-up { animation: up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-        .anim-pop { animation: pop 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards; opacity: 0; }
-        @keyframes up { from { opacity: 0; transform: translateY(80px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pop { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
-        
-        @media (max-width: 1024px) {
-           .s-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
-        }
-        @media (max-width: 768px) {
-           .s-container { padding: 0 30px; }
-           .s-bento-dual, .s-stats-grid, .s-services-grid-v2 { grid-template-columns: 1fr !important; gap: 60px; }
-           .s-glass-card { text-align: center; margin: 0 auto; padding: 40px 30px; }
-           .s-nav-btn { width: 70px; height: 70px; }
-           .s-nav-btn.right { right: 20px; }
-           .s-nav-btn.left { left: 20px; }
-           .s-title-h1 { font-size: 3.2rem; }
-           .s-huge-number { font-size: 6rem; }
-        }
-      `}</style>
     </div>
   );
 }
