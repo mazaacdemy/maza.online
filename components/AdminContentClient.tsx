@@ -40,6 +40,11 @@ export default function AdminContentClient() {
     service_1_title: 'رعاية ذوي الهمم', service_1_desc: 'خطط تأهيلية متكاملة لتطوير المهارات الحياتية والاجتماعية بأحدث الأساليب العالمية.', service_1_img: '/assets/services/disability.png',
     service_2_title: 'دعم الأخصائيين', service_2_desc: 'أدوات مخصصة لتحسين جودة التشخيص والمتابعة الدقيقة للنتائج والتقارير.', service_2_img: '/assets/services/specialist.png',
     service_3_title: 'الإرشاد الأسري', service_3_desc: 'نحن ندعم الأسرة كشريك أساسي في رحلة التأهيل والنمو المتكامل للطفل.', service_3_img: '/assets/services/family.png',
+    services_section_tag: 'حلولنا الحصرية', services_section_title: 'خدمات مصممة بدقة',
+    about_tag: 'عقد من التميز', about_title: 'نقلة نوعية في التأهيل الرقمي',
+    about_years_label: 'خبرتنا المتراكمة', about_years_value: '10 سنوات', about_years_desc: 'في رعاية وتمكين ذوي الهمم بأحدث المعايير الدولية',
+    about_description: 'أكاديمية ماذا هي منصة تربوية وتأهيلية تسعى لتمكين ذوي الهمم وأسرهم عبر برامج مدروسة وفريق عمل متخصص.',
+    about_btn_text: 'اكتشف كواليس العمل', about_home_img: '/assets/hero/parent_v11.png',
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -199,6 +204,36 @@ export default function AdminContentClient() {
       <div className="card glass-panel p-4 mt-2 border border-white/5 relative overflow-hidden">
         {activeTab === 'home' && (
           <div className="flex flex-col gap-6">
+            <section className="p-3 bg-white/5 rounded-2xl border border-white/5">
+              <h3 className="text-indigo-400 font-black text-sm mb-4 border-b border-white/10 pb-2 flex items-center gap-2">
+                <span>🏠</span> قسم "من نحن" — الصفحة الرئيسية
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {renderInputField('تاج العنوان', 'about_tag')}
+                {renderInputField('العنوان الرئيسي', 'about_title')}
+                {renderInputField('نص الزر', 'about_btn_text')}
+                {renderInputField('تسمية سنوات الخبرة', 'about_years_label')}
+                {renderInputField('قيمة سنوات الخبرة', 'about_years_value')}
+                {renderInputField('وصف الخبرة', 'about_years_desc')}
+                <div className="col-span-1 md:col-span-2 lg:col-span-3">
+                  {renderInputField('نص الوصف', 'about_description', 'textarea')}
+                </div>
+                <div className="col-span-1 md:col-span-2 lg:col-span-3">
+                  {renderImageField('الصورة الجانبية', 'about_home_img')}
+                </div>
+              </div>
+            </section>
+
+            <section className="p-3 bg-white/5 rounded-2xl border border-white/5">
+              <h3 className="text-indigo-400 font-black text-sm mb-4 border-b border-white/10 pb-2 flex items-center gap-2">
+                <span>🎯</span> عنوان قسم الخدمات
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {renderInputField('التاج', 'services_section_tag')}
+                {renderInputField('العنوان الرئيسي', 'services_section_title')}
+              </div>
+            </section>
+
             <section className="p-3 bg-white/5 rounded-2xl border border-white/5">
               <h3 className="text-indigo-400 font-black text-sm mb-4 border-b border-white/10 pb-2 flex items-center gap-2">
                 <span>🚀</span> القسم الترحيبي (Hero Master)

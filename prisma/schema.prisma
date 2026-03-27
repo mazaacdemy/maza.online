@@ -33,12 +33,12 @@ model User {
 }
 
 enum Role {
+  SUPER_ADMIN
   SPECIALIST
   PARENT
   ADMIN
   CENTER
   MODERATOR
-  SUPER_ADMIN
 }
 
 model Patient {

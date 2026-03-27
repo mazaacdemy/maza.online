@@ -10,7 +10,12 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const currentUserRole = (session.user as any).role;
+    
     const users = await prisma.user.findMany({
+      where: currentUserRole === 'SUPER_ADMIN' ? {} : {
+        role: { not: 'SUPER_ADMIN' }
+      },
       select: {
         id: true,
         name: true,

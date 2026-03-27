@@ -54,7 +54,7 @@ export default function AboutPage() {
           <h2>من نخدم؟</h2>
           <div className="audience-list">
             <div className="item">
-              <h4>ذوي الاحتياجات الخاصة</h4>
+              <h4>ذوى الهمم</h4>
               <p>نقدم لهم تقارير تقييم ذكية وجلسات متابعة تخاطب وسلوك مكثفة.</p>
             </div>
             <div className="item">

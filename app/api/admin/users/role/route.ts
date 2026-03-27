@@ -16,6 +16,16 @@ export async function PUT(req: NextRequest) {
     const { userId, role } = await req.json();
     const currentUserRole = (session.user as any).role;
 
+    // Fetch the target user's current role before update
+    const targetUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true }
+    });
+
+    if (targetUser?.role === 'SUPER_ADMIN' && currentUserRole !== 'SUPER_ADMIN') {
+      return NextResponse.json({ error: 'Cannot modify a Super Admin' }, { status: 403 });
+    }
+
     if (role === 'SUPER_ADMIN' && currentUserRole !== 'SUPER_ADMIN') {
       return NextResponse.json({ error: 'Only Super Admin can appoint another Super Admin' }, { status: 403 });
     }

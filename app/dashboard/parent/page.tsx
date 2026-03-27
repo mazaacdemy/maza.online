@@ -41,7 +41,6 @@ export default async function ParentDashboard() {
         <nav className="side-nav">
           <Link href="/dashboard/parent" className="active">الرئيسية</Link>
           <Link href="/telehealth">الجلسات القادمة</Link>
-          <Link href="/report">التقارير</Link>
           <Link href="/booking">حجز جديد</Link>
         </nav>
       </aside>

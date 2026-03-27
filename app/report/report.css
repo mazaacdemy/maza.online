@@ -1,0 +1,156 @@
+/* Report Page Styles */
+
+.rp-card {
+  padding: 2.5rem;
+}
+
+.rp-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 1.5rem;
+}
+
+.rp-card-header-text h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.rp-card-header-text p {
+  color: var(--text-secondary);
+}
+
+.rp-card-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.rp-body {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+}
+
+/* Patient Info Sidebar */
+.rp-patient-info {
+  padding: 1.5rem;
+  height: fit-content;
+}
+
+.rp-patient-info h3 {
+  margin-bottom: 1.5rem;
+  color: var(--accent-secondary);
+}
+
+.rp-field {
+  margin-bottom: 1rem;
+}
+
+.rp-field-label {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.rp-field-value {
+  font-weight: bold;
+}
+
+.rp-reliability {
+  margin-top: 2rem;
+}
+
+.rp-reliability h4 {
+  margin-bottom: 1rem;
+  color: var(--accent-primary);
+}
+
+.rp-progress-bar {
+  width: 100%;
+  background-color: rgba(255,255,255,0.1);
+  height: 8px;
+  border-radius: 4px;
+}
+
+.rp-progress-fill {
+  width: 65%;
+  background-color: var(--accent-primary);
+  height: 100%;
+  border-radius: 4px;
+}
+
+.rp-progress-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+/* Report Blocks */
+.rp-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.rp-block {
+  padding: 1.5rem;
+}
+
+.rp-block-header {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--accent-secondary);
+}
+
+.rp-block-text {
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.rp-block-success { border-left: 4px solid var(--success); }
+.rp-block-success h3 { margin-bottom: 1rem; color: var(--success); }
+
+.rp-block-warning { border-left: 4px solid var(--warning); }
+.rp-block-warning h3 { margin-bottom: 1rem; color: var(--warning); }
+
+.rp-block-plan {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), transparent);
+}
+
+.rp-block-plan h3 {
+  margin-bottom: 1rem;
+  color: var(--accent-primary);
+}
+
+.rp-block-list {
+  list-style-position: inside;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.rp-goal { margin-bottom: 1rem; }
+
+.rp-goal h4 {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.rp-goal p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.rp-means h4 {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.rp-means-list {
+  list-style-position: inside;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}

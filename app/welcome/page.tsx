@@ -4,7 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import './welcome.css'; 
+import './welcome.css';
 
 interface Slide {
   id: string | number;
@@ -54,6 +54,7 @@ export default function WelcomePage() {
   const [stats, setStats] = useState<Stat[]>(defaultStats);
   const [services, setServices] = useState<Service[]>(defaultServices);
   const [loading, setLoading] = useState(true);
+  const [cmsContent, setCmsContent] = useState<Record<string, string>>({});
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -96,6 +97,9 @@ export default function WelcomePage() {
               }
             }
             if (dynamicServices.length > 0) setServices(dynamicServices);
+
+            // Store full CMS content for direct field access
+            setCmsContent(contentData);
           }
         }
       } catch (err) {
@@ -124,23 +128,23 @@ export default function WelcomePage() {
 
   return (
     <div className="s-root" dir="rtl" ref={containerRef}>
-      
+
       <section className="s-hero-adaptive">
         <div className="s-slider">
           {slides.map((slide, idx) => (
             <div key={idx} className={`s-slide ${idx === currentSlide ? 'active' : ''}`}>
               {/* Dynamic background handled via standard data attribute or controlled injection in CSS */}
-              <div 
-                className="s-slide-img" 
+              <div
+                className="s-slide-img"
                 data-bg={slide.image}
                 // Using double brackets to ensure it's not a template string in standard JSX if possible
-                {...({ style: { '--slide-bg': `url(${slide.image})` } } as any)} 
+                {...({ style: { '--slide-bg': `url(${slide.image})` } } as any)}
               ></div>
               <div className="s-container h-full flex items-center relative s-hero-content-layer">
                 <div className="s-hero-content">
                   <h1 className="s-title-h1">{slide.title}</h1>
                   <p className="s-title-p">{slide.subtitle}</p>
-                  <div className="mt-[55px]">
+                  <div className="mt-[95px]">
                     <Link href={slide.link} className="maza-hero-btn" title={slide.btnText || "اكتشف المزيد"}>
                       {slide.btnText || "اكتشف المزيد"}
                     </Link>
@@ -150,7 +154,7 @@ export default function WelcomePage() {
             </div>
           ))}
         </div>
-        
+
         <button className="s-nav-btn right" onClick={() => setCurrentSlide((currentSlide - 1 + slides.length) % slides.length)} title="السابق">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </button>
@@ -163,22 +167,24 @@ export default function WelcomePage() {
         <div className="s-container">
           <div className="s-bento-dual">
             <div className="anim-up">
-              <div className="s-tag mb-8">عقد من التميز</div>
-              <h2 className="s-title-h2 mb-12">نقلة نوعية في <span className="text-indigo-600">التأهيل</span> الرقمي</h2>
+              <div className="s-tag mb-8">{cmsContent.about_tag || 'عقد من التميز'}</div>
+              <h2 className="s-title-h2 mb-12">{cmsContent.about_title || 'نقلة نوعية في التأهيل الرقمي'}</h2>
               <div className="bg-indigo-600/10 p-12 rounded-3xl border border-indigo-500/20 backdrop-blur-xl mb-12 text-right">
-                <div className="text-sm font-bold text-indigo-400 mb-2 uppercase tracking-widest">خبرتنا المتراكمة</div>
-                <div className="text-6xl font-black mb-4">10 سنوات</div>
-                <div className="text-2xl opacity-90 leading-relaxed font-black">في رعاية وتمكين ذوي الهمم بأحدث المعايير الدولية</div>
+                <div className="text-sm font-bold text-indigo-400 mb-2 uppercase tracking-widest">{cmsContent.about_years_label || 'خبرتنا المتراكمة'}</div>
+                <div className="text-6xl font-black mb-4">{cmsContent.about_years_value || '10 سنوات'}</div>
+                <div className="text-2xl opacity-90 leading-relaxed font-black">{cmsContent.about_years_desc || 'في رعاية وتمكين ذوي الهمم بأحدث المعايير الدولية'}</div>
               </div>
-              <p className="text-2xl opacity-70 leading-relaxed mb-16">
-                أكاديمية ماذا هي منصة تربوية وتأهيلية تسعى لتمكين ذوي الهمم وأسرهم عبر برامج مدروسة وفريق عمل متخصص. نحن نؤمن بالقدرات اللامحدودة لكل طفل ونعمل على صقلها بأفضل المعايير الدولية.
+              <p className="text-2xl opacity-70 leading-relaxed mb-8">
+                {cmsContent.about_description || 'أكاديمية ماذا هي منصة تربوية وتأهيلية تسعى لتمكين ذوي الهمم وأسرهم عبر برامج مدروسة وفريق عمل متخصص.'}
               </p>
-              <div>
-                <Link href="/about" className="maza-hero-btn" title="اكتشف كواليس العمل">اكتشف كواليس العمل</Link>
+              <div className="s-about-btn-wrapper">
+                <Link href="/about" className="maza-hero-btn" title={cmsContent.about_btn_text || 'اكتشف كواليس العمل'}>
+                  {cmsContent.about_btn_text || 'اكتشف كواليس العمل'}
+                </Link>
               </div>
             </div>
             <div className="relative anim-pop p-0 overflow-hidden group min-h-[600px] rounded-[60px] border-none shadow-2xl">
-              <img src="/assets/hero/parent_v11.png" alt="About Maza" className="w-full h-full object-cover grayscale-[0.2] transition-all duration-1000 scale-105 group-hover:scale-110" />
+              <img src={cmsContent.about_home_img || '/assets/hero/parent_v11.png'} alt="About Maza" className="w-full h-full object-cover grayscale-[0.2] transition-all duration-1000 scale-105 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
             </div>
           </div>
@@ -187,9 +193,9 @@ export default function WelcomePage() {
 
       <section className="s-surface-muted s-section-grand relative overflow-hidden">
         <div className="s-container">
-          <div className="text-center mb-32 anim-up">
-            <span className="s-tag">حلولنا الحصرية</span>
-            <h2 className="s-title-h2 mt-8">خدمات مصممة <span className="text-indigo-600">بدقة</span></h2>
+          <div className="text-center mb-60 anim-up">
+            <span className="s-tag">{cmsContent.services_section_tag || 'حلولنا الحصرية'}</span>
+            <h2 className="s-title-h2 mt-8">{cmsContent.services_section_title || 'خدمات مصممة بدقة'}</h2>
           </div>
           <div className="s-services-grid-v2">
             {services.map((f, i) => (
