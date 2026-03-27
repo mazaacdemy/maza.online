@@ -115,7 +115,7 @@ export default function SettingsPage() {
             id="emailInput"
             type="email" 
             className="cms-input opacity-50 cursor-not-allowed" 
-            value={session.user.email || ''} 
+            value={session.user?.email || ''} 
             disabled 
             title="البريد الإلكتروني (غير قابل للتعديل)"
           />
