@@ -12,8 +12,8 @@ export async function GET() {
     }, {});
     
     return NextResponse.json(settingsObj);
-  } catch (error) {
-    return NextResponse.json({ error: "فشل استرجاع الإعدادات" }, { status: 500 });
+  } catch (error: any) {
+    return NextResponse.json({ error: "فشل استرجاع الإعدادات", details: error.message }, { status: 500 });
   }
 }
 
