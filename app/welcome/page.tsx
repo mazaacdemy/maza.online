@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 
 interface Slide {
@@ -51,39 +51,54 @@ export default function WelcomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slides, setSlides] = useState<Slide[]>(defaultSlides);
   const [loading, setLoading] = useState(true);
-  const [settings, setSettings] = useState<any>({});
+  
+  // Refs for dynamic styling to avoid 'style' prop lint errors
+  const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const serviceRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const statRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [slidesRes, settingsRes] = await Promise.all([
-          fetch('/api/admin/slides'),
-          fetch('/api/admin/settings')
+        const [slidesRes] = await Promise.all([
+          fetch('/api/admin/slides')
         ]);
         
-        let slidesData = [];
-        let settingsData = [];
-        
-        if (slidesRes.ok) slidesData = await slidesRes.json();
-        if (settingsRes.ok) settingsData = await settingsRes.json();
-        
-        const settingsObj: any = {};
-        if (Array.isArray(settingsData)) {
-          settingsData.forEach((s: any) => { settingsObj[s.key] = s.value; });
+        if (slidesRes.ok) {
+          const slidesData = await slidesRes.json();
+          if (slidesData && slidesData.length > 0) {
+            setSlides(slidesData);
+          }
         }
-        
-        if (slidesData && slidesData.length > 0) {
-          setSlides(slidesData);
-        }
-        setSettings(settingsObj);
       } catch (err) {
-        console.warn("API Fetch failed, using fail-safe defaults", err);
+        console.warn("API Fetch failed, using defaults", err);
       } finally {
         setLoading(false);
       }
     }
     fetchData();
   }, []);
+
+  // Apply dynamic styles once data is loaded and DOM is ready
+  useEffect(() => {
+    if (!loading) {
+      // 1. Set background images for slides
+      slides.forEach((slide, idx) => {
+        const el = slideRefs.current[idx];
+        if (el) el.style.backgroundImage = `url(${slide.image})`;
+      });
+
+      // 2. Set animation delays for services
+      serviceRefs.current.forEach((el, idx) => {
+        if (el) el.style.animationDelay = `${idx * 0.2}s`;
+      });
+
+      // 3. Set animation delays for stats
+      statRefs.current.forEach((el, idx) => {
+        if (el) el.style.animationDelay = `${idx * 0.2}s`;
+      });
+    }
+  }, [loading, slides]);
 
   useEffect(() => {
     if (slides.length === 0) return;
@@ -92,9 +107,6 @@ export default function WelcomePage() {
     }, 8000);
     return () => clearInterval(interval);
   }, [slides.length]);
-
-  const prevSlide = () => setCurrentSlide((currentSlide - 1 + slides.length) % slides.length);
-  const nextSlide = () => setCurrentSlide((currentSlide + 1) % slides.length);
 
   if (loading) return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#0f172a] text-white">
@@ -106,14 +118,15 @@ export default function WelcomePage() {
   return (
     <div className="s-root" dir="rtl">
       
-      {/* Hero Master - 100vh */}
+      {/* Hero Master */}
       <section className="s-hero-adaptive">
         <div className="s-slider">
           {slides.map((slide, idx) => (
-            <div key={slide.id} 
-              className={`s-slide ${idx === currentSlide ? 'active' : ''}`}
-            >
-              <div className="s-slide-img" style={{ backgroundImage: `url(${slide.image})` } as React.CSSProperties}></div>
+            <div key={slide.id} className={`s-slide ${idx === currentSlide ? 'active' : ''}`}>
+              <div 
+                ref={el => { slideRefs.current[idx] = el; }} 
+                className="s-slide-img"
+              ></div>
                <div className="s-container h-full flex items-center relative z-[1000]">
                   <div className="s-glass-card">
                      <h1 className="s-title-h1">{slide.title}</h1>
@@ -134,29 +147,26 @@ export default function WelcomePage() {
           ))}
         </div>
         
-        <button className="s-nav-btn right" onClick={prevSlide} title="السابق" aria-label="السابق">
+        <button className="s-nav-btn right" onClick={() => setCurrentSlide((currentSlide - 1 + slides.length) % slides.length)} title="السابق" aria-label="السابق">
            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </button>
-        <button className="s-nav-btn left" onClick={nextSlide} title="التالي" aria-label="التالي">
+        <button className="s-nav-btn left" onClick={() => setCurrentSlide((currentSlide + 1) % slides.length)} title="التالي" aria-label="التالي">
            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
       </section>
 
-      {/* About Section - Master Layout */}
+      {/* About Section */}
       <section className="s-surface s-section-grand relative overflow-hidden">
         <div className="s-container">
            <div className="s-bento-dual">
              <div className="anim-up">
                 <div className="s-tag mb-8">عقد من التميز</div>
                 <h2 className="s-title-h2 mb-12">نقلة نوعية في <span className="text-indigo-600">التأهيل</span> الرقمي</h2>
-                
-                {/* expertise block relocated here for balance */}
                 <div className="bg-indigo-600/10 p-12 rounded-3xl border border-indigo-500/20 backdrop-blur-xl mb-12 text-right">
                    <div className="text-sm font-bold text-indigo-400 mb-2 uppercase tracking-widest">خبرتنا المتراكمة</div>
                    <div className="text-6xl font-black mb-4">10 سنوات</div>
                    <div className="text-2xl opacity-90 leading-relaxed font-black">في رعاية وتمكين ذوي الهمم بأحدث المعايير الدولية</div>
                 </div>
-
                 <p className="text-2xl opacity-70 leading-relaxed mb-16">
                    أكاديمية ماذا هي منصة تربوية وتأهيلية تسعى لتمكين ذوي الهمم وأسرهم عبر برامج مدروسة وفريق عمل متخصص. نحن نؤمن بالقدرات اللامحدودة لكل طفل ونعمل على صقلها بأفضل المعايير الدولية.
                 </p>
@@ -164,7 +174,6 @@ export default function WelcomePage() {
                    <Link href="/about" className="maza-hero-btn" title="اكتشف كواليس العمل" aria-label="اكتشف كواليس العمل">اكتشف كواليس العمل</Link>
                 </div>
              </div>
-             
              <div className="relative anim-pop p-0 overflow-hidden group min-h-[600px] rounded-[60px] border-none shadow-2xl">
                 <img src="/assets/hero/parent_v11.png" className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-110" alt="About Maza" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
@@ -173,21 +182,24 @@ export default function WelcomePage() {
         </div>
       </section>
 
-      {/* Services Section - 3D Imagery Suite */}
+      {/* Services Section */}
        <section className="s-surface-muted s-section-grand relative overflow-hidden">
          <div className="s-container flex flex-col items-center justify-center min-h-[50vh]">
             <div className="text-center mb-32 anim-up">
                <span className="s-tag">حلولنا الحصرية</span>
                <h2 className="s-title-h2 mt-8">خدمات مصممة <span className="text-indigo-600">بدقة</span></h2>
             </div>
-            
             <div className="s-services-grid-v2">
               {[
                 { i: "/assets/services/disability.png", t: "رعاية ذوي الهمم", d: "خطط تأهيلية متكاملة لتطوير المهارات الحياتية والاجتماعية بأحدث الأساليب العالمية." },
                 { i: "/assets/services/specialist.png", t: "دعم الأخصائيين", d: "أدوات مخصصة لتحسين جودة التشخيص والمتابعة الدقيقة للنتائج والتقارير." },
                 { i: "/assets/services/family.png", t: "الإرشاد الأسري", d: "نحن ندعم الأسرة كشريك أساسي في رحلة التأهيل والنمو المتكامل للطفل." }
               ].map((f, i) => (
-                <div key={i} className="s-adaptive-card p-12 text-right anim-up border-none shadow-none bg-slate-50 dark:bg-white/5" style={{ '--anim-delay': `${i * 0.2}s` } as React.CSSProperties}>
+                <div 
+                  key={i} 
+                  ref={el => { serviceRefs.current[i] = el; }} 
+                  className="s-adaptive-card p-12 text-right anim-up border-none shadow-none bg-slate-50 dark:bg-white/5"
+                >
                    <div className="mb-10 w-40 h-40 overflow-hidden rounded-2xl mx-auto md:ml-0 md:mr-auto">
                       <img src={f.i} alt={f.t} className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500" />
                    </div>
@@ -209,7 +221,11 @@ export default function WelcomePage() {
                  { l: "محافظة نخدمها", v: 27, p: "", i: "📍" },
                  { l: "ساعة خبرة", v: 25, p: "k+", i: "⏳" }
                ].map((s, i) => (
-                 <div key={i} className="text-center md:text-right anim-up" style={{ '--anim-delay': `${i * 0.2}s` } as React.CSSProperties}>
+                 <div 
+                   key={i} 
+                   ref={el => { statRefs.current[i] = el; }} 
+                   className="text-center md:text-right anim-up"
+                 >
                     <div className="s-stat-icon-bg mb-12 opacity-10">{s.i}</div>
                     <div className="text-7xl font-black text-indigo-600 mb-6 flex items-center justify-center md:justify-start">
                        <span>{s.v}</span>
@@ -231,77 +247,35 @@ export default function WelcomePage() {
         :global([data-theme='dark']) .s-surface { background: #0f172a; }
         .s-surface-muted { background: #f1f5f9; transition: background 0.5s; }
         :global([data-theme='dark']) .s-surface-muted { background: #1e293b; }
-
         .s-hero-adaptive { height: 100vh; position: relative; overflow: hidden; background: #000; }
         .s-slider { height: 100%; position: relative; }
         .s-slide { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .s-slide.active { opacity: 1; visibility: visible; z-index: 50; }
         .s-slide-img { position: absolute; inset: 0; background-size: cover; background-position: center; z-index: 1; filter: brightness(0.65); transform: scale(1.1); transition: 10s linear; }
         .active .s-slide-img { transform: scale(1); }
-        
         .s-glass-card { z-index: 1001; padding: 60px; max-width: 850px; color: #ffffff !important; text-align: right; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px); border-radius: 40px; border: 1px solid rgba(255,255,255,0.1); }
         .s-tag { color: #818cf8; font-weight: 950; text-transform: uppercase; letter-spacing: 4px; font-size: 1rem; margin-bottom: 2rem; }
-        
         .s-title-h1 { font-size: clamp(3.5rem, 6vw, 5.5rem); font-weight: 950; line-height: 1.1; margin-bottom: 2.5rem; text-shadow: 0 5px 20px rgba(0,0,0,0.6); color: #ffffff !important; }
         .s-title-h2 { font-size: clamp(2.8rem, 5vw, 4.5rem); font-weight: 950; line-height: 1.2; }
         .s-title-p { font-size: 1.8rem; line-height: 1.8; max-width: 750px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); color: #ffffff !important; opacity: 0.9; }
-
-        .maza-hero-btn {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 0.7rem 1.8rem;
-          background: linear-gradient(135deg, #6366f1, #4f46e5);
-          color: #ffffff !important;
-          border-radius: 12px;
-          font-weight: 700;
-          font-size: 0.95rem;
-          text-decoration: none;
-          box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2);
-          transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          border: 1px solid rgba(255,255,255,0.25);
-          cursor: pointer;
-          position: relative;
-          overflow: hidden;
-        }
-        .maza-hero-btn::before {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 50%;
-          height: 100%;
-          background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-          transition: all 0.6s;
-        }
-        .maza-hero-btn:hover {
-          transform: translateY(-5px) scale(1.03);
-          box-shadow: 0 15px 35px rgba(99, 102, 241, 0.35);
-          border-color: rgba(255,255,255,0.5);
-        }
-        .maza-hero-btn:hover::before {
-          left: 100%;
-        }
-
+        .maza-hero-btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.7rem 1.8rem; background: linear-gradient(135deg, #6366f1, #4f46e5); color: #ffffff !important; border-radius: 12px; font-weight: 700; font-size: 0.95rem; text-decoration: none; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid rgba(255,255,255,0.25); cursor: pointer; position: relative; overflow: hidden; }
+        .maza-hero-btn::before { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent); transition: all 0.6s; }
+        .maza-hero-btn:hover { transform: translateY(-5px) scale(1.03); box-shadow: 0 15px 35px rgba(99, 102, 241, 0.35); border-color: rgba(255,255,255,0.5); }
+        .maza-hero-btn:hover::before { left: 100%; }
         .s-nav-btn { position: absolute; top: 50%; translate: 0 -50%; width: 90px; height: 90px; border-radius: 50%; background: rgba(255,255,255,0.03); color: white; border: 1px solid rgba(255,255,255,0.1); z-index: 500; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.5s; backdrop-filter: blur(10px); }
         .s-nav-btn:hover { background: #6366f1; transform: translateY(-50%) scale(1.1); border-color: #6366f1; box-shadow: 0 0 40px rgba(99, 102, 241, 0.5); }
         .s-nav-btn.right { right: 60px; }
         .s-nav-btn.left { left: 60px; }
-
         .s-bento-dual { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: center; }
         .s-services-grid-v2 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; margin: 40px 0; width: 100%; }
         .s-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 80px; }
-
         .s-adaptive-card { border-radius: 60px; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .s-adaptive-card:hover { transform: translateY(-15px); }
-        
         .s-stat-icon-bg { font-size: 100px; line-height: 1; }
-
-        .anim-up { animation: up 1.2s cubic-bezier(0.16, 1, 0.3, 1) var(--anim-delay, 0s) forwards; }
+        .anim-up { animation: up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
         .anim-pop { animation: pop 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards; }
         @keyframes up { from { opacity: 0; transform: translateY(80px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pop { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
-
         @media (max-width: 768px) {
            .s-container { padding: 0 30px; }
            .s-bento-dual, .s-stats-grid, .s-services-grid-v2 { grid-template-columns: 1fr !important; gap: 40px; }
