@@ -13,12 +13,6 @@ const nextConfig = {
     // If the user wants to avoid strict domain list for dev, we can set unoptimized: true
     // but whitelisting is the professional production way
   },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
 };
 
 export default nextConfig;
