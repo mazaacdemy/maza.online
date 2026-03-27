@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 interface Slide {
@@ -51,23 +51,15 @@ export default function WelcomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slides, setSlides] = useState<Slide[]>(defaultSlides);
   const [loading, setLoading] = useState(true);
-  
-  // Refs for dynamic styling to avoid 'style' prop lint errors
-  const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const serviceRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const statRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [slidesRes] = await Promise.all([
-          fetch('/api/admin/slides')
-        ]);
-        
-        if (slidesRes.ok) {
-          const slidesData = await slidesRes.json();
-          if (slidesData && slidesData.length > 0) {
-            setSlides(slidesData);
+        const res = await fetch('/api/admin/slides');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            setSlides(data);
           }
         }
       } catch (err) {
@@ -79,31 +71,10 @@ export default function WelcomePage() {
     fetchData();
   }, []);
 
-  // Apply dynamic styles once data is loaded and DOM is ready
-  useEffect(() => {
-    if (!loading) {
-      // 1. Set background images for slides
-      slides.forEach((slide, idx) => {
-        const el = slideRefs.current[idx];
-        if (el) el.style.backgroundImage = `url(${slide.image})`;
-      });
-
-      // 2. Set animation delays for services
-      serviceRefs.current.forEach((el, idx) => {
-        if (el) el.style.animationDelay = `${idx * 0.2}s`;
-      });
-
-      // 3. Set animation delays for stats
-      statRefs.current.forEach((el, idx) => {
-        if (el) el.style.animationDelay = `${idx * 0.2}s`;
-      });
-    }
-  }, [loading, slides]);
-
   useEffect(() => {
     if (slides.length === 0) return;
     const interval = setInterval(() => {
-      setCurrentSlide(p => (p + 1) % slides.length);
+      setCurrentSlide(prev => (prev + 1) % slides.length);
     }, 8000);
     return () => clearInterval(interval);
   }, [slides.length]);
@@ -111,21 +82,21 @@ export default function WelcomePage() {
   if (loading) return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#0f172a] text-white">
       <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-8"></div>
-      <div className="text-2xl font-black">جاري تحضير التحفة الفنية...</div>
+      <div className="text-2xl font-black">جاري التحميل...</div>
     </div>
   );
 
   return (
     <div className="s-root" dir="rtl">
       
-      {/* Hero Master */}
+      {/* Hero Section */}
       <section className="s-hero-adaptive">
         <div className="s-slider">
           {slides.map((slide, idx) => (
             <div key={slide.id} className={`s-slide ${idx === currentSlide ? 'active' : ''}`}>
               <div 
-                ref={el => { slideRefs.current[idx] = el; }} 
-                className="s-slide-img"
+                className="s-slide-img" 
+                style={{ backgroundImage: `url(${slide.image})` }}
               ></div>
                <div className="s-container h-full flex items-center relative z-[1000]">
                   <div className="s-glass-card">
@@ -135,7 +106,7 @@ export default function WelcomePage() {
                         <Link 
                           href={slide.link} 
                           className="maza-hero-btn" 
-                          title={slide.btnText || "اكتشف المزيد"} 
+                          title={slide.btnText || "اكتشف المزيد"}
                           aria-label={slide.btnText || "اكتشف المزيد"}
                         >
                           {slide.btnText || "اكتشف المزيد"}
@@ -195,11 +166,7 @@ export default function WelcomePage() {
                 { i: "/assets/services/specialist.png", t: "دعم الأخصائيين", d: "أدوات مخصصة لتحسين جودة التشخيص والمتابعة الدقيقة للنتائج والتقارير." },
                 { i: "/assets/services/family.png", t: "الإرشاد الأسري", d: "نحن ندعم الأسرة كشريك أساسي في رحلة التأهيل والنمو المتكامل للطفل." }
               ].map((f, i) => (
-                <div 
-                  key={i} 
-                  ref={el => { serviceRefs.current[i] = el; }} 
-                  className="s-adaptive-card p-12 text-right anim-up border-none shadow-none bg-slate-50 dark:bg-white/5"
-                >
+                <div key={i} className="s-adaptive-card p-12 text-right anim-up border-none shadow-none bg-slate-50 dark:bg-white/5" style={{ animationDelay: `${i * 0.2}s` }}>
                    <div className="mb-10 w-40 h-40 overflow-hidden rounded-2xl mx-auto md:ml-0 md:mr-auto">
                       <img src={f.i} alt={f.t} className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500" />
                    </div>
@@ -221,11 +188,7 @@ export default function WelcomePage() {
                  { l: "محافظة نخدمها", v: 27, p: "", i: "📍" },
                  { l: "ساعة خبرة", v: 25, p: "k+", i: "⏳" }
                ].map((s, i) => (
-                 <div 
-                   key={i} 
-                   ref={el => { statRefs.current[i] = el; }} 
-                   className="text-center md:text-right anim-up"
-                 >
+                 <div key={i} className="text-center md:text-right anim-up" style={{ animationDelay: `${i * 0.2}s` }}>
                     <div className="s-stat-icon-bg mb-12 opacity-10">{s.i}</div>
                     <div className="text-7xl font-black text-indigo-600 mb-6 flex items-center justify-center md:justify-start">
                        <span>{s.v}</span>
@@ -272,7 +235,7 @@ export default function WelcomePage() {
         .s-adaptive-card { border-radius: 60px; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .s-adaptive-card:hover { transform: translateY(-15px); }
         .s-stat-icon-bg { font-size: 100px; line-height: 1; }
-        .anim-up { animation: up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .anim-up { animation: up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .anim-pop { animation: pop 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards; }
         @keyframes up { from { opacity: 0; transform: translateY(80px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pop { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
