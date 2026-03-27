@@ -93,6 +93,9 @@ export default function WelcomePage() {
     return () => clearInterval(interval);
   }, [slides.length]);
 
+  const prevSlide = () => setCurrentSlide((currentSlide - 1 + slides.length) % slides.length);
+  const nextSlide = () => setCurrentSlide((currentSlide + 1) % slides.length);
+
   if (loading) return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#0f172a] text-white">
       <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-8"></div>
@@ -109,27 +112,19 @@ export default function WelcomePage() {
           {slides.map((slide, idx) => (
             <div key={slide.id} 
               className={`s-slide ${idx === currentSlide ? 'active' : ''}`}
-              style={{ 
-                visibility: idx === currentSlide ? 'visible' : 'hidden',
-                pointerEvents: idx === currentSlide ? 'auto' : 'none',
-                zIndex: idx === currentSlide ? 50 : 0
-              }}
             >
               <div className="s-slide-img" style={{ backgroundImage: `url(${slide.image})` }}></div>
                <div className="s-container h-full flex items-center relative z-[1000]">
-                  <div className="s-glass-card" style={{ 
-                    opacity: 1, 
-                    visibility: 'visible', 
-                    display: 'block', 
-                    position: 'relative', 
-                    zIndex: 1001,
-                    background: 'rgba(15, 23, 42, 0.8) !important',
-                    backdropFilter: 'blur(20px) !important'
-                  }}>
-                     <h1 className="s-title-h1" style={{ opacity: 1, visibility: 'visible', color: '#ffffff' }}>{slide.title}</h1>
-                     <p className="s-title-p" style={{ opacity: 1, visibility: 'visible', color: '#ffffff' }}>{slide.subtitle}</p>
+                  <div className="s-glass-card">
+                     <h1 className="s-title-h1">{slide.title}</h1>
+                     <p className="s-title-p">{slide.subtitle}</p>
                      <div className="mt-[55px]">
-                        <Link href={slide.link} className="maza-hero-btn">
+                        <Link 
+                          href={slide.link} 
+                          className="maza-hero-btn" 
+                          title={slide.btnText || "اكتشف المزيد"} 
+                          aria-label={slide.btnText || "اكتشف المزيد"}
+                        >
                           {slide.btnText || "اكتشف المزيد"}
                         </Link>
                      </div>
@@ -139,50 +134,46 @@ export default function WelcomePage() {
           ))}
         </div>
         
-        <button className="s-nav-btn right" onClick={() => setCurrentSlide((currentSlide - 1 + slides.length) % slides.length)}>
+        <button className="s-nav-btn right" onClick={prevSlide} title="السابق" aria-label="السابق">
            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </button>
-        <button className="s-nav-btn left" onClick={() => setCurrentSlide((currentSlide + 1) % slides.length)}>
+        <button className="s-nav-btn left" onClick={nextSlide} title="التالي" aria-label="التالي">
            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
       </section>
 
-      {/* About Section - Restored and Padded */}
+      {/* About Section - Master Layout */}
       <section className="s-surface s-section-grand relative overflow-hidden">
         <div className="s-container">
            <div className="s-bento-dual">
-            <div className="anim-up">
-               <div className="s-tag mb-8">رسالتنا السامية</div>
-               <h2 className="s-title-h2 mb-12">نقلة نوعية في <span className="text-indigo-600">التأهيل</span> الرقمي</h2>
-               <p className="text-2xl opacity-70 leading-relaxed mb-24">
-                  أكاديمية ماذا هي منصة تربوية وتأهيلية تسعى لتمكين ذوي الهمم وأسرهم عبر برامج مدروسة وفريق عمل متخصص. نحن نؤمن بالقدرات اللامحدودة لكل طفل ونعمل على صقلها بأفضل المعايير الدولية.
-               </p>
-               <div>
-                  <Link href="/about" className="maza-hero-btn">اكتشف كواليس العمل</Link>
-               </div>
-            </div>
-            
-            <div className="relative anim-pop p-0 overflow-hidden group min-h-[600px] rounded-[60px] border-none shadow-2xl">
-               <img src="/assets/hero/parent_4k.png" className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-110" alt="About Maza" />
-               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                <div className="absolute bottom-20 right-20 left-20 flex flex-col items-end text-white text-right">
-                   <div className="flex items-center gap-4 mb-4">
-                      <span className="h-[2px] w-12 bg-indigo-500"></span>
-                      <span className="text-xl font-bold tracking-widest uppercase opacity-80">خبرتنا المتراكمة</span>
-                   </div>
-                   <h3 className="text-6xl font-black mb-6 leading-none">
-                      10 <span className="text-3xl font-bold opacity-60">سنوات</span>
-                   </h3>
-                   <p className="text-2xl font-medium opacity-90 border-r-4 border-indigo-600 pr-8">
-                      في رعاية وتمكين ذوي الهمم بأحدث المعايير الدولية
-                   </p>
+             <div className="anim-up">
+                <div className="s-tag mb-8">عقد من التميز</div>
+                <h2 className="s-title-h2 mb-12">نقلة نوعية في <span className="text-indigo-600">التأهيل</span> الرقمي</h2>
+                
+                {/* expertise block relocated here for balance */}
+                <div className="bg-indigo-600/10 p-12 rounded-3xl border border-indigo-500/20 backdrop-blur-xl mb-12 text-right">
+                   <div className="text-sm font-bold text-indigo-400 mb-2 uppercase tracking-widest">خبرتنا المتراكمة</div>
+                   <div className="text-6xl font-black mb-4">10 سنوات</div>
+                   <div className="text-2xl opacity-90 leading-relaxed font-black">في رعاية وتمكين ذوي الهمم بأحدث المعايير الدولية</div>
                 </div>
-            </div>
-         </div>
+
+                <p className="text-2xl opacity-70 leading-relaxed mb-16">
+                   أكاديمية ماذا هي منصة تربوية وتأهيلية تسعى لتمكين ذوي الهمم وأسرهم عبر برامج مدروسة وفريق عمل متخصص. نحن نؤمن بالقدرات اللامحدودة لكل طفل ونعمل على صقلها بأفضل المعايير الدولية.
+                </p>
+                <div>
+                   <Link href="/about" className="maza-hero-btn" title="اكتشف كواليس العمل" aria-label="اكتشف كواليس العمل">اكتشف كواليس العمل</Link>
+                </div>
+             </div>
+             
+             <div className="relative anim-pop p-0 overflow-hidden group min-h-[600px] rounded-[60px] border-none shadow-2xl">
+                <img src="/assets/hero/parent_v11.png" className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-110" alt="About Maza" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+             </div>
+          </div>
         </div>
       </section>
 
-      {/* Services Section - Restored Cards, No Borders */}
+      {/* Services Section - 3D Imagery Suite */}
        <section className="s-surface-muted s-section-grand relative overflow-hidden">
          <div className="s-container flex flex-col items-center justify-center min-h-[50vh]">
             <div className="text-center mb-32 anim-up">
@@ -208,7 +199,7 @@ export default function WelcomePage() {
         </div>
       </section>
 
-      {/* Stats Section - Refined Spacing */}
+      {/* Stats Section */}
       <section className="s-surface s-section-grand relative overflow-hidden">
         <div className="s-container relative z-10">
             <div className="s-stats-grid">
@@ -244,17 +235,16 @@ export default function WelcomePage() {
         .s-hero-adaptive { height: 100vh; position: relative; overflow: hidden; background: #000; }
         .s-slider { height: 100%; position: relative; }
         .s-slide { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .s-slide.active { opacity: 1; visibility: visible; }
+        .s-slide.active { opacity: 1; visibility: visible; z-index: 50; }
         .s-slide-img { position: absolute; inset: 0; background-size: cover; background-position: center; z-index: 1; filter: brightness(0.65); transform: scale(1.1); transition: 10s linear; }
         .active .s-slide-img { transform: scale(1); }
         
-        .s-glass-card { z-index: 1001; padding: 60px; max-width: 850px; color: #ffffff !important; text-align: right; opacity: 1 !important; visibility: visible !important; }
-        .s-m-box { width: 60px; height: 60px; background: #6366f1; color: white; display: flex; align-items: center; justify-content: center; border-radius: 16px; font-weight: 950; font-size: 1.8rem; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4); }
+        .s-glass-card { z-index: 1001; padding: 60px; max-width: 850px; color: #ffffff !important; text-align: right; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px); border-radius: 40px; border: 1px solid rgba(255,255,255,0.1); }
         .s-tag { color: #818cf8; font-weight: 950; text-transform: uppercase; letter-spacing: 4px; font-size: 1rem; margin-bottom: 2rem; }
         
-        .s-title-h1 { font-size: clamp(3.5rem, 6vw, 5.5rem); font-weight: 950; line-height: 1.1; margin-bottom: 2.5rem; text-shadow: 0 5px 20px rgba(0,0,0,0.6); color: #ffffff !important; opacity: 1 !important; }
+        .s-title-h1 { font-size: clamp(3.5rem, 6vw, 5.5rem); font-weight: 950; line-height: 1.1; margin-bottom: 2.5rem; text-shadow: 0 5px 20px rgba(0,0,0,0.6); color: #ffffff !important; }
         .s-title-h2 { font-size: clamp(2.8rem, 5vw, 4.5rem); font-weight: 950; line-height: 1.2; }
-        .s-title-p { font-size: 1.8rem; opacity: 1 !important; line-height: 1.8; max-width: 750px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); color: #ffffff !important; }
+        .s-title-p { font-size: 1.8rem; line-height: 1.8; max-width: 750px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); color: #ffffff !important; opacity: 0.9; }
 
         .maza-hero-btn {
           display: inline-flex;
@@ -315,8 +305,8 @@ export default function WelcomePage() {
            .s-bento-dual, .s-stats-grid, .s-services-grid-v2 { grid-template-columns: 1fr !important; gap: 40px; }
            .s-glass-card { text-align: center; margin: 0 auto; padding: 30px; }
            .s-nav-btn { width: 60px; height: 60px; }
-           .s-title-h1 { font-size: 3rem; }
-           .s-title-p { font-size: 1.4rem; }
+           .s-title-h1 { font-size: 2.8rem; }
+           .s-title-p { font-size: 1.3rem; }
         }
       `}</style>
     </div>
