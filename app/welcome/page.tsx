@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -83,30 +84,31 @@ export default function WelcomePage() {
   if (loading) return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#0f172a] text-white">
       <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-8"></div>
-      <div className="text-2xl font-black">جاري التحميل...</div>
+      <div className="text-2xl font-black">جاري تحضير التحفة الفنية...</div>
     </div>
   );
 
   return (
     <div className="s-root" dir="rtl">
       
-      {/* Hero Master - Optimization with Next/Image */}
+      {/* Hero Master - Optimization with Surgical Layering */}
       <section className="s-hero-adaptive">
         <div className="s-slider">
           {slides.map((slide, idx) => (
             <div key={slide.id} className={`s-slide ${idx === currentSlide ? 'active' : ''}`}>
-              <div className="s-slide-img-wrapper">
+              {/* background image using next/image for quality, but layered behind */}
+              <div className="s-slide-bg-container">
                 <Image 
                   src={slide.image} 
                   alt={slide.title} 
                   fill 
                   priority={idx === 0} 
-                  className="s-slide-img-optimized"
+                  className="object-cover brightness-[0.7] transform scale-[1.05]"
                   sizes="100vw"
-                  quality={90}
+                  quality={95}
                 />
               </div>
-              <div className="s-container h-full flex items-center relative z-[1000]">
+              <div className="s-container h-full flex items-center relative z-20">
                   <div className="s-glass-card">
                      <h1 className="s-title-h1">{slide.title}</h1>
                      <p className="s-title-p">{slide.subtitle}</p>
@@ -138,7 +140,7 @@ export default function WelcomePage() {
       <section className="s-surface s-section-grand relative overflow-hidden">
         <div className="s-container">
            <div className="s-bento-dual">
-             <div className="anim-up delay-1">
+             <div className="anim-up">
                 <div className="s-tag mb-8">عقد من التميز</div>
                 <h2 className="s-title-h2 mb-12">نقلة نوعية في <span className="text-indigo-600">التأهيل</span> الرقمي</h2>
                 <div className="bg-indigo-600/10 p-12 rounded-3xl border border-indigo-500/20 backdrop-blur-xl mb-12 text-right">
@@ -164,17 +166,17 @@ export default function WelcomePage() {
       {/* Services Section */}
        <section className="s-surface-muted s-section-grand relative overflow-hidden">
          <div className="s-container flex flex-col items-center justify-center min-h-[50vh]">
-            <div className="text-center mb-32 anim-up delay-1">
+            <div className="text-center mb-32 anim-up">
                <span className="s-tag">حلولنا الحصرية</span>
                <h2 className="s-title-h2 mt-8">خدمات مصممة <span className="text-indigo-600">بدقة</span></h2>
             </div>
             <div className="s-services-grid-v2">
               {[
-                { i: "/assets/services/disability.png", t: "رعاية ذوي الهمم", d: "خطط تأهيلية متكاملة لتطوير المهارات الحياتية والاجتماعية بأحدث الأساليب العالمية.", delay: 'delay-1' },
-                { i: "/assets/services/specialist.png", t: "دعم الأخصائيين", d: "أدوات مخصصة لتحسين جودة التشخيص والمتابعة الدقيقة للنتائج والتقارير.", delay: 'delay-2' },
-                { i: "/assets/services/family.png", t: "الإرشاد الأسري", d: "نحن ندعم الأسرة كشريك أساسي في رحلة التأهيل والنمو المتكامل للطفل.", delay: 'delay-3' }
+                { i: "/assets/services/disability.png", t: "رعاية ذوي الهمم", d: "خطط تأهيلية متكاملة لتطوير المهارات الحياتية والاجتماعية بأحدث الأساليب العالمية." },
+                { i: "/assets/services/specialist.png", t: "دعم الأخصائيين", d: "أدوات مخصصة لتحسين جودة التشخيص والمتابعة الدقيقة للنتائج والتقارير." },
+                { i: "/assets/services/family.png", t: "الإرشاد الأسري", d: "نحن ندعم الأسرة كشريك أساسي في رحلة التأهيل والنمو المتكامل للطفل." }
               ].map((f, i) => (
-                <div key={i} className={`s-adaptive-card p-12 text-right anim-up ${f.delay} border-none shadow-none bg-slate-50 dark:bg-white/5`}>
+                <div key={i} className="s-adaptive-card p-12 text-right anim-up border-none shadow-none bg-slate-50 dark:bg-white/5" style={{ animationDelay: `${i * 0.2}s` }}>
                    <div className="mb-10 w-40 h-40 overflow-hidden rounded-2xl mx-auto md:ml-0 md:mr-auto relative">
                       <Image src={f.i} alt={f.t} fill className="object-cover transform hover:scale-110 transition-transform duration-500" />
                    </div>
@@ -186,23 +188,23 @@ export default function WelcomePage() {
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Stats Section - HUGE TEXT Optimization */}
       <section className="s-surface s-section-grand relative overflow-hidden">
         <div className="s-container relative z-10">
             <div className="s-stats-grid">
                {[
-                 { l: "حالة تم تأهيلها", v: 15000, p: "+", i: "🎯", delay: 'delay-1' },
-                 { l: "أخصائي معتمد", v: 80, p: "+", i: "🏆", delay: 'delay-2' },
-                 { l: "محافظة نخدمها", v: 27, p: "", i: "📍", delay: 'delay-3' },
-                 { l: "ساعة خبرة", v: 25, p: "k+", i: "⏳", delay: 'delay-4' }
+                 { l: "حالة تم تأهيلها", v: 15000, p: "+", i: "🎯" },
+                 { l: "أخصائي معتمد", v: 80, p: "+", i: "🏆" },
+                 { l: "محافظة نخدمها", v: 27, p: "", i: "📍" },
+                 { l: "ساعة خبرة", v: 25, p: "k+", i: "⏳" }
                ].map((s, i) => (
-                 <div key={i} className={`text-center md:text-right anim-up ${s.delay}`}>
-                    <div className="s-stat-icon-bg mb-12 opacity-10">{s.i}</div>
-                    <div className="text-7xl font-black text-indigo-600 mb-6 flex items-center justify-center md:justify-start">
+                 <div key={i} className="text-center md:text-right anim-up" style={{ animationDelay: `${i * 0.2}s` }}>
+                    <div className="s-stat-icon-bg mb-12 opacity-20">{s.i}</div>
+                    <div className="s-huge-number text-indigo-600 mb-6 flex items-center justify-center md:justify-start">
                        <span>{s.v}</span>
                        <span className="ml-2">{s.p}</span>
                     </div>
-                    <div className="text-2xl font-bold opacity-50 uppercase tracking-widest">{s.l}</div>
+                    <div className="text-3xl font-black opacity-60 uppercase tracking-widest">{s.l}</div>
                  </div>
                ))}
             </div>
@@ -213,7 +215,7 @@ export default function WelcomePage() {
         .s-root { font-family: 'Cairo', sans-serif; background: #ffffff; color: #1e293b; overflow-x: hidden; transition: background 0.5s, color 0.5s; }
         :global([data-theme='dark']) .s-root { background: #0f172a; color: #f1f5f9; }
         .s-container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
-        .s-section-grand { padding-top: 50px !important; padding-bottom: 50px !important; }
+        .s-section-grand { padding-top: 100px !important; padding-bottom: 100px !important; }
         .s-surface { background: #ffffff; transition: background 0.5s; }
         :global([data-theme='dark']) .s-surface { background: #0f172a; }
         .s-surface-muted { background: #f1f5f9; transition: background 0.5s; }
@@ -222,36 +224,53 @@ export default function WelcomePage() {
         .s-hero-adaptive { height: 100vh; position: relative; overflow: hidden; background: #000; }
         .s-slider { height: 100%; position: relative; }
         .s-slide { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .s-slide.active { opacity: 1; visibility: visible; z-index: 50; }
+        .s-slide.active { opacity: 1; visibility: visible; z-index: 10; }
         
-        .s-slide-img-wrapper { position: absolute; inset: 0; z-index: 1; filter: brightness(0.65); transform: scale(1.1); transition: 10s linear; }
-        .active .s-slide-img-wrapper { transform: scale(1); }
-        :global(.s-slide-img-optimized) { object-fit: cover !important; }
+        .s-slide-bg-container { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
+        .active .s-slide-bg-container :global(img) { transform: scale(1) !important; transition: 10s linear !important; }
 
-        .s-glass-card { z-index: 1001; padding: 60px; max-width: 850px; color: #ffffff !important; text-align: right; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px); border-radius: 40px; border: 1px solid rgba(255,255,255,0.1); }
-        .s-tag { color: #818cf8; font-weight: 950; text-transform: uppercase; letter-spacing: 4px; font-size: 1rem; margin-bottom: 2rem; }
-        .s-title-h1 { font-size: clamp(3.5rem, 6vw, 5.5rem); font-weight: 950; line-height: 1.1; margin-bottom: 2.5rem; text-shadow: 0 5px 20px rgba(0,0,0,0.6); color: #ffffff !important; }
-        .s-title-h2 { font-size: clamp(2.8rem, 5vw, 4.5rem); font-weight: 950; line-height: 1.2; }
-        .s-title-p { font-size: 1.8rem; line-height: 1.8; max-width: 750px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); color: #ffffff !important; opacity: 0.9; }
+        .s-glass-card { z-index: 1001; padding: 60px; max-width: 850px; color: #ffffff !important; text-align: right; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(25px); border-radius: 40px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .s-tag { color: #818cf8; font-weight: 950; text-transform: uppercase; letter-spacing: 4px; font-size: 1.1rem; margin-bottom: 2rem; display: block; }
+        .s-title-h1 { font-size: clamp(3.5rem, 6vw, 5.5rem); font-weight: 950; line-height: 1.1; margin-bottom: 2.5rem; color: #ffffff !important; }
+        .s-title-h2 { font-size: clamp(3.5rem, 5vw, 5rem); font-weight: 950; line-height: 1.2; }
+        .s-title-p { font-size: 1.8rem; line-height: 1.8; max-width: 750px; color: #ffffff !important; opacity: 0.95; }
         
-        .maza-hero-btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.7rem 1.8rem; background: linear-gradient(135deg, #6366f1, #4f46e5); color: #ffffff !important; border-radius: 12px; font-weight: 700; font-size: 0.95rem; text-decoration: none; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid rgba(255,255,255,0.25); cursor: pointer; position: relative; overflow: hidden; }
+        .maza-hero-btn { display: inline-flex; align-items: center; justify-content: center; padding: 1.2rem 3rem; background: linear-gradient(135deg, #6366f1, #4f46e5); color: #ffffff !important; border-radius: 16px; font-weight: 900; font-size: 1.2rem; text-decoration: none; box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4); transition: 0.5s; border: 1px solid rgba(255,255,255,0.3); cursor: pointer; }
+        .maza-hero-btn:hover { transform: translateY(-5px) scale(1.05); background: linear-gradient(135deg, #818cf8, #6366f1); }
         
-        .s-nav-btn { position: absolute; top: 50%; translate: 0 -50%; width: 90px; height: 90px; border-radius: 50%; background: rgba(255,255,255,0.03); color: white; border: 1px solid rgba(255,255,255,0.1); z-index: 500; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.5s; backdrop-filter: blur(10px); }
+        .s-nav-btn { position: absolute; top: 50%; translate: 0 -50%; width: 90px; height: 90px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); z-index: 500; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.5s; backdrop-filter: blur(15px); }
+        .s-nav-btn:hover { background: #6366f1; transform: translateY(-50%) scale(1.1); border-color: #ffffff; }
         .s-nav-btn.right { right: 60px; }
         .s-nav-btn.left { left: 60px; }
         
-        .s-adaptive-card { border-radius: 60px; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .s-stat-icon-bg { font-size: 100px; line-height: 1; }
+        .s-huge-number { font-size: clamp(5rem, 10vw, 9rem); font-weight: 950; line-height: 1; letter-spacing: -2px; }
+        .s-stat-icon-bg { font-size: 120px; line-height: 1; margin-bottom: 2rem; }
         
+        .s-bento-dual { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 100px; align-items: center; }
+        .s-services-grid-v2 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; margin: 60px 0; width: 100%; }
+        .s-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 80px; }
+        .s-adaptive-card { border-radius: 60px; transition: 0.5s; }
+        .s-adaptive-card:hover { transform: translateY(-20px); background: white; box-shadow: 0 40px 80px -15px rgba(0,0,0,0.1); }
+        :global([data-theme='dark']) .s-adaptive-card:hover { background: #1e293b; }
+
         .anim-up { animation: up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-        .delay-1 { animation-delay: 0.2s; }
-        .delay-2 { animation-delay: 0.4s; }
-        .delay-3 { animation-delay: 0.6s; }
-        .delay-4 { animation-delay: 0.8s; }
-        
-        .anim-pop { animation: pop 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards; }
+        .anim-pop { animation: pop 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards; opacity: 0; }
         @keyframes up { from { opacity: 0; transform: translateY(80px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pop { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+        
+        @media (max-width: 1024px) {
+           .s-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
+        }
+        @media (max-width: 768px) {
+           .s-container { padding: 0 30px; }
+           .s-bento-dual, .s-stats-grid, .s-services-grid-v2 { grid-template-columns: 1fr !important; gap: 60px; }
+           .s-glass-card { text-align: center; margin: 0 auto; padding: 40px 30px; }
+           .s-nav-btn { width: 70px; height: 70px; }
+           .s-nav-btn.right { right: 20px; }
+           .s-nav-btn.left { left: 20px; }
+           .s-title-h1 { font-size: 3.2rem; }
+           .s-huge-number { font-size: 6rem; }
+        }
       `}</style>
     </div>
   );
