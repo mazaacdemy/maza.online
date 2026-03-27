@@ -113,7 +113,7 @@ export default function WelcomePage() {
             <div key={slide.id} 
               className={`s-slide ${idx === currentSlide ? 'active' : ''}`}
             >
-              <div className="s-slide-img" style={{ backgroundImage: `url(${slide.image})` }}></div>
+              <div className="s-slide-img" style={{ backgroundImage: `url(${slide.image})` } as React.CSSProperties}></div>
                <div className="s-container h-full flex items-center relative z-[1000]">
                   <div className="s-glass-card">
                      <h1 className="s-title-h1">{slide.title}</h1>
@@ -187,7 +187,7 @@ export default function WelcomePage() {
                 { i: "/assets/services/specialist.png", t: "دعم الأخصائيين", d: "أدوات مخصصة لتحسين جودة التشخيص والمتابعة الدقيقة للنتائج والتقارير." },
                 { i: "/assets/services/family.png", t: "الإرشاد الأسري", d: "نحن ندعم الأسرة كشريك أساسي في رحلة التأهيل والنمو المتكامل للطفل." }
               ].map((f, i) => (
-                <div key={i} className="s-adaptive-card p-12 text-right anim-up border-none shadow-none bg-slate-50 dark:bg-white/5" style={{ animationDelay: `${i * 0.2}s` }}>
+                <div key={i} className="s-adaptive-card p-12 text-right anim-up border-none shadow-none bg-slate-50 dark:bg-white/5" style={{ '--anim-delay': `${i * 0.2}s` } as React.CSSProperties}>
                    <div className="mb-10 w-40 h-40 overflow-hidden rounded-2xl mx-auto md:ml-0 md:mr-auto">
                       <img src={f.i} alt={f.t} className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500" />
                    </div>
@@ -209,8 +209,8 @@ export default function WelcomePage() {
                  { l: "محافظة نخدمها", v: 27, p: "", i: "📍" },
                  { l: "ساعة خبرة", v: 25, p: "k+", i: "⏳" }
                ].map((s, i) => (
-                 <div key={i} className="text-center md:text-right anim-up" style={{ animationDelay: `${i * 0.2}s` }}>
-                    <div className="mb-12 opacity-10" style={{ fontSize: '100px', lineHeight: 1 }}>{s.i}</div>
+                 <div key={i} className="text-center md:text-right anim-up" style={{ '--anim-delay': `${i * 0.2}s` } as React.CSSProperties}>
+                    <div className="s-stat-icon-bg mb-12 opacity-10">{s.i}</div>
                     <div className="text-7xl font-black text-indigo-600 mb-6 flex items-center justify-center md:justify-start">
                        <span>{s.v}</span>
                        <span className="ml-2">{s.p}</span>
@@ -294,8 +294,10 @@ export default function WelcomePage() {
 
         .s-adaptive-card { border-radius: 60px; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .s-adaptive-card:hover { transform: translateY(-15px); }
+        
+        .s-stat-icon-bg { font-size: 100px; line-height: 1; }
 
-        .anim-up { animation: up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .anim-up { animation: up 1.2s cubic-bezier(0.16, 1, 0.3, 1) var(--anim-delay, 0s) forwards; }
         .anim-pop { animation: pop 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards; }
         @keyframes up { from { opacity: 0; transform: translateY(80px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pop { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
