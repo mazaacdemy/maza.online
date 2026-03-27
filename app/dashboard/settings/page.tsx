@@ -89,6 +89,7 @@ export default function SettingsPage() {
                   className="absolute inset-0 opacity-0 cursor-pointer" 
                   onChange={handleUpload}
                   disabled={uploading}
+                  title="تغيير صورة الملف الشخصي"
                 />
               </div>
            </div>
