@@ -28,7 +28,7 @@ export default function ContactPage() {
 
       <style jsx>{`
         .dynamic-bg {
-          background-image: url('${content.contact_page_img || "/images/contact-hero-fallback.jpg"}');
+          background-image: url('${content.contact_page_img || "/assets/cms/contact_hero.png"}');
         }
       `}</style>
 

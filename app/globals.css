@@ -12,8 +12,59 @@
     --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
     --success: #34D399;
     --warning: #FBBF24;
+
+    /* Design System 4.0: Stitch-SaaS Protocol (The Masterpiece) */
+  --s-primary: #6366f1;           /* Indigo/Modern Blue */
+  --s-accent: #ec4899;            /* Pink Accent */
+  --s-surface: #ffffff;
+  --s-surface-muted: #f8fafc;
+  --s-text-main: #0f172a;
+  --s-border: rgba(0, 0, 0, 0.08);
+  --s-glow: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));
 }
 
+[data-theme='dark'] {
+  --s-surface: #0b0f1a;
+  --s-surface-muted: #111827;
+  --s-text-main: #f8fafc;
+  --s-border: rgba(255, 255, 255, 0.08);
+  --s-glow: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.2));
+}
+
+.stitch-card {
+  background: var(--s-surface);
+  border: 1px solid var(--s-border);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.stitch-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), transparent);
+  pointer-events: none;
+}
+
+.stitch-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--s-primary);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+}
+
+.stitch-gradient-text {
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.stitch-mesh {
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
+}
 html[data-theme='light'], body[data-theme='light'] {
     --bg-color: #F8FAFC;
     --accent-primary: #7C3AED;
@@ -50,6 +101,7 @@ a {
     transition: 0.3s;
     font-weight: 600;
 }
+
 
 a:hover {
     color: var(--accent-primary);
@@ -590,7 +642,7 @@ a:hover {
     padding: 1rem 10%; 
     border-radius: 0; 
     border-bottom: 1px solid var(--glass-border); 
-    background: rgba(15, 23, 42, 0.85); 
+    background: var(--glass-bg); 
     -webkit-backdrop-filter: blur(12px); 
     backdrop-filter: blur(12px); 
 }
@@ -792,6 +844,30 @@ a:hover {
 .hero-guidance-container {
   height: 350px; width: 100%; max-width: 1000px; margin: 0 auto 3rem auto; border-radius: 24px; position: relative; z-index: 1; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
+.bg-blue-deep { background: var(--p-secondary); }
+.text-white { color: white !important; }
+.text-white\/70 { color: rgba(255, 255, 255, 0.7) !important; }
+
+.parezy-blob {
+  background: white;
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  padding: 3rem;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.15);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+[data-theme='dark'] .parezy-blob {
+  background: #1e293b;
+  border-color: rgba(255,255,255,0.05);
+}
+
+.dashed-circle { border: 3px dashed var(--p-primary); border-radius: 50%; }
+.dashed-square { border: 3px dashed var(--p-highlight); border-radius: 30px; }
+.dashed-pentagon { border: 3px dashed var(--p-accent); clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); }
+
+.shadow-glow-pink { box-shadow: 0 10px 30px rgba(255, 84, 128, 0.4); }
+.shadow-glow-blue { box-shadow: 0 10px 30px rgba(77, 94, 193, 0.4); }
+
 .hero-gradient-overlay {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(8,15,31,1) 0%, rgba(8,15,31,0) 100%);
 }

@@ -48,7 +48,7 @@ export default function ThemeToggle() {
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          z-index: 1000;
+          z-index: 20000;
           transition: 0.3s;
           color: var(--text-primary);
         }

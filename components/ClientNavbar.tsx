@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 
-export default function ClientNavbar({ user }: { user: any }) {
+export default function ClientNavbar({ user, settings = {} }: { user: any, settings?: any }) {
   const [isOpen, setIsOpen] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -37,9 +37,13 @@ export default function ClientNavbar({ user }: { user: any }) {
 
   return (
     <nav className="glass-panel sticky-navbar flex-between">
-      <div className="flex-center-gap-1">
-        <div className="logo-icon nav-logo-icon">M</div>
-        <Link href="/" className="nav-logo-text">أكاديمية ماذا</Link>
+      <div className="flex items-center gap-8">
+        <div className="flex-center-gap-1">
+          <div className="logo-icon nav-logo-icon">M</div>
+          <Link href="/" className="nav-logo-text">أكاديمية ماذا</Link>
+        </div>
+
+        {/* Contact info removed from here - moved to end of links */}
       </div>
       
       <button className="hamburger-btn" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">

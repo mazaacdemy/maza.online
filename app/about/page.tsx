@@ -28,7 +28,7 @@ export default function AboutPage() {
 
       <style jsx>{`
         .dynamic-bg {
-          background-image: url('${content.about_page_img || "/images/about-hero-fallback.jpg"}');
+          background-image: url('${content.about_page_img || "/assets/cms/about_hero.png"}');
         }
       `}</style>
 

@@ -1,14 +1,15 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "منصة ماذا | لوحة تحكم الأخصائي",
-  description: "لوحة تحكم الأخصائي",
+  title: "أكاديمية ماذا | تمكين طفلك يبدأ بخبراتنا",
+  description: "منصة تربوية وتأهيلية تسعى لتمكين ذوي الهمم وأسرهم",
 };
 
 import ThemeToggle from '@/components/ThemeToggle';
 import Providers from '@/components/Providers';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import PWABanner from '@/components/PWABanner';
 
 export default function RootLayout({
   children,
@@ -22,6 +23,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <Footer />
+          <PWABanner />
           <ThemeToggle />
         </Providers>
       </body>

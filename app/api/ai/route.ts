@@ -26,7 +26,7 @@ export async function POST(request: Request) {
         iepPlan: "الهدف طويل المدى 1: تحسين مهارات التواصل المباشر. الهدف القصير 1: الانخراط في اللعب المشترك لمدة 10 دقائق متواصلة بدون تشتت.",
       };
     } else {
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-3.1-pro' });
       const prompt = `
         أنت مساعد تقييم ذكي مختص في التخاطب وتعديل السلوك وتنمية المهارات والتقييمات النفسية.
         المطلوب منك تحليل الملاحظات التالية وكتابة "ملخص حالة" و مسودة "خطة علاجية فردية" (IEP) مقترحة.

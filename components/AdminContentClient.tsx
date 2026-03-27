@@ -29,6 +29,13 @@ export default function AdminContentClient() {
     privacy_page_title: 'سياسة الخصوصية',
     privacy_page_description: '',
     privacy_page_img: '',
+    hero_tag: 'نحن نهتم بمستقبل طفلك',
+    f_title_1: '', f_desc_1: '', f_icon_1: '',
+    f_title_2: '', f_desc_2: '', f_icon_2: '',
+    f_title_3: '', f_desc_3: '', f_icon_3: '',
+    stat_1_label: 'دقة التشخيص', stat_1_value: '95',
+    stat_2_label: 'كفاءة الأخصائيين', stat_2_value: '100',
+    stat_3_label: 'رضا أولياء الأمور', stat_3_value: '98',
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -189,10 +196,40 @@ export default function AdminContentClient() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="flex-col gap-1">
               <h3 className="color-accent-primary font-bold border-b border-white/5 pb-1">القسم الترحيبي (Hero)</h3>
+              {renderInputField('نص التاج العلوى', 'hero_tag')}
               {renderInputField('العنوان الرئيسي', 'welcome_title')}
               {renderInputField('العنوان الفرعي', 'welcome_subtitle', 'textarea')}
               {renderImageField('صورة الخلفية الرئيسية', 'home_hero_img')}
             </div>
+            
+            <div className="flex-col gap-1">
+              <h3 className="color-accent-primary font-bold border-b border-white/5 pb-1">مميزات القالب (Parezy Features)</h3>
+              <div className="grid grid-cols-1 gap-2 border border-white/5 p-1 rounded-xl">
+                 <p className="font-bold text-xs color-highlight">الميزة 1 (دائرة)</p>
+                 {renderInputField('عنوان الميزة 1', 'f_title_1')}
+                 {renderInputField('وصف الميزة 1', 'f_desc_1', 'textarea')}
+                 {renderImageField('أيقونة الميزة 1', 'f_icon_1')}
+              </div>
+              <div className="grid grid-cols-1 gap-2 border border-white/5 p-1 rounded-xl mt-1">
+                 <p className="font-bold text-xs color-highlight">الميزة 2 (مربع)</p>
+                 {renderInputField('عنوان الميزة 2', 'f_title_2')}
+                 {renderInputField('وصف الميزة 2', 'f_desc_2', 'textarea')}
+                 {renderImageField('أيقونة الميزة 2', 'f_icon_2')}
+              </div>
+            </div>
+
+            <div className="flex-col gap-1">
+              <h3 className="color-accent-primary font-bold border-b border-white/5 pb-1">إحصائيات النجاح (Progress Bars)</h3>
+              <div className="grid grid-cols-2 gap-2">
+                 {renderInputField('تسمية 1', 'stat_1_label')}
+                 {renderInputField('قيمة 1 (%)', 'stat_1_value')}
+                 {renderInputField('تسمية 2', 'stat_2_label')}
+                 {renderInputField('قيمة 2 (%)', 'stat_2_value')}
+                 {renderInputField('تسمية 3', 'stat_3_label')}
+                 {renderInputField('قيمة 3 (%)', 'stat_3_value')}
+              </div>
+            </div>
+
             <div className="flex-col gap-1">
               <h3 className="color-accent-primary font-bold border-b border-white/5 pb-1">ملخصات الأقسام</h3>
               {renderInputField('ملخص "من نحن"', 'about_summary', 'textarea')}
