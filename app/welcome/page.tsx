@@ -123,6 +123,7 @@ export default function WelcomePage() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#0f172a] text-white">
       <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-8"></div>
       <div className="text-2xl font-black">جاري تحضير التحفة الفنية...</div>
+      <div className="text-xs opacity-20 mt-4">Build V15.2-FINAL</div>
     </div>
   );
 
