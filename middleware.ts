@@ -2,26 +2,11 @@ import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
 export default withAuth(
-  function proxy(req) {
+  function middleware(req) {
     const { pathname } = req.nextUrl;
     const role = (req.nextauth.token as any)?.role;
-    const host = req.headers.get('host');
-    const productionHost = 'maza-online.vercel.app';
 
-    // 1. Domain Redirection (Production Force)
-    if (
-      host &&
-      host !== productionHost &&
-      !host.startsWith('localhost') &&
-      host.includes('vercel.app')
-    ) {
-      const url = req.nextUrl.clone();
-      url.host = productionHost;
-      url.protocol = 'https';
-      return NextResponse.redirect(url, 301);
-    }
-
-    // 2. Role-based access control for dashboard routes
+    // Role-based access control for dashboard routes
     if (pathname.startsWith("/dashboard/admin") && role !== "ADMIN") {
       return NextResponse.redirect(new URL("/login", req.url));
     }
