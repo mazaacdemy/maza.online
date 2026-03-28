@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function Register() {
+  const { data: session, status } = useSession();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,6 +17,20 @@ export default function Register() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (status === "authenticated" && session) {
+      const role = (session.user as any)?.role;
+      if (role === "ADMIN" || role === "SUPER_ADMIN") {
+        router.replace("/dashboard/admin");
+      } else if (role === "SPECIALIST") {
+        router.replace("/dashboard/specialist");
+      } else {
+        router.replace("/dashboard/parent");
+      }
+    }
+  }, [status, session, router]);
   
   // Handle role from query params
   useEffect(() => {

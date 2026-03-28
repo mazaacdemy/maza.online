@@ -2,16 +2,33 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Login() {
+  const { data: session, status } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+
+  // 1. Auto-redirect if already logged in
+  useEffect(() => {
+    if (status === "authenticated" && session) {
+      const role = (session.user as any)?.role;
+      if (role === "ADMIN" || role === "SUPER_ADMIN") {
+        router.replace("/dashboard/admin");
+      } else if (role === "SPECIALIST") {
+        router.replace("/dashboard/specialist");
+      } else {
+        router.replace("/dashboard/parent");
+      }
+    }
+  }, [status, session, router]);
+
   const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
   const urlMessage = searchParams?.get('verified') ? 'تم تأكيد حسابك بنجاح! يمكنك الآن تسجيل الدخول.' : searchParams?.get('registered') ? 'تم التسجيل بنجاح! راجع بريدك الإلكتروني لتأكيد الحساب.' : '';
 
@@ -26,24 +43,13 @@ export default function Login() {
       redirect: false,
     });
 
-    setLoading(false);
-
-    if (!result || result.error) {
-      setError(result?.error || "البريد الإلكتروني أو كلمة المرور غير صحيحة.");
+    if (result?.error) {
+      setLoading(false);
+      setError(result.error || "البريد الإلكتروني أو كلمة المرور غير صحيحة.");
       return;
     }
-
-    const sessionRes = await fetch("/api/auth/session");
-    const session = await sessionRes.json();
-    const role = (session?.user as any)?.role;
-
-    if (role === "ADMIN" || role === "SUPER_ADMIN") {
-      router.push("/dashboard/admin");
-    } else if (role === "SPECIALIST") {
-      router.push("/dashboard/specialist");
-    } else {
-      router.push("/dashboard/parent");
-    }
+    
+    // Note: Redirection will be handled by useEffect above when status becomes "authenticated"
   };
 
   return (

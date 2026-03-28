@@ -12,19 +12,31 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) throw new Error("Missing credentials");
-        const user = await prisma.user.findUnique({ where: { email: credentials.email } });
-        if (!user) {
-          throw new Error("هذا الحساب غير موجود");
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            console.error("Auth: Missing email or password");
+            throw new Error("Missing credentials");
+          }
+          const user = await prisma.user.findUnique({ where: { email: credentials.email } });
+          if (!user) {
+            console.error(`Auth: User not found - ${credentials.email}`);
+            throw new Error("هذا الحساب غير موجود");
+          }
+          if (!user.password) {
+            console.error(`Auth: No password set for user - ${credentials.email}`);
+            throw new Error("هذا الحساب لا يمتلك كلمة مرور مسجلة");
+          }
+          const isMatch = await bcrypt.compare(credentials.password, user.password);
+          if (!isMatch) {
+            console.error(`Auth: Password mismatch for user - ${credentials.email}`);
+            throw new Error("كلمة المرور غير صحيحة");
+          }
+          console.log(`Auth: Success for user - ${credentials.email} (Role: ${user.role})`);
+          return { id: user.id, name: user.name, email: user.email, role: user.role };
+        } catch (error: any) {
+          console.error("Auth: Global error in authorize:", error);
+          throw error;
         }
-        if (!user.password) {
-          throw new Error("هذا الحساب لا يمتلك كلمة مرور مسجلة");
-        }
-        const isMatch = await bcrypt.compare(credentials.password, user.password);
-        if (!isMatch) {
-          throw new Error("كلمة المرور غير صحيحة");
-        }
-        return { id: user.id, name: user.name, email: user.email, role: user.role };
       }
     })
   ],
