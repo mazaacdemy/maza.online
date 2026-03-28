@@ -2,15 +2,10 @@
 
 .s-root {
   font-family: 'Cairo', sans-serif;
-  background: #ffffff;
-  color: #1e293b;
+  background: var(--bg-color);
+  color: var(--text-primary);
   overflow-x: hidden;
   transition: background 0.5s, color 0.5s;
-}
-
-[data-theme='dark'] .s-root {
-  background: #0f172a;
-  color: #f1f5f9;
 }
 
 .s-container {
@@ -25,21 +20,13 @@
 }
 
 .s-surface {
-  background: #ffffff;
+  background: var(--s-surface);
   transition: background 0.5s;
-}
-
-[data-theme='dark'] .s-surface {
-  background: #0f172a;
 }
 
 .s-surface-muted {
-  background: #f1f5f9;
+  background: var(--s-surface-muted);
   transition: background 0.5s;
-}
-
-[data-theme='dark'] .s-surface-muted {
-  background: #1e293b;
 }
 
 /* Hero Section */
@@ -214,15 +201,11 @@
   font-size: clamp(1.5rem, 2.5vw, 2.2rem);
   font-weight: 950;
   opacity: 0.95;
-  color: #1e293b;
+  color: var(--text-primary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   line-height: 1.2;
   text-align: center;
-}
-
-[data-theme='dark'] .s-stat-label {
-  color: #f1f5f9;
 }
 
 .s-stat-icon-bg {
@@ -258,16 +241,13 @@
 .s-adaptive-card {
   border-radius: 60px;
   transition: 0.5s;
+  background: var(--s-surface);
 }
 
 .s-adaptive-card:hover {
   transform: translateY(-20px);
-  background: white;
-  box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme='dark'] .s-adaptive-card:hover {
-  background: #1e293b;
+  background: var(--s-surface-muted);
+  box-shadow: var(--glass-shadow);
 }
 
 /* Animations */

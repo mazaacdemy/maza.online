@@ -43,13 +43,31 @@ export default function Login() {
       redirect: false,
     });
 
+    console.log("Login: signIn result", result);
+
     if (result?.error) {
       setLoading(false);
       setError(result.error || "البريد الإلكتروني أو كلمة المرور غير صحيحة.");
       return;
     }
     
-    // Note: Redirection will be handled by useEffect above when status becomes "authenticated"
+    // Explicit manual redirect is faster than waiting for useSession reactive pulse
+    console.log("Login: Fetching fresh session...");
+    const sessRes = await fetch("/api/auth/session");
+    const json = await sessRes.json();
+    const role = (json?.user as any)?.role;
+    console.log("Login: Detected role:", role);
+
+    if (role === "ADMIN" || role === "SUPER_ADMIN") {
+      window.location.href = "/dashboard/admin";
+    } else if (role === "SPECIALIST") {
+      window.location.href = "/dashboard/specialist";
+    } else {
+      window.location.href = "/dashboard/parent";
+    }
+    
+    // Final failsafe cleanup
+    setTimeout(() => setLoading(false), 2000);
   };
 
   return (

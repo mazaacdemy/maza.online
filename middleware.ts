@@ -7,13 +7,18 @@ export default withAuth(
     const role = (req.nextauth.token as any)?.role;
 
     // Role-based access control for dashboard routes
-    if (pathname.startsWith("/dashboard/admin") && role !== "ADMIN") {
+    // Both ADMIN and SUPER_ADMIN can access admin dashboard
+    if (pathname.startsWith("/dashboard/admin") && role !== "ADMIN" && role !== "SUPER_ADMIN") {
       return NextResponse.redirect(new URL("/login", req.url));
     }
-    if (pathname.startsWith("/dashboard/specialist") && role !== "SPECIALIST" && role !== "ADMIN") {
+    
+    // Specialists and Admins can access specialist dashboard
+    if (pathname.startsWith("/dashboard/specialist") && role !== "SPECIALIST" && role !== "ADMIN" && role !== "SUPER_ADMIN") {
       return NextResponse.redirect(new URL("/login", req.url));
     }
-    if (pathname.startsWith("/dashboard/parent") && role !== "PARENT" && role !== "ADMIN") {
+    
+    // Anyone authenticated can access parent dashboard (general features)
+    if (pathname.startsWith("/dashboard/parent") && !role) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
 

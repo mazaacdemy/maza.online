@@ -2,6 +2,10 @@
 
 .rp-card {
   padding: 2.5rem;
+  background: var(--s-surface);
+  border: 1px solid var(--s-border);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
 }
 
 .rp-card-header {
@@ -16,6 +20,7 @@
 .rp-card-header-text h1 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
+  color: var(--text-primary);
 }
 
 .rp-card-header-text p {
@@ -37,11 +42,14 @@
 .rp-patient-info {
   padding: 1.5rem;
   height: fit-content;
+  background: var(--s-surface-muted);
+  border-radius: 16px;
+  border: 1px solid var(--s-border);
 }
 
 .rp-patient-info h3 {
   margin-bottom: 1.5rem;
-  color: var(--accent-secondary);
+  color: var(--s-secondary);
 }
 
 .rp-field {
@@ -55,6 +63,7 @@
 
 .rp-field-value {
   font-weight: bold;
+  color: var(--text-primary);
 }
 
 .rp-reliability {
@@ -63,19 +72,19 @@
 
 .rp-reliability h4 {
   margin-bottom: 1rem;
-  color: var(--accent-primary);
+  color: var(--s-primary);
 }
 
 .rp-progress-bar {
   width: 100%;
-  background-color: rgba(255,255,255,0.1);
+  background-color: var(--s-border);
   height: 8px;
   border-radius: 4px;
+  overflow: hidden;
 }
 
 .rp-progress-fill {
-  width: 65%;
-  background-color: var(--accent-primary);
+  background-color: var(--s-primary);
   height: 100%;
   border-radius: 4px;
 }
@@ -95,6 +104,9 @@
 
 .rp-block {
   padding: 1.5rem;
+  background: var(--s-surface-muted);
+  border-radius: 16px;
+  border: 1px solid var(--s-border);
 }
 
 .rp-block-header {
@@ -102,7 +114,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--accent-secondary);
+  color: var(--s-secondary);
 }
 
 .rp-block-text {
@@ -117,12 +129,13 @@
 .rp-block-warning h3 { margin-bottom: 1rem; color: var(--warning); }
 
 .rp-block-plan {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), transparent);
+  background: var(--s-glow);
+  border: 1px solid var(--s-primary-glow);
 }
 
 .rp-block-plan h3 {
   margin-bottom: 1rem;
-  color: var(--accent-primary);
+  color: var(--s-primary);
 }
 
 .rp-block-list {
@@ -136,6 +149,7 @@
 .rp-goal h4 {
   font-size: 0.95rem;
   margin-bottom: 0.5rem;
+  color: var(--text-primary);
 }
 
 .rp-goal p {
@@ -146,6 +160,7 @@
 .rp-means h4 {
   font-size: 0.95rem;
   margin-bottom: 0.5rem;
+  color: var(--text-primary);
 }
 
 .rp-means-list {
