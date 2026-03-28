@@ -39,9 +39,14 @@ export default function PWABanner() {
           <Link 
             href="https://play.google.com/store/apps/details?id=com.maza.academy" 
             target="_blank"
-            className="s-btn-google py-2 px-6 bg-slate-800 text-white rounded-lg font-bold text-[0.65rem] hover:bg-slate-700 transition flex items-center gap-2 border border-white/10"
+            className="s-btn-google py-2 px-6 bg-slate-900 border border-white/10 text-white rounded-lg font-bold text-[0.65rem] hover:bg-slate-800 transition flex items-center gap-2 group"
           >
-            <span>🤖</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" className="group-hover:scale-110 transition-transform">
+              <path fill="#4285F4" d="M3 20.64l14.45-8.32c.57-.33.57-1.15 0-1.48L3 2.52V20.64z"/>
+              <path fill="#34A853" d="M3 2.52v18.12l14.45-8.32L3 2.52z"/>
+              <path fill="#FBBC04" d="M3 2.52v9.06L17.45 12.3c.57.33.57.33 0-.66L3 2.52z"/>
+              <path fill="#EA4335" d="M3 11.58v9.06L17.45 12.3c.57-.33.57-.33 0 .66L3 11.58z"/>
+            </svg>
             Google Play
           </Link>
           <button 
