@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import './AdminUsersClient.css';
+import styles from './AdminUsersClient.module.css';
 import { toast } from 'react-hot-toast';
 
 interface User {
@@ -61,8 +61,8 @@ export default function AdminUsersClient() {
   );
 
   return (
-    <div className="admin-users-container">
-      <header className="admin-header">
+    <div className={styles['admin-users-container']}>
+      <header className={styles['admin-header']}>
         <div>
           <h2 className="text-2xl font-bold color-accent-primary">إدارة المستخدمين والصلاحيات</h2>
           <p className="text-sm-secondary">تحكم في أدوار المشرفين والأخصائيين وأولياء الأمور</p>
@@ -72,7 +72,7 @@ export default function AdminUsersClient() {
           <input 
             type="text" 
             placeholder="بحث بالاسم أو الايميل..." 
-            className="admin-search-input"
+            className={styles['admin-search-input']}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -82,7 +82,7 @@ export default function AdminUsersClient() {
       <div className="card glass-panel p-0 overflow-hidden">
         <table className="w-full text-right border-collapse">
           <thead>
-            <tr className="admin-table-header-row">
+            <tr className={styles['admin-table-header-row']}>
               <th className="p-1">الاسم</th>
               <th className="p-1">البريد الإلكتروني</th>
               <th className="p-1">الدور الحالي</th>
@@ -94,8 +94,8 @@ export default function AdminUsersClient() {
             {loading ? (
               <tr><td colSpan={5} className="text-center p-4">جاري التحميل...</td></tr>
             ) : filteredUsers.map(user => (
-              <tr key={user.id} className="admin-table-row">
-                <td className="admin-user-name">{user.name}</td>
+              <tr key={user.id} className={styles['admin-table-row']}>
+                <td className={styles['admin-user-name']}>{user.name}</td>
                 <td className="p-1 text-secondary text-sm">{user.email}</td>
                 <td className="p-1">
                   <span className={`badge-role role-${user.role.toLowerCase()}`}>

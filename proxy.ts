@@ -1,7 +1,7 @@
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
-export default withAuth(
+const authMiddleware = withAuth(
   function proxy(req) {
     const { pathname } = req.nextUrl;
     const role = (req.nextauth.token as any)?.role;
@@ -44,6 +44,13 @@ export default withAuth(
     },
   }
 );
+
+// Named export 'proxy' is required by modern Next.js Vercel configurations
+export async function proxy(req: any, event: any) {
+  return (authMiddleware as any)(req, event);
+}
+
+export default authMiddleware;
 
 export const config = {
   matcher: [
