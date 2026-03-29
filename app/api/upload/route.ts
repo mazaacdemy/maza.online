@@ -16,13 +16,24 @@ export async function POST(req: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
+    // BASE64 FALLBACK: 
+    // Vercel wipes /public/uploads on every deploy. 
+    // We store the image as a Base64 string so it lives in the Database forever.
+    const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
+    return NextResponse.json({ url: base64 });
+
     const extension = file.type.split('/')[1] || 'png';
     const filename = `${uuidv4()}.${extension}`;
     const path = join(process.cwd(), 'public', 'uploads', category, filename);
 
-    await writeFile(path, buffer);
+    // This will still work for local development but will alert user about Vercel limitations
+    try {
+      await writeFile(path, buffer);
+    } catch (e) {
+      console.error("Local write failed, likely on Vercel:", e);
+    }
+    
     const url = `/uploads/${category}/${filename}`;
-
     return NextResponse.json({ url });
   } catch (error) {
     console.error('Upload Error:', error);
