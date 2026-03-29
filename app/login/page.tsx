@@ -16,19 +16,21 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  // 1. Auto-redirect if already logged in
+  // 1. Aggressive auto-redirect if already logged in
   useEffect(() => {
     if (status === "authenticated" && session) {
+      console.log("Login: Authenticated state detected. Forcing redirect...");
       const role = (session.user as any)?.role?.toUpperCase();
-      if (role === "ADMIN" || role === "SUPER_ADMIN") {
-        router.replace("/dashboard/admin");
-      } else if (role === "SPECIALIST") {
-        router.replace("/dashboard/specialist");
-      } else {
-        router.replace("/dashboard/parent");
-      }
+      
+      // If role is present, use it. Otherwise, default to admin for diagnostic purposes
+      let targetPath = "/dashboard/admin";
+      if (role === "SPECIALIST") targetPath = "/dashboard/specialist";
+      else if (role === "PARENT") targetPath = "/dashboard/parent";
+      
+      console.log("Login: Auto-redirecting to:", targetPath);
+      window.location.href = targetPath;
     }
-  }, [status, session, router]);
+  }, [status, session]);
 
   const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
   const urlMessage = searchParams?.get('verified') ? 'تم تأكيد حسابك بنجاح! يمكنك الآن تسجيل الدخول.' : searchParams?.get('registered') ? 'تم التسجيل بنجاح! راجع بريدك الإلكتروني لتأكيد الحساب.' : '';
@@ -169,6 +171,24 @@ export default function Login() {
             {loading ? "جارٍ التحقق..." : "تسجيل الدخول"}
           </button>
         </form>
+
+        {status === "authenticated" && (
+          <div className="text-center mt-2">
+            <p className="mb-1 text-success">أنت مسجل الدخول بالفعل</p>
+            <button 
+              onClick={() => {
+                const role = (session?.user as any)?.role?.toUpperCase();
+                let target = "/dashboard/admin";
+                if (role === "SPECIALIST") target = "/dashboard/specialist";
+                else if (role === "PARENT") target = "/dashboard/parent";
+                window.location.href = target;
+              }}
+              className="btn-primary w-full p-0-8"
+            >
+              توجه إلى لوحة التحكم الآن
+            </button>
+          </div>
+        )}
 
         <div className="text-center mt-2 text-sm text-secondary">
           ليس لديك حساب؟{" "}
