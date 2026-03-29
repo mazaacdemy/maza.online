@@ -83,15 +83,46 @@ export default function AdminContentClient() {
     setContent(prev => ({ ...prev, [key]: value }));
   };
 
+  const compressImage = (file: File): Promise<Blob> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_SIZE = 1200; 
+          let width = img.width;
+          let height = img.height;
+          if (width > height) {
+            if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
+          } else {
+            if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          canvas.toBlob((blob) => {
+            resolve(blob || file);
+          }, 'image/jpeg', 0.65); 
+        };
+      };
+    });
+  };
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const originalFile = e.target.files?.[0];
+    if (!originalFile) return;
 
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('category', 'cms');
-
+    setIsLoading(true);
     try {
+      const compressedBlob = await compressImage(originalFile);
+      const formData = new FormData();
+      formData.append('file', compressedBlob, 'content.jpg');
+      formData.append('category', 'cms');
+
       const res = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
@@ -99,10 +130,12 @@ export default function AdminContentClient() {
       const data = await res.json();
       if (data.url) {
         updateField(key, data.url);
-        toast.success('تم رفع الصورة بنجاح');
+        toast.success('تم رفع الصورة وتحسينها');
       }
     } catch (error) {
       toast.error('فشل رفع الصورة');
+    } finally {
+      setIsLoading(false);
     }
   };
 

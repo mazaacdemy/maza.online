@@ -52,11 +52,9 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = (user as any).role;
-        token.profileImage = (user as any).profileImage;
       }
       if (trigger === "update" && session) {
         token.name = session.name || token.name;
-        token.profileImage = session.profileImage || token.profileImage;
       }
       return token;
     },
@@ -64,7 +62,6 @@ export const authOptions: NextAuthOptions = {
       if (token && session.user) {
         (session.user as any).id = token.id;
         (session.user as any).role = token.role;
-        (session.user as any).profileImage = token.profileImage;
       }
       return session;
     }

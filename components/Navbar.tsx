@@ -6,6 +6,15 @@ import ClientNavbar from "./ClientNavbar";
 export default async function Navbar() {
   const session = await getServerSession(authOptions);
   
+  // Fetch full user data (including profileImage) from DB if logged in
+  let dbUser = null;
+  if (session?.user?.email) {
+    dbUser = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      select: { id: true, name: true, role: true, profileImage: true }
+    });
+  }
+
   // Fetch settings for contact info with error handling
   let settings: any = {};
   try {
@@ -15,8 +24,7 @@ export default async function Navbar() {
     settingsArray.forEach(s => { settings[s.key] = s.value; });
   } catch (error) {
     console.warn("Navbar: Failed to fetch settings", error);
-    // Fallback avoids crashing the full layout
   }
 
-  return <ClientNavbar user={session?.user} settings={settings} />;
+  return <ClientNavbar user={dbUser || session?.user} settings={settings} />;
 }

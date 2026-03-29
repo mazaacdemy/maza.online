@@ -18,16 +18,58 @@ export default function SettingsPage() {
     }
   }, [session]);
 
+  const compressImage = (file: File): Promise<Blob> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_SIZE = 400; // Resize to 400x400 max
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          canvas.toBlob((blob) => {
+            if (blob) resolve(blob);
+            else resolve(file);
+          }, 'image/jpeg', 0.7); // 70% quality JPEG
+        };
+      };
+    });
+  };
+
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const originalFile = e.target.files?.[0];
+    if (!originalFile) return;
 
     setUploading(true);
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('category', 'profiles');
-
     try {
+      // 1. Compress image to keep Base64 small
+      const compressedBlob = await compressImage(originalFile);
+      
+      const formData = new FormData();
+      formData.append('file', compressedBlob, 'profile.jpg');
+      formData.append('category', 'profiles');
+
       const res = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
@@ -35,9 +77,10 @@ export default function SettingsPage() {
       const data = await res.json();
       if (data.url) {
         setImage(data.url);
-        toast.success('تم رفع الصورة بنجاح');
+        toast.success('تم رفع الصورة وتحسين حجمها بنجاح');
       }
     } catch (error) {
+      console.error('Upload Error:', error);
       toast.error('فشل رفع الصورة');
     } finally {
       setUploading(false);
@@ -54,7 +97,7 @@ export default function SettingsPage() {
       });
       
       if (res.ok) {
-        await updateSession({ name, profileImage: image });
+        await updateSession({ name });
         toast.success('تم تحديث البيانات بنجاح');
       } else {
         toast.error('فشل تحديث البيانات');
