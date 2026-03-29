@@ -1,0 +1,39 @@
+.admin-users-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.admin-search-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  width: 200px;
+}
+
+.admin-table-header-row {
+  background-color: var(--s-surface-muted);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.admin-table-row {
+  border-bottom: 1px solid var(--s-border);
+  transition: background-color 0.2s;
+}
+
+.admin-user-name {
+  padding: 0.25rem;
+  font-weight: bold;
+  color: var(--text-primary);
+}
