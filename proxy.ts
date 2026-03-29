@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 const authMiddleware = withAuth(
   function proxy(req) {
     const { pathname } = req.nextUrl;
-    const role = (req.nextauth.token as any)?.role;
+    const role = (req.nextauth.token as any)?.role?.toUpperCase();
 
     // Role-based access control for dashboard routes
     // Both ADMIN and SUPER_ADMIN can access admin dashboard

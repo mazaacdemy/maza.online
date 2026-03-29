@@ -18,7 +18,7 @@ export default function Login() {
   // 1. Auto-redirect if already logged in
   useEffect(() => {
     if (status === "authenticated" && session) {
-      const role = (session.user as any)?.role;
+      const role = (session.user as any)?.role?.toUpperCase();
       if (role === "ADMIN" || role === "SUPER_ADMIN") {
         router.replace("/dashboard/admin");
       } else if (role === "SPECIALIST") {
@@ -55,7 +55,7 @@ export default function Login() {
     console.log("Login: Fetching fresh session...");
     const sessRes = await fetch("/api/auth/session");
     const json = await sessRes.json();
-    const role = (json?.user as any)?.role;
+    const role = (json?.user as any)?.role?.toUpperCase();
     console.log("Login: Detected role:", role);
 
     if (role === "ADMIN" || role === "SUPER_ADMIN") {
