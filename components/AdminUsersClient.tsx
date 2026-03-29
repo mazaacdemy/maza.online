@@ -63,7 +63,7 @@ export default function AdminUsersClient() {
     <div className="flex-col gap-2 p-2">
       <header className="flex-between items-center mb-1">
         <div>
-          <h2 className="text-2xl font-bold color-white">إدارة المستخدمين والصلاحيات</h2>
+          <h2 className="text-2xl font-bold color-accent-primary">إدارة المستخدمين والصلاحيات</h2>
           <p className="text-sm-secondary">تحكم في أدوار المشرفين والأخصائيين وأولياء الأمور</p>
         </div>
         <div className="search-bar-premium glass-panel px-1 py-0-5 flex-center gap-05">
@@ -71,7 +71,8 @@ export default function AdminUsersClient() {
           <input 
             type="text" 
             placeholder="بحث بالاسم أو الايميل..." 
-            className="bg-transparent border-none outline-none color-white text-sm w-200"
+            className="bg-transparent border-none outline-none color-text-primary text-sm w-200"
+            style={{ color: 'var(--text-primary)' }}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -81,7 +82,7 @@ export default function AdminUsersClient() {
       <div className="card glass-panel p-0 overflow-hidden">
         <table className="w-full text-right border-collapse">
           <thead>
-            <tr className="bg-white/5 text-secondary text-sm">
+            <tr className="bg-surface-muted text-secondary text-sm" style={{ background: 'var(--s-surface-muted)' }}>
               <th className="p-1">الاسم</th>
               <th className="p-1">البريد الإلكتروني</th>
               <th className="p-1">الدور الحالي</th>
@@ -93,8 +94,8 @@ export default function AdminUsersClient() {
             {loading ? (
               <tr><td colSpan={5} className="text-center p-4">جاري التحميل...</td></tr>
             ) : filteredUsers.map(user => (
-              <tr key={user.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                <td className="p-1 font-bold color-white">{user.name}</td>
+              <tr key={user.id} className="border-b transition-colors" style={{ borderColor: 'var(--s-border)' }}>
+                <td className="p-1 font-bold" style={{ color: 'var(--text-primary)' }}>{user.name}</td>
                 <td className="p-1 text-secondary text-sm">{user.email}</td>
                 <td className="p-1">
                   <span className={`badge-role role-${user.role.toLowerCase()}`}>
@@ -131,12 +132,12 @@ export default function AdminUsersClient() {
         .role-admin { background: #8b5cf6; color: white; }
         .role-moderator { background: #f59e0b; color: white; }
         .role-specialist { background: #10b981; color: white; }
-        .role-parent { background: rgba(255,255,255,0.1); color: #ccc; }
+        .role-parent { background: var(--s-surface-muted); color: var(--text-secondary); }
         
         .role-select-premium {
-          background: rgba(255,255,255,0.05);
-          color: white;
-          border: 1px solid var(--glass-border);
+          background: var(--s-surface);
+          color: var(--text-primary);
+          border: 1px solid var(--s-border);
           padding: 0.4rem;
           border-radius: 8px;
           font-size: 0.85rem;

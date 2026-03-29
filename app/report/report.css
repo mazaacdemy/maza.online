@@ -13,7 +13,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 2px solid var(--s-border);
   padding-bottom: 1.5rem;
 }
 
@@ -119,7 +119,8 @@
 
 .rp-block-text {
   line-height: 1.8;
-  color: var(--text-secondary);
+  color: var(--text-primary);
+  opacity: 0.9;
 }
 
 .rp-block-success { border-left: 4px solid var(--success); }

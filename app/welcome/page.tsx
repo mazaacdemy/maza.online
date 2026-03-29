@@ -120,10 +120,10 @@ export default function WelcomePage() {
   }, [slides.length]);
 
   if (loading) return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#0f172a] text-white">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg-color)] text-[var(--text-primary)]">
       <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-8"></div>
-      <div className="text-2xl font-black">جاري تحضير التحفة الفنية...</div>
-      <div className="text-xs opacity-20 mt-4">Build V15.2-FINAL</div>
+      <div className="text-2xl font-black">جاري التحضير...</div>
+      <div className="text-xs opacity-20 mt-4">Maza Academy V16.3</div>
     </div>
   );
 
