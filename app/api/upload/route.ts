@@ -16,9 +16,7 @@ export async function POST(req: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // BASE64 FALLBACK: 
-    // Vercel wipes /public/uploads on every deploy. 
-    // We store the image as a Base64 string so it lives in the Database forever.
+    if (!file) return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
     const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
     return NextResponse.json({ url: base64 });
 
