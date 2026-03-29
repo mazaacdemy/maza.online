@@ -5,6 +5,7 @@ import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { toast } from "react-hot-toast";
 
 export default function Login() {
   const { data: session, status } = useSession();
@@ -57,12 +58,25 @@ export default function Login() {
     const json = await sessRes.json();
     const role = (json?.user as any)?.role?.toUpperCase();
     console.log("Login: Detected role:", role);
+    
+    if (!role) {
+      console.warn("Login: Role not found in session immediately. Waiting...");
+      // Special case: sometimes session takes a moment to propagate
+      toast.success("تم التحقق، جاري تحضير لوحة التحكم...");
+      setTimeout(() => {
+        window.location.href = "/dashboard/admin";
+      }, 1000);
+      return;
+    }
 
     if (role === "ADMIN" || role === "SUPER_ADMIN") {
+      console.log("Login: Redirecting to Admin Dashboard");
       window.location.href = "/dashboard/admin";
     } else if (role === "SPECIALIST") {
+      console.log("Login: Redirecting to Specialist Dashboard");
       window.location.href = "/dashboard/specialist";
     } else {
+      console.log("Login: Redirecting to Parent Dashboard");
       window.location.href = "/dashboard/parent";
     }
     
