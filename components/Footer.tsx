@@ -42,6 +42,9 @@ export default function Footer() {
           <Link href="/about">من نحن</Link>
           <Link href="/contact">اتصل بنا</Link>
           <Link href="/guidance">ارشادات أسرية</Link>
+          <Link href="/advertise">اعلن معنا</Link>
+          <Link href="/jobs">انضم لفريقنا</Link>
+          <Link href="/quiz">اختبر معلوماتك</Link>
         </div>
 
         <div className="footer-links">

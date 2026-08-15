@@ -108,3 +108,54 @@ model Slide {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model AdvertiseLead {
+  id          String   @id @default(uuid())
+  name        String
+  type        String   @default("center") // center | specialist
+  phone       String
+  city        String
+  description String?  @db.Text
+  status      String   @default("NEW") // NEW, CONTACTED, CLOSED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model JobApplication {
+  id            String   @id @default(uuid())
+  name          String
+  phone         String
+  specialty     String
+  degree        String?  // bachelor, diploma, master, phd
+  degreeSpec    String?
+  years         Int?
+  isFresh       Boolean  @default(false)
+  hasTraining   Boolean  @default(false)
+  trainingWhere String?
+  cvUrl         String?  @db.Text
+  status        String   @default("NEW") // NEW, REVIEWED, ACCEPTED, REJECTED
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model QuizQuestion {
+  id        String   @id @default(uuid())
+  text      String
+  options   String   @db.Text // JSON array
+  correct   Int      @default(0)
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model QuizResult {
+  id           String   @id @default(uuid())
+  name         String
+  phone        String
+  points       Int      @default(0)
+  discount     Int      @default(0)
+  status       String   @default("NEW") // NEW, USED
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
