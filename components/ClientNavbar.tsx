@@ -54,6 +54,7 @@ export default function ClientNavbar({ user, settings = {} }: { user: any, setti
 
       <div className={`nav-links ${isOpen ? 'mobile-open' : ''}`}>
         <Link href="/" className={`nav-link ${pathname === '/' ? 'active' : ''}`}>الرئيسية</Link>
+        <Link href="/directory" className={`nav-link ${pathname.startsWith('/directory') ? 'active' : ''}`}>الدليل</Link>
         <Link href="/about" className={`nav-link ${pathname === '/about' ? 'active' : ''}`}>من نحن</Link>
         <Link href="/contact" className={`nav-link ${pathname === '/contact' ? 'active' : ''}`}>تواصل معنا</Link>
         <Link href="/guidance" className={`nav-link ${pathname === '/guidance' ? 'active' : ''}`}>إرشادات أسرية</Link>

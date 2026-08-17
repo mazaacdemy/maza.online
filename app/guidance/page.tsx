@@ -3,83 +3,35 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-const cards = [
-  {
-    icon: '🗣️',
-    title: 'تنمية مهارات التخاطب',
-    color: '#6366f1',
-    glow: 'rgba(99,102,241,0.18)',
-    border: 'rgba(99,102,241,0.4)',
-    tips: [
-      'تحدث مع طفلك بوضوح وبطء.',
-      'استخدم الصور والبطاقات التعليمية لتعزيز المفردات.',
-      'شجع طفلك على التعبير عن احتياجاته بالكلمات بدلاً من الإشارة.',
-    ],
-  },
-  {
-    icon: '🧠',
-    title: 'تعديل السلوك الإيجابي',
-    color: '#10b981',
-    glow: 'rgba(16,185,129,0.15)',
-    border: 'rgba(16,185,129,0.4)',
-    tips: [
-      'استخدم نظام المكافآت لتعزيز السلوكيات الجيدة.',
-      'تجنب العقاب البدني واستخدم "وقت الهدوء" (Time-out) عند الضرورة.',
-      'كن صبوراً وثابتاً في تطبيق القواعد.',
-    ],
-  },
-  {
-    icon: '🛡️',
-    title: 'الدعم النفسي للأهل',
-    color: '#f59e0b',
-    glow: 'rgba(245,158,11,0.15)',
-    border: 'rgba(245,158,11,0.4)',
-    tips: [
-      'تذكر أن اهتمامك بنفسك ينعكس إيجاباً على طفلك.',
-      'تواصل مع مجموعات الدعم لتبادل الخبرات.',
-      'لا تتردد في طلب الاستشارة المتخصصة عند الشعور بالإرهاق.',
-    ],
-  },
-  {
-    icon: '🎮',
-    title: 'التعلم من خلال اللعب',
-    color: '#ec4899',
-    glow: 'rgba(236,72,153,0.15)',
-    border: 'rgba(236,72,153,0.4)',
-    tips: [
-      'خصص وقتاً يومياً للعب التفاعلي مع طفلك.',
-      'استخدم الألعاب التي تنمي التركيز والمهارات الحركية الدقيقة.',
-      'اجعل وقت التعلم ممتعاً وغير ضاغط.',
-    ],
-  },
-];
+const cardColors = ['indigo', 'emerald', 'amber', 'pink'];
 
 export default function GuidancePage() {
-  const [cmsContent, setCmsContent] = useState<any>(null);
+  const [page, setPage] = useState<any>(null);
 
   useEffect(() => {
-    fetch('/api/admin/content')
+    fetch('/api/pages/guidance')
       .then(res => res.json())
       .then(data => {
-        if (data && !data.error) setCmsContent(data);
+        if (data && !data.error) setPage(data);
       })
       .catch(e => console.error("CMS Error:", e));
   }, []);
 
-  const content = cmsContent || {};
+  const content = page || {};
+  const sections = page?.sections || [];
 
   return (
     <div className="bg-color-primary min-h-screen text-primary">
       <div className="immersive-header dynamic-bg">
         <div className="immersive-overlay"></div>
         <h1 className="immersive-title">
-          {content.guidance_page_title || "إرشادات أسرية"}
+          {content.title || "إرشادات أسرية"}
         </h1>
       </div>
 
       <style jsx>{`
         .dynamic-bg {
-          background-image: url('${content.guidance_page_img || "/images/guidance-hero-fallback.jpg"}');
+          background-image: url('${content.heroImage || "/images/guidance-hero-fallback.jpg"}');
         }
       `}</style>
 
@@ -88,26 +40,27 @@ export default function GuidancePage() {
           <div className="hero-badge">💡 الدليل المعرفي</div>
           <h2>دليل <span className="text-gradient">ماذا</span> للإرشاد الأسري</h2>
           <p className="subtitle">
-            {content.guidance_page_description || "نقف بجانبكم بالمعرفة والخبرة لنبني معاً مستقبلاً أفضل لأطفالنا وللمجتمع."}
+            {content.description || "نقف بجانبكم بالمعرفة والخبرة لنبني معاً مستقبلاً أفضل لأطفالنا وللمجتمع."}
           </p>
         </header>
 
         <div className="guidance-grid">
-          {cards.map((card, index) => {
-            const accentClass = index === 0 ? 'indigo' : index === 1 ? 'emerald' : index === 2 ? 'amber' : 'pink';
+          {sections.map((card: any, index: number) => {
+            const accentClass = cardColors[index % cardColors.length];
+            const tips = (card.content || '').split('\n').filter((t: string) => t.trim());
             return (
               <section
-                key={card.title}
+                key={card.id}
                 className={`guidance-card card-${index} glass guidance-card-${accentClass}`}
               >
                 <div className="card-top">
                   <div className="icon-wrap">
-                    <span className="icon">{card.icon}</span>
+                    <span className="icon">💡</span>
                   </div>
                   <h3 className={`card-title font-bold text-lg text-accent-${accentClass}`}>{card.title}</h3>
                 </div>
                 <ul className="list-no-bullets-mt">
-                  {card.tips.map((tip, i) => (
+                  {tips.map((tip: string, i: number) => (
                     <li key={i} className="mb-1 text-secondary list-item-bordered">
                       {tip}
                     </li>

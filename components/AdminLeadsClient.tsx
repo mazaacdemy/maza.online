@@ -116,6 +116,33 @@ export default function AdminLeadsClient() {
     }
   };
 
+  const publishToDirectory = async (lead: AdvertiseLead) => {
+    if (!confirm(`نشر "${lead.name}" في دليل المراكز والأخصائيين؟`)) return;
+    try {
+      const res = await fetch('/api/admin/directory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: lead.name,
+          type: lead.type,
+          phone: lead.phone,
+          city: lead.city,
+          description: lead.description || '',
+          services: [],
+          approved: true,
+        }),
+      });
+      if (res.ok) {
+        toast.success('تم النشر في الدليل 🎉');
+      } else {
+        const data = await res.json();
+        toast.error(data.error || 'فشل النشر');
+      }
+    } catch (err) {
+      toast.error('فشل الاتصال');
+    }
+  };
+
   const formatDate = (iso: string) => new Date(iso).toLocaleString('ar-EG', {
     dateStyle: 'short',
     timeStyle: 'short',
@@ -167,6 +194,12 @@ export default function AdminLeadsClient() {
                   <p className="text-xs opacity-40 mt-2">{formatDate(lead.createdAt)}</p>
                 </div>
                 <div className="flex flex-col gap-2 items-end">
+                  <button
+                    onClick={() => publishToDirectory(lead)}
+                    className="text-emerald-500 text-xs font-bold bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg hover:bg-emerald-500/20 transition-all"
+                  >
+                    نشر في الدليل ⭐
+                  </button>
                   <select
                     className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-indigo-500/50"
                     value={lead.status}

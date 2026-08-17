@@ -41,16 +41,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             إعدادات المنصة والذكاء الاصطناعي
           </Link>
           <Link 
+            href="/dashboard/admin/pages" 
+            className={`nav-item ${pathname.includes('/pages') ? 'active' : ''}`}
+          >
+            صفحات الموقع والأقسام (CMS)
+          </Link>
+          <Link 
             href="/dashboard/admin/content" 
             className={`nav-item ${pathname.includes('/content') ? 'active' : ''}`}
           >
-            إدارة محتوى الموقع (CMS)
+            إعدادات النصوص الثابتة (CMS)
           </Link>
           <Link 
             href="/dashboard/admin/leads" 
             className={`nav-item ${pathname.includes('/leads') ? 'active' : ''}`}
           >
             طلبات التسجيل والتوظيف (Leads)
+          </Link>
+          <Link 
+            href="/dashboard/admin/directory" 
+            className={`nav-item ${pathname.includes('/directory') ? 'active' : ''}`}
+          >
+            دليل المراكز والأخصائيين
           </Link>
           <Link 
             href="/dashboard/admin/quiz" 

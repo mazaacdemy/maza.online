@@ -4,69 +4,68 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function AboutPage() {
-  const [cmsContent, setCmsContent] = useState<any>(null);
+  const [page, setPage] = useState<any>(null);
 
   useEffect(() => {
-    fetch('/api/admin/content')
+    fetch('/api/pages/about')
       .then(res => res.json())
       .then(data => {
-        if (data && !data.error) setCmsContent(data);
+        if (data && !data.error) setPage(data);
       })
       .catch(e => console.error("CMS Error:", e));
   }, []);
 
-  const content = cmsContent || {};
+  const content = page || {};
+  const sections = page?.sections || [];
+  const cardSections = sections.filter((s: any) => s.type === 'card');
+  const textSections = sections.filter((s: any) => s.type !== 'card');
 
   return (
     <>
       <div className="immersive-header dynamic-bg">
         <div className="immersive-overlay"></div>
         <h1 className="immersive-title">
-          {content.about_page_title || "قصة منصة ماذا"}
+          {content.title || "قصة منصة ماذا"}
         </h1>
       </div>
 
       <style jsx>{`
         .dynamic-bg {
-          background-image: url('${content.about_page_img || "/assets/cms/about_hero.png"}');
+          background-image: url('${content.heroImage || "/assets/cms/about_hero.png"}');
         }
       `}</style>
 
       <main className="overlapping-content">
         <section className="text-center mb-4">
           <p className="text-secondary subtitle-1-2rem">
-            {content.about_page_description || "نحن هنا لتمكين كل فرد في المجتمع عبر التكنولوجيا والذكاء الاصطناعي."}
+            {content.description || "نحن هنا لتمكين كل فرد في المجتمع عبر التكنولوجيا والذكاء الاصطناعي."}
           </p>
         </section>
 
-        <section className="mission-grid">
-          <div className="mission-card">
-            <h3>رؤيتنا</h3>
-            <p>أن نكون المنصة الأولى في الشرق الأوسط التي تدمج بين الخبرة البشرية والذكاء الاصطناعي لدعم الصحة النفسية والتطور المهاراتي.</p>
-          </div>
-          <div className="mission-card">
-            <h3>مهمتنا</h3>
-            <p>توفير أدوات دقيقة للأخصائيين، ومتابعة سهلة لأولياء الأمور، وبرامج تدريبية متطورة للكبار لضمان جودة حياة أفضل للجميع.</p>
-          </div>
-        </section>
+        {cardSections.length > 0 && (
+          <section className="mission-grid">
+            {cardSections.map((s: any) => (
+              <div className="mission-card" key={s.id}>
+                <h3>{s.title}</h3>
+                <p>{s.content}</p>
+              </div>
+            ))}
+          </section>
+        )}
 
-        <section className="audience-section">
-          <h2>من نخدم؟</h2>
-          <div className="audience-list">
-            <div className="item">
-              <h4>ذوى الهمم</h4>
-              <p>نقدم لهم تقارير تقييم ذكية وجلسات متابعة تخاطب وسلوك مكثفة.</p>
+        {textSections.length > 0 && (
+          <section className="audience-section">
+            <h2>من نخدم؟</h2>
+            <div className="audience-list">
+              {textSections.map((s: any) => (
+                <div className="item" key={s.id}>
+                  <h4>{s.title}</h4>
+                  <p>{s.content}</p>
+                </div>
+              ))}
             </div>
-            <div className="item">
-              <h4>الأطفال العاديين</h4>
-              <p>نركز على تنمية المهارات الإبداعية، التركيز، والتفوق الدراسي.</p>
-            </div>
-            <div className="item">
-              <h4>الكبار والبالغين</h4>
-              <p>استشارات نفسية ومهنية لدعم الاستقرار النفسي والإنتاجية.</p>
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
       </main>
 
       <style jsx>{`

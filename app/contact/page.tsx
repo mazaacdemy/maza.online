@@ -4,31 +4,32 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function ContactPage() {
-  const [cmsContent, setCmsContent] = useState<any>(null);
+  const [page, setPage] = useState<any>(null);
 
   useEffect(() => {
-    fetch('/api/admin/content')
+    fetch('/api/pages/contact')
       .then(res => res.json())
       .then(data => {
-        if (data && !data.error) setCmsContent(data);
+        if (data && !data.error) setPage(data);
       })
       .catch(e => console.error("CMS Error:", e));
   }, []);
 
-  const content = cmsContent || {};
+  const content = page || {};
+  const sections = page?.sections || [];
 
   return (
     <>
       <div className="immersive-header dynamic-bg">
         <div className="immersive-overlay"></div>
         <h1 className="immersive-title">
-          {content.contact_page_title || "تواصل معنا"}
+          {content.title || "تواصل معنا"}
         </h1>
       </div>
 
       <style jsx>{`
         .dynamic-bg {
-          background-image: url('${content.contact_page_img || "/assets/cms/contact_hero.png"}');
+          background-image: url('${content.heroImage || "/assets/cms/contact_hero.png"}');
         }
       `}</style>
 
@@ -37,18 +38,16 @@ export default function ContactPage() {
           <div className="contact-info">
             <h2>يسرنا سماع صوتك</h2>
             <p>
-              {content.contact_page_description || "نحن هنا للمساعدة، سواء كنت أخصائياً، ولي أمر، أو متدرباً جديداً."}
+              {content.description || "نحن هنا للمساعدة، سواء كنت أخصائياً، ولي أمر، أو متدرباً جديداً."}
             </p>
             
             <div className="info-items">
-              <div className="info-item">
-                <strong>البريد الإلكتروني:</strong>
-                <p>support@maza-online.com</p>
-              </div>
-              <div className="info-item">
-                <strong>الموقع:</strong>
-                <p>القاهرة، مصر (وعبر الإنترنت عالمياً)</p>
-              </div>
+              {sections.map((s: any) => (
+                <div className="info-item" key={s.id}>
+                  <strong>{s.title}</strong>
+                  <p>{s.content}</p>
+                </div>
+              ))}
             </div>
           </div>
 

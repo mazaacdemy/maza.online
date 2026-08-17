@@ -96,6 +96,28 @@ model Setting {
   value String
 }
 
+model Page {
+  id          String   @id @default(uuid())
+  slug        String   @unique // e.g., "guidance", "privacy", "terms"
+  title       String
+  description String?  @db.Text
+  heroImage   String?
+  sections    Section[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Section {
+  id      String  @id @default(uuid())
+  pageId  String
+  page    Page    @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  title   String?
+  content String? @db.Text
+  image   String?
+  type    String  @default("text") // text, list, hero, etc.
+  order   Int     @default(0)
+}
+
 model Slide {
   id        String   @id @default(uuid())
   image     String
@@ -119,6 +141,23 @@ model AdvertiseLead {
   status      String   @default("NEW") // NEW, CONTACTED, CLOSED
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model DirectoryListing {
+  id          String    @id @default(uuid())
+  slug        String    @unique
+  name        String
+  type        String    @default("center") // center | specialist
+  phone       String
+  city        String
+  description String?   @db.Text
+  services    String?   @db.Text // JSON array of services
+  image       String?
+  featured    Boolean   @default(false)
+  approved    Boolean   @default(false) // admin approval before public display
+  views       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model JobApplication {

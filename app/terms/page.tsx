@@ -3,31 +3,38 @@
 import React, { useState, useEffect } from "react";
 
 export default function TermsPage() {
-  const [cmsContent, setCmsContent] = useState<any>(null);
+  const [page, setPage] = useState<any>(null);
 
   useEffect(() => {
-    fetch('/api/admin/content')
+    fetch('/api/pages/terms')
       .then(res => res.json())
       .then(data => {
-        if (data && !data.error) setCmsContent(data);
+        if (data && !data.error) setPage(data);
       })
       .catch(e => console.error("CMS Error:", e));
   }, []);
 
-  const content = cmsContent || {};
-  const termsText = content.policies_page_description || "";
+  const content = page || {};
+  const sections = page?.sections || [];
 
   return (
     <main className="dashboard-container min-h-screen">
       <div className="card glass-panel flex-col gap-1 p-2 m-2 max-w-800-mx-auto">
         <h1 className="text-primary-no-margin color-accent-primary">
-          {content.policies_page_title || "الشروط والسياسات للمنصة"}
+          {content.title || "الشروط والسياسات للمنصة"}
         </h1>
         
-        {termsText ? (
-           <p className="text-secondary line-height-18 whitespace-pre-wrap">
-             {termsText}
-           </p>
+        {sections.length > 0 ? (
+          sections.map((s: any) => (
+            <div key={s.id}>
+              {s.title && (
+                <h2 className="text-primary-no-margin mt-1">{s.title}</h2>
+              )}
+              <p className="text-secondary line-height-18 whitespace-pre-wrap">
+                {s.content}
+              </p>
+            </div>
+          ))
         ) : (
           <>
             <p className="text-secondary line-height-18">

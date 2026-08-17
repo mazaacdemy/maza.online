@@ -3,31 +3,32 @@
 import React, { useState, useEffect } from 'react';
 
 export default function PoliciesPage() {
-  const [cmsContent, setCmsContent] = useState<any>(null);
+  const [page, setPage] = useState<any>(null);
 
   useEffect(() => {
-    fetch('/api/admin/content')
+    fetch('/api/pages/terms')
       .then(res => res.json())
       .then(data => {
-        if (data && !data.error) setCmsContent(data);
+        if (data && !data.error) setPage(data);
       })
       .catch(e => console.error("CMS Error:", e));
   }, []);
 
-  const content = cmsContent || {};
+  const content = page || {};
+  const sections = page?.sections || [];
 
   return (
     <>
       <div className="immersive-header dynamic-bg">
         <div className="immersive-overlay"></div>
         <h1 className="immersive-title">
-          {content.policies_page_title || "الشروط والسياسات"}
+          {content.title || "الشروط والسياسات"}
         </h1>
       </div>
 
       <style jsx>{`
         .dynamic-bg {
-          background-image: url('${content.policies_page_img || "/images/policies-hero-fallback.jpg"}');
+          background-image: url('${content.heroImage || "/images/policies-hero-fallback.jpg"}');
         }
       `}</style>
 
@@ -35,10 +36,13 @@ export default function PoliciesPage() {
         <section className="policy-content">
           <p className="update-date">آخر تحديث: مارس 2026</p>
 
-          {content.policies_page_description ? (
-            <div className="policy-block whitespace-pre-wrap">
-              {content.policies_page_description}
-            </div>
+          {sections.length > 0 ? (
+            sections.map((s: any) => (
+              <div className="policy-block whitespace-pre-wrap" key={s.id}>
+                {s.title && <h3>{s.title}</h3>}
+                <p>{s.content}</p>
+              </div>
+            ))
           ) : (
             <>
               <div className="policy-block">
