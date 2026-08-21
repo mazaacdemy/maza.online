@@ -1,6 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter, useSearchParams } from 'next/navigation';
+
+export const dynamic = 'force-dynamic';
 
 interface Question {
   id?: string;
@@ -21,18 +25,22 @@ const POINTS_PER_Q = 10;
 const MAX_DISCOUNT = 50;
 
 export default function PointsQuizPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [questions, setQuestions] = useState<Question[]>(FALLBACK_QUESTIONS);
   const [current, setCurrent] = useState(0);
   const [points, setPoints] = useState(0);
   const [answered, setAnswered] = useState<number | null>(null);
   const [finished, setFinished] = useState(false);
   const [loading, setLoading] = useState(true);
-  // Save form
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [formError, setFormError] = useState('');
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [requiresAuth, setRequiresAuth] = useState(false);
+  const [couponCode, setCouponCode] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/api/quiz')
@@ -80,13 +88,26 @@ export default function PointsQuizPage() {
         body: JSON.stringify({ name: name.trim(), phone: phone.trim(), points, discount }),
       });
       const data = await res.json();
-      if (res.ok && data.success) setSaved(true);
-      else setFormError(data.error || 'فشل الحفظ، حاول مرة أخرى');
+      if (res.ok && data.success) {
+        setSaved(true);
+        if (data.requiresAuth) {
+          setRequiresAuth(true);
+        }
+        if (data.couponCode) {
+          setCouponCode(data.couponCode);
+        }
+      } else {
+        setFormError(data.error || 'فشل الحفظ، حاول مرة أخرى');
+      }
     } catch (err) {
       setFormError('فشل الاتصال، حاول مرة أخرى');
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleAuth = () => {
+    signIn('credentials', { callbackUrl: `/quiz?auth=1&discount=${discount}&points=${points}` });
   };
 
   const progressPct = ((current + (answered !== null ? 1 : 0)) / Math.max(total, 1)) * 100;
@@ -164,25 +185,35 @@ export default function PointsQuizPage() {
                 <p className="note">أقصى خصم ممكن تجمعه: 50% — مقدَّم من منصة ماذا مباشرة</p>
               </div>
 
-              {saved ? (
-                <p className="form-success">✓ اتضاف الخصم لحسابك على ماذا</p>
-              ) : (
-                <form className="save-form" onSubmit={handleSave}>
-                  <div className="field row2">
-                    <div>
-                      <label>الاسم</label>
-                      <input type="text" placeholder="اسمك الكامل" value={name} onChange={e => setName(e.target.value)} />
-                    </div>
-                    <div>
-                      <label>رقم الهاتف (واتساب)</label>
-                      <input type="tel" placeholder="01xxxxxxxxx" value={phone} onChange={e => setPhone(e.target.value)} />
-                    </div>
+              {requiresAuth && !session && (
+                <div className="auth-wall glass-panel" style={{ marginTop: '16px', border: '2px solid var(--sys-primary)', background: 'rgba(99,102,241,0.1)' }}>
+                  <div style={{ textAlign: 'center' }}>
+                    <p style={{ fontSize: '16px', fontWeight: 700, color: 'var(--sys-primary)', marginBottom: '8px' }}>🔒 لتفعيل خصمك %{discount}</p>
+                    <p style={{ opacity: 0.8, marginBottom: '16px' }}>خصمك محفوظ ومؤمّن. سجّل دخولك أو أنشئ حساب مجاني لتفعيله على حسابك.</p>
+                    <button 
+                      onClick={handleAuth}
+                      className="quiz-next"
+                      style={{ width: 'auto', minWidth: '220px' }}
+                    >
+                      سجّل دخولك مجانًا 🔓
+                    </button>
+                    <p style={{ fontSize: '12px', opacity: 0.6, marginTop: '10px' }}>أو <a href="/register" style={{ color: 'var(--sys-primary)' }}>أنشئ حساب جديد</a></p>
                   </div>
-                  {formError && <p className="form-error">{formError}</p>}
-                  <button type="submit" className="quiz-next" disabled={saving}>
-                    {saving ? 'جاري الحفظ...' : 'استخدم الخصم دلوقتي'}
-                  </button>
-                </form>
+                </div>
+              )}
+
+              {couponCode && session && (
+                <div className="auth-wall glass-panel" style={{ marginTop: '16px', border: '2px solid #10b981', background: 'rgba(16,185,129,0.1)' }}>
+                  <div style={{ textAlign: 'center' }}>
+                    <p style={{ fontSize: '16px', fontWeight: 700, color: '#10b981', marginBottom: '8px' }}>✅ تم تفعيل خصمك!</p>
+                    <p style={{ opacity: 0.8, marginBottom: '8px' }}>كود الخصم الخاص بك: <strong style={{ fontFamily: 'monospace', fontSize: '16px' }}>{couponCode}</strong></p>
+                    <p style={{ fontSize: '13px', opacity: 0.7 }}>سيتم تطبيقه تلقائيًا في صفحة الدفع.</p>
+                  </div>
+                </div>
+              )}
+
+              {saved && !requiresAuth && !couponCode && (
+                <p className="form-success">✓ اتضاف الخصم لحسابك على ماذا</p>
               )}
             </div>
           )}
@@ -241,19 +272,9 @@ export default function PointsQuizPage() {
           border-radius: 12px; padding: 14px 18px; margin-bottom: 18px; text-align: right;
         }
         .discount-box .label { font-size: 13px; opacity: 0.6; margin: 0 0 6px; }
-        .discount-box .value { font-family: inherit; font-weight: 700; font-size: 22px; color: #10b981; margin: 0; }
+        .discount-box .value { font-family: inherit; font-weight: 700; fontSize: 22px; color: #10b981; margin: 0; }
         .discount-box .note { font-size: 11px; opacity: 0.6; margin: 6px 0 0; }
-        label { font-size: 13px; opacity: 0.7; display: block; margin-bottom: 5px; }
-        input {
-          width: 100%; font-family: inherit; font-size: 14.5px; color: var(--sys-text-primary);
-          border: 1px solid var(--sys-border-strong); border-radius: 10px; padding: 11px 14px;
-          background: var(--sys-surface-muted); outline: none; transition: 0.3s;
-        }
-        input:focus { border-color: var(--sys-primary); }
-        .field { margin-top: 16px; }
-        .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .form-error { font-size: 13px; color: #e5644f; margin: 10px 0 0; }
-        .form-success { font-size: 14px; color: #4fbf7a; text-align: center; font-weight: 700; }
+        .auth-wall { padding: 18px 20px; border-radius: 12px; }
         @media (max-width: 600px) { .row2 { grid-template-columns: 1fr; } }
       `}</style>
     </div>

@@ -30,6 +30,8 @@ model User {
   center       User?         @relation("CenterSpecialists", fields: [centerId], references: [id])
   specialists  User[]        @relation("CenterSpecialists")
   coupons      Coupon[]      @relation("CenterCoupons")
+  quizResults  QuizResult[]  @relation("UserQuizResults")
+  userCoupons  Coupon[]      @relation("UserCoupons")
 }
 
 enum Role {
@@ -84,8 +86,11 @@ model Coupon {
   id        String   @id @default(uuid())
   code      String   @unique
   discount  Float
-  centerId  String
-  center    User     @relation("CenterCoupons", fields: [centerId], references: [id])
+  centerId  String?
+  center    User?    @relation("CenterCoupons", fields: [centerId], references: [id])
+  userId    String?
+  user      User?    @relation("UserCoupons", fields: [userId], references: [id])
+  type      String   @default("CENTER") // CENTER | QUIZ_DISCOUNT
   used      Boolean  @default(false)
   createdAt DateTime @default(now())
 }
@@ -195,6 +200,8 @@ model QuizResult {
   points       Int      @default(0)
   discount     Int      @default(0)
   status       String   @default("NEW") // NEW, USED
+  userId       String?
+  user         User?    @relation("UserQuizResults", fields: [userId], references: [id])
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
